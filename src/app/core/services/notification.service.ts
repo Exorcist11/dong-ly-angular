@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { MessageService } from 'primeng/api';
 
 export type NotificationType = 'success' | 'error' | 'warning' | 'info';
 
@@ -11,12 +12,14 @@ export interface AppNotification {
 
 /**
  * Service quản lý thông báo Toast/Notification toàn hệ thống.
- * Sử dụng Angular Signals để tối ưu hiệu năng reactivity.
+ * Sử dụng Angular Signals và tích hợp tự động với PrimeNG MessageService.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
+  private readonly messageService = inject(MessageService, { optional: true });
+
   private readonly _notifications = signal<AppNotification[]>([]);
   readonly notifications = this._notifications.asReadonly();
 
@@ -25,6 +28,14 @@ export class NotificationService {
     const notification: AppNotification = { id, type, message, durationMs };
 
     this._notifications.update((list) => [...list, notification]);
+
+    // Đồng bộ với PrimeNG Toast nếu MessageService có sẵn trong injector
+    this.messageService?.add({
+      severity: type,
+      summary: this.getSummary(type),
+      detail: message,
+      life: durationMs > 0 ? durationMs : undefined,
+    });
 
     if (durationMs > 0) {
       setTimeout(() => {
@@ -55,5 +66,19 @@ export class NotificationService {
 
   clearAll(): void {
     this._notifications.set([]);
+    this.messageService?.clear();
+  }
+
+  private getSummary(type: NotificationType): string {
+    switch (type) {
+      case 'success':
+        return 'Thành công';
+      case 'error':
+        return 'Lỗi';
+      case 'warning':
+        return 'Cảnh báo';
+      case 'info':
+        return 'Thông tin';
+    }
   }
 }

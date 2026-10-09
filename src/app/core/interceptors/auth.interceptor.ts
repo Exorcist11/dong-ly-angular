@@ -25,8 +25,11 @@ export const authInterceptor: HttpInterceptorFn = (
   const tokenStorage = inject(TokenStorageService);
   const authService = inject(AuthService);
 
-  // Bỏ qua các endpoint public
-  const isAuthEndpoint = req.url.includes('/api/v1/auth/login') || req.url.includes('/api/v1/auth/refresh');
+  // Bỏ qua các endpoint auth không cần xử lý refresh hoặc gắn token lặp
+  const isAuthEndpoint =
+    req.url.includes('/api/v1/auth/login') ||
+    req.url.includes('/api/v1/auth/refresh') ||
+    req.url.includes('/api/v1/auth/logout');
   const token = tokenStorage.getAccessToken();
 
   let authReq = req;

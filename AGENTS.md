@@ -26,17 +26,18 @@ Các nguyên tắc bắt buộc:
 
 ## 2. HIỆN TRẠNG REPOSITORY & MÔI TRƯỜNG KỸ THUẬT
 
-* **Trạng thái codebase**: Greenfield (khởi tạo mới từ đầu để kết nối với backend `Spring-BE`).
+* **Trạng thái codebase**: Greenfield (khởi tạo nền tảng kết nối với Go REST API backend).
 * **Node.js**: `v24.14.x LTS`
 * **Package Manager**: `npm 11.x`
 * **Angular Core & CLI**: Angular 21.x (CLI `21.2.26`)
+* **UI Library**: PrimeNG 21.x (`primeng`), `@primeng/themes` (Theme Preset: `Aura` tùy biến `DongLyThemePreset`), `primeicons 8.x`, `@angular/cdk 21.x`.
 * **Kiến trúc Angular**:
   * Standalone Components (100% không dùng NgModule cũ).
   * Control Flow mới (`@if`, `@for`, `@switch`).
   * Angular Signals cho UI state/computed state, kết hợp RxJS cho asynchronous streams & HTTP.
   * `ChangeDetectionStrategy.OnPush` làm mặc định cho tất cả components.
   * TypeScript Strict Mode (`strict: true`, không dùng `any` bừa bãi).
-* **Backend tích hợp**: `Spring-BE` (Spring Boot 3.3.x, Java 21 LTS, PostgreSQL, Stateless JWT).
+* **Backend tích hợp**: Go REST API (Stateless JWT, API Base URL: `/api/v1` hoặc Render endpoint `https://dong-ly-be.onrender.com/api/v1`).
 
 ---
 
@@ -196,19 +197,24 @@ admin/ (Angular-FE/)
 
 ---
 
-## 7. COMPONENT VÀ UI REUSE
+## 7. COMPONENT VÀ UI REUSE (PRIMENG & DESIGN SYSTEM)
 
-Trước khi tạo component mới, phải tìm kiếm component có chức năng tương tự.
-Ưu tiên tái sử dụng các thành phần:
-* Button, Input, Select, Checkbox, Radio, Date Picker
-* Label, Form field, Validation message
-* Table, Pagination, Filter, Sort
-* Modal, Confirmation dialog, Drawer
-* Loading state, Empty state, Error state
-* Permission-aware actions
+PrimeNG 21.x là thư viện UI chính của toàn bộ hệ thống Đông Lý Admin.
+Thư viện Icons chính thức: PrimeIcons 8.x (`primeicons`).
+Theme Preset thống nhất: `DongLyThemePreset` (`src/app/core/theme/theme.config.ts`), mở rộng từ `Aura` preset với Primary color Blue `#2563eb` và Dark Mode disabled mặc định.
 
-Mỗi shared component phải có trách nhiệm rõ ràng, API đầu vào/đầu ra dễ hiểu và không phụ thuộc trực tiếp vào nghiệp vụ của một feature.
-Nếu dự án đã sử dụng thư viện UI như ng-zorro-antd, tiếp tục sử dụng thống nhất. Không tự ý thêm thư viện UI thứ hai.
+### 7.1. Nguyên tắc sử dụng PrimeNG:
+1. **Ưu tiên sử dụng trực tiếp**: Nếu component PrimeNG (`p-button`, `pInputText`, `p-password`, `p-checkbox`, `p-message`, `p-toast`, `p-table`, `p-dialog`...) đã đáp ứng đầy đủ yêu cầu UX/UI, hãy sử dụng trực tiếp trong template.
+2. **Không tạo wrapper dư thừa**: Tuyệt đối không tạo wrapper chỉ để đổi tên component PrimeNG (ví dụ `app-button` chỉ bọc `p-button` mà không thêm logic giá trị).
+3. **Khi nào tạo Component dùng chung (Shared Wrapper)**: Chỉ tạo wrapper khi mang lại giá trị thực tế rõ rệt:
+   * Chuẩn hóa logic form phức tạp (kết hợp `ControlValueAccessor`).
+   * Đóng gói format chuyên biệt (ví dụ: currency VND input, biển số xe format, sơ đồ ghế xe khách).
+   * Chuẩn hóa Dialog xác nhận hành vi nguy hiểm (`ConfirmModalComponent`).
+4. **Không trộn nhiều UI library**: Tuyệt đối không cài thêm Angular Material, Bootstrap, Ant Design hay Tailwind UI vào dự án.
+5. **Tùy biến CSS an toàn**:
+   * Sử dụng CSS variables và Theme tokens chính thức của PrimeNG.
+   * Hạn chế tối đa việc lạm dụng `::ng-deep` và `!important`.
+   * Tuân thủ ngân sách bundle style (component style budget <= 4kB).
 
 ---
 

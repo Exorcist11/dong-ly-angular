@@ -3,6 +3,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 
+import { Toast } from 'primeng/toast';
+
 interface NavSection {
   title: string;
   items: {
@@ -16,9 +18,11 @@ interface NavSection {
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Toast],
   template: `
     <div class="admin-container">
+      <!-- PRIMENG TOAST NOTIFICATION -->
+      <p-toast position="top-right"></p-toast>
       <!-- SIDEBAR NAVIGATION -->
       <aside class="sidebar">
         <div class="sidebar-brand">
