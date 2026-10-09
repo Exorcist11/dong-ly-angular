@@ -1,0 +1,10 @@
+{
+  "required": "This field is required.",
+  "usernameRequired": "Please enter your username or email.",
+  "usernameMinLength": "Username must be at least {{min}} characters.",
+  "passwordRequired": "Please enter your password.",
+  "passwordMinLength": "Password must be at least {{min}} characters.",
+  "invalidEmail": "Invalid email address format.",
+  "invalidPhone": "Invalid phone number (must be 10 digits).",
+  "dateInPast": "Departure date cannot be in the past."
+}

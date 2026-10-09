@@ -1,0 +1,10 @@
+{
+  "title": "Passenger Details",
+  "fullName": "Full name",
+  "phoneNumber": "Phone number for ticket",
+  "email": "Email (optional)",
+  "pickupPoint": "Pick-up location",
+  "dropoffPoint": "Drop-off location",
+  "notes": "Notes for the driver",
+  "policyNotice": "By clicking Continue, you agree to Dong Ly's Booking Terms & Privacy Policy."
+}

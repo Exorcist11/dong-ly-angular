@@ -1,0 +1,12 @@
+{
+  "title": "Admin Dashboard",
+  "welcome": "Welcome back",
+  "portalBadge": "Transport Management & Ticketing System",
+  "statsRevenue": "Today's Revenue",
+  "statsTrips": "Trips Today",
+  "statsBookings": "Tickets Booked",
+  "statsCustomers": "New Passengers",
+  "recentTrips": "Recent Schedules",
+  "quickActions": "Quick Actions",
+  "systemStatus": "System Health"
+}

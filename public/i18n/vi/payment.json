@@ -1,0 +1,12 @@
+{
+  "title": "Thanh toán vé xe",
+  "methods": "Phương thức thanh toán",
+  "qrTransfer": "Chuyển khoản VietQR (Tự động xác nhận)",
+  "card": "Thẻ ATM / Thẻ quốc tế",
+  "cash": "Thanh toán khi lên xe",
+  "statusPending": "Chờ thanh toán",
+  "statusSuccess": "Thanh toán thành công",
+  "statusFailed": "Giao dịch không thành công",
+  "payNow": "Thanh toán ngay",
+  "countdownNotice": "Vé giữ chỗ trong: {{minutes}} phút"
+}

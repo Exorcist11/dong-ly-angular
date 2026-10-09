@@ -1,0 +1,12 @@
+{
+  "title": "Payment for Ticket",
+  "methods": "Payment Methods",
+  "qrTransfer": "VietQR Transfer (Instant Auto-confirmation)",
+  "card": "ATM Card / Credit Card",
+  "cash": "Pay in cash upon boarding",
+  "statusPending": "Awaiting Payment",
+  "statusSuccess": "Payment Successful",
+  "statusFailed": "Transaction Failed",
+  "payNow": "Pay Now",
+  "countdownNotice": "Seat held for: {{minutes}} minutes"
+}

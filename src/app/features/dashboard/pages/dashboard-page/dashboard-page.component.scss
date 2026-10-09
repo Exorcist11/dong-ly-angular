@@ -1,0 +1,210 @@
+.saas-dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+
+    .title-with-status {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      flex-wrap: wrap;
+
+      .page-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        color: var(--p-text-color, #16161A);
+      }
+
+      .system-health-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+        background: rgba(46, 158, 91, 0.1);
+        border: 1px solid rgba(46, 158, 91, 0.2);
+
+        .pulsing-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: var(--dl-success, #2E9E5B);
+          animation: saas-pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+
+        .health-text {
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: var(--dl-success, #2E9E5B);
+        }
+      }
+    }
+
+    .page-subtitle {
+      font-size: 0.875rem;
+      color: var(--p-text-muted-color, #8A857D);
+      margin: 0;
+    }
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+
+    .refresh-btn-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.25rem;
+
+      .refresh-caption {
+        font-size: 0.6875rem;
+        color: var(--p-text-muted-color, #8A857D);
+      }
+    }
+
+    .btn-primary-action {
+      background: var(--p-primary-color, #D71920);
+      border-color: var(--p-primary-color, #D71920);
+      color: #fff;
+      font-weight: 600;
+    }
+  }
+}
+
+.error-banner-wrapper .error-message-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.875rem;
+}
+
+.kpi-grid-section {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+
+  @media (max-width: 1279px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 767px) { grid-template-columns: 1fr; }
+}
+
+.dashboard-row-layout {
+  display: grid;
+  grid-template-columns: 8fr 4fr;
+  gap: 1.5rem;
+
+  @media (max-width: 1023px) { grid-template-columns: 1fr; }
+  .col-main, .col-side { min-width: 0; }
+}
+
+.card-header-flex {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
+
+  .header-titles {
+    .card-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--p-text-color, #16161A);
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+    .card-subtitle {
+      margin: 0.25rem 0 0;
+      font-size: 0.8125rem;
+      color: var(--p-text-muted-color, #8A857D);
+    }
+  }
+
+  .view-all-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--p-primary-color, #D71920);
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.chart-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  flex: 1;
+}
+
+.table-container { overflow-x: auto; }
+
+.trip-row {
+  .cell-time { color: var(--p-text-color, #16161A); }
+  .cell-route { font-weight: 500; }
+  .cell-plate code {
+    font-size: 0.8125rem;
+    background: var(--p-surface-100, #F4F1EC);
+    padding: 0.2rem 0.4rem;
+    border-radius: 6px;
+  }
+  .seat-progress-box {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+    .seat-count {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+}
+
+.table-empty-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 3rem 1rem;
+  color: var(--p-text-muted-color, #8A857D);
+}
+
+.timeline-container {
+  padding: 0.5rem 0;
+  flex: 1;
+
+  .timeline-event-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    .event-title {
+      margin: 0;
+      font-size: 0.875rem;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    .event-time {
+      font-size: 0.75rem;
+      color: var(--p-text-muted-color, #8A857D);
+    }
+  }
+}

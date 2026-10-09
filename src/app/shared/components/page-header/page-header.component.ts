@@ -55,37 +55,39 @@ export interface BreadcrumbItem {
       padding: 0;
       margin: 0 0 6px 0;
       font-size: 13px;
-      color: #64748b;
+      color: var(--color-text-muted);
     }
     .breadcrumbs li {
       display: flex;
       align-items: center;
     }
     .breadcrumbs a {
-      color: #3b82f6;
+      color: var(--color-primary);
       text-decoration: none;
+      font-weight: 500;
     }
     .breadcrumbs a:hover {
       text-decoration: underline;
     }
     .breadcrumbs .separator {
       margin: 0 8px;
-      color: #94a3b8;
+      color: var(--color-border);
     }
     .breadcrumbs .active {
-      color: #334155;
+      color: var(--color-text-secondary);
       font-weight: 500;
     }
     .page-title {
       font-size: 24px;
       font-weight: 700;
-      color: #0f172a;
+      color: var(--color-text-primary);
       margin: 0;
       line-height: 1.25;
+      transition: color var(--ease);
     }
     .page-subtitle {
       font-size: 14px;
-      color: #64748b;
+      color: var(--color-text-muted);
       margin: 4px 0 0 0;
     }
     .header-actions {

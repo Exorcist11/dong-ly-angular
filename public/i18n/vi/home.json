@@ -1,0 +1,24 @@
+{
+  "hero": {
+    "badge": "Xe Limousine VIP Tuyến Thanh Hóa – Hà Nội",
+    "title": "Hành Trình Êm Ái, Trải Nghiệm Đẳng Cấp",
+    "subtitle": "Đông Lý cam kết mang đến dịch vụ vận chuyển hành khách cao cấp, đúng giờ, an toàn và tiện nghi bậc nhất.",
+    "ctaBook": "Đặt vé ngay",
+    "ctaSchedule": "Xem lịch chạy"
+  },
+  "search": {
+    "origin": "Điểm đi",
+    "destination": "Điểm đến",
+    "departureDate": "Ngày đi",
+    "passengers": "Số hành khách",
+    "searchTrips": "Tìm chuyến xe",
+    "selectOrigin": "Chọn điểm xuất phát",
+    "selectDestination": "Chọn điểm đến"
+  },
+  "features": {
+    "modernFleet": "Dàn xe Limousine 9-11 chỗ đời mới",
+    "punctuality": "Đúng giờ - Không đón khách dọc đường",
+    "comfort": "Ghế massage, wifi, sạc không dây",
+    "support247": "Tổng đài hỗ trợ hành khách 24/7"
+  }
+}

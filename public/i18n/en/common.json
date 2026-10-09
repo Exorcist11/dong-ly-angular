@@ -1,0 +1,43 @@
+{
+  "actions": {
+    "search": "Search",
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "save": "Save changes",
+    "edit": "Edit",
+    "delete": "Delete",
+    "close": "Close",
+    "back": "Back",
+    "confirm": "Confirm",
+    "retry": "Retry",
+    "viewDetails": "View details"
+  },
+  "states": {
+    "loading": "Loading data...",
+    "empty": "No data available",
+    "error": "An error occurred, please try again.",
+    "success": "Action succeeded",
+    "pending": "Processing",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "language": {
+    "vi": "Tiếng Việt",
+    "en": "English",
+    "selectLanguage": "Select language",
+    "vietnamese": "Vietnamese",
+    "english": "English"
+  },
+  "theme": {
+    "light": "Light theme",
+    "dark": "Dark theme",
+    "system": "System theme",
+    "selectTheme": "Select theme",
+    "toggleTheme": "Toggle theme"
+  },
+  "hotline": {
+    "hotlineLabel": "Booking Hotline",
+    "hotlineSupport": "24/7 Support",
+    "callNow": "Call now"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "required": "Trường này là bắt buộc.",
+  "usernameRequired": "Vui lòng nhập tên đăng nhập hoặc email.",
+  "usernameMinLength": "Tên đăng nhập phải có ít nhất {{min}} ký tự.",
+  "passwordRequired": "Vui lòng nhập mật khẩu.",
+  "passwordMinLength": "Mật khẩu phải có ít nhất {{min}} ký tự.",
+  "invalidEmail": "Địa chỉ email không đúng định dạng.",
+  "invalidPhone": "Số điện thoại không hợp lệ (10 chữ số).",
+  "dateInPast": "Ngày khởi hành không được trong quá khứ."
+}

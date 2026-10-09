@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   selector: 'app-stat-card',
   standalone: true,
   template: `
-    <div class="stat-card" [style.--accent-color]="color || '#2563eb'">
+    <div class="stat-card" [style.--accent-color]="color || 'var(--color-primary, #D71920)'">
       <div class="stat-content">
         <span class="stat-label">{{ label }}</span>
         <div class="stat-value">{{ value }}</div>
@@ -23,16 +23,17 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   `,
   styles: [`
     .stat-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
       padding: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      box-shadow: var(--shadow-sm);
       position: relative;
       overflow: hidden;
+      transition: background-color var(--ease), border-color var(--ease);
     }
     .stat-card::before {
       content: '';
@@ -49,7 +50,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
     }
     .stat-label {
       font-size: 13px;
-      color: #64748b;
+      color: var(--color-text-muted);
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -57,32 +58,33 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
     .stat-value {
       font-size: 26px;
       font-weight: 700;
-      color: #0f172a;
+      color: var(--color-text-primary);
       margin: 6px 0;
     }
     .stat-footer {
       font-size: 12px;
       display: flex;
       align-items: center;
-      color: #64748b;
+      color: var(--color-text-muted);
     }
     .stat-footer.positive {
-      color: #16a34a;
+      color: var(--color-success, #2E9E5B);
       font-weight: 600;
     }
     .stat-footer.negative {
-      color: #dc2626;
+      color: var(--color-danger, #D71920);
       font-weight: 600;
     }
     .stat-icon-wrapper {
       width: 48px;
       height: 48px;
-      border-radius: 8px;
-      background: #f1f5f9;
+      border-radius: 10px;
+      background: var(--color-surface-sunken);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 22px;
+      transition: background-color var(--ease);
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,

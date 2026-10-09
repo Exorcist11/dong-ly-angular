@@ -40,7 +40,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.6);
+      background: rgba(15, 23, 42, 0.65);
       backdrop-filter: blur(2px);
       display: flex;
       align-items: center;
@@ -49,42 +49,45 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
       animation: fadeIn 0.15s ease-out;
     }
     .modal-dialog {
-      background: #ffffff;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
       border-radius: 12px;
       width: 90%;
       max-width: 460px;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      box-shadow: var(--shadow-lg);
       overflow: hidden;
       animation: scaleUp 0.15s ease-out;
+      transition: background-color var(--ease), border-color var(--ease);
     }
     .modal-header {
       padding: 18px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #f1f5f9;
+      border-bottom: 1px solid var(--color-border);
     }
     .modal-title {
       font-size: 17px;
       font-weight: 600;
-      color: #0f172a;
+      color: var(--color-text-primary);
       margin: 0;
     }
     .btn-close {
       background: none;
       border: none;
       font-size: 24px;
-      color: #94a3b8;
+      color: var(--color-text-muted);
       cursor: pointer;
       line-height: 1;
       padding: 0;
+      transition: color var(--ease);
     }
     .btn-close:hover {
-      color: #475569;
+      color: var(--color-text-primary);
     }
     .modal-body {
       padding: 20px 24px;
-      color: #475569;
+      color: var(--color-text-secondary);
       font-size: 14px;
       line-height: 1.5;
     }
@@ -93,42 +96,42 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
     }
     .modal-footer {
       padding: 14px 24px;
-      background: #f8fafc;
+      background: var(--color-surface-sunken);
       display: flex;
       justify-content: flex-end;
       gap: 12px;
-      border-top: 1px solid #f1f5f9;
+      border-top: 1px solid var(--color-border);
     }
     .btn {
       padding: 8px 16px;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
       border: 1px solid transparent;
-      transition: all 0.2s;
+      transition: all var(--ease);
     }
     .btn-secondary {
-      background: #ffffff;
-      border-color: #cbd5e1;
-      color: #334155;
+      background: var(--color-surface);
+      border-color: var(--color-border);
+      color: var(--color-text-primary);
     }
     .btn-secondary:hover {
-      background: #f1f5f9;
+      background: var(--color-surface-hover);
     }
     .btn-primary {
-      background: #2563eb;
+      background: var(--color-primary, #D71920);
       color: #ffffff;
     }
     .btn-primary:hover {
-      background: #1d4ed8;
+      background: var(--color-primary-hover, #A50F16);
     }
     .btn-danger {
-      background: #dc2626;
+      background: var(--color-danger, #D71920);
       color: #ffffff;
     }
     .btn-danger:hover {
-      background: #b91c1c;
+      background: var(--primary-dark, #A50F16);
     }
     @keyframes fadeIn {
       from { opacity: 0; }

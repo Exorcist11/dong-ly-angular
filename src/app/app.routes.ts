@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { LayoutShellComponent } from './layout/layout-shell.component';
 import { NotFoundComponent } from './core/error-handling/not-found/not-found.component';
 import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
@@ -7,7 +7,7 @@ import { guestGuard } from './core/guards/guest.guard';
 export const routes: Routes = [
   {
     path: '',
-    component: AdminLayoutComponent,
+    component: LayoutShellComponent,
     canActivate: [authGuard],
     children: [
       {

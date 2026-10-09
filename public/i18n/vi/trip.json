@@ -1,0 +1,10 @@
+{
+  "departure": "Giờ xuất bến",
+  "arrival": "Dự kiến đến",
+  "duration": "Thời gian hành trình",
+  "vehicleType": "Loại xe",
+  "seatsAvailable": "Còn trống {{count}} chỗ",
+  "priceFrom": "Giá vé từ",
+  "details": "Chi tiết chuyến xe",
+  "route": "Lộ trình di chuyển"
+}

@@ -6,11 +6,19 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { ApiErrorResponse } from '../../../../core/models/api-response.model';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
+import { ThemeSwitcherComponent } from '../../../../shared/components/theme-switcher/theme-switcher.component';
+import { LanguageSwitcherComponent } from '../../../../shared/components/language-switcher/language-switcher.component';
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    ThemeSwitcherComponent,
+    LanguageSwitcherComponent,
+  ],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

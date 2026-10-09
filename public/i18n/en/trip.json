@@ -1,0 +1,10 @@
+{
+  "departure": "Departure time",
+  "arrival": "Estimated arrival",
+  "duration": "Trip duration",
+  "vehicleType": "Vehicle model",
+  "seatsAvailable": "{{count}} seats left",
+  "priceFrom": "Price from",
+  "details": "Trip details",
+  "route": "Transit route"
+}

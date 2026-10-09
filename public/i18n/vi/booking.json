@@ -1,0 +1,20 @@
+{
+  "steps": {
+    "search": "1. Tìm chuyến",
+    "selectSeat": "2. Chọn chỗ ngồi",
+    "passenger": "3. Thông tin khách",
+    "payment": "4. Thanh toán",
+    "confirmation": "5. Hoàn tất"
+  },
+  "seatSelection": {
+    "title": "Sơ đồ chọn ghế",
+    "driver": "Khoang tài xế",
+    "available": "Ghế trống",
+    "selected": "Ghế đang chọn",
+    "booked": "Đã có người đặt",
+    "selectedCount": "Số ghế đã chọn: {{count}}",
+    "selectedSeats": "Các ghế: {{seats}}",
+    "totalPrice": "Tổng tiền",
+    "continue": "Tiếp tục nhập thông tin"
+  }
+}

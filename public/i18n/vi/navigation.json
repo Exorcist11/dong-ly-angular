@@ -1,0 +1,15 @@
+{
+  "home": "Trang chủ",
+  "routes": "Lịch trình & Tuyến",
+  "trips": "Chuyến xe",
+  "ticketLookup": "Tra cứu vé",
+  "services": "Dịch vụ",
+  "about": "Về chúng tôi",
+  "contact": "Liên hệ",
+  "adminPortal": "Cổng Quản Trị",
+  "dashboard": "Bàn làm việc",
+  "users": "Quản lý người dùng",
+  "vehicles": "Phương tiện & Tài xế",
+  "bookings": "Vé & Giữ chỗ",
+  "logout": "Đăng xuất"
+}

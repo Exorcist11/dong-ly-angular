@@ -7,7 +7,7 @@ import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { GlobalErrorHandler } from './core/error-handling/global-error-handler';
-import { DongLyThemePreset } from './core/theme/theme.config';
+import { DongLyPreset } from './core/theme/dongly-preset';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,12 +16,16 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
     providePrimeNG({
       theme: {
-        preset: DongLyThemePreset,
+        preset: DongLyPreset,
         options: {
-          darkModeSelector: false,
+          darkModeSelector: '.app-dark',
+          cssLayer: {
+            name: 'primeng',
+            order: 'theme, base, primeng',
+          },
         },
       },
-      ripple: true,
+      ripple: false,
     }),
     MessageService,
     { provide: ErrorHandler, useClass: GlobalErrorHandler },

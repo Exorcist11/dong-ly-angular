@@ -1,0 +1,15 @@
+{
+  "home": "Home",
+  "routes": "Schedules & Routes",
+  "trips": "Trips",
+  "ticketLookup": "Find Ticket",
+  "services": "Services",
+  "about": "About Us",
+  "contact": "Contact",
+  "adminPortal": "Admin Portal",
+  "dashboard": "Dashboard",
+  "users": "User Management",
+  "vehicles": "Vehicles & Drivers",
+  "bookings": "Tickets & Bookings",
+  "logout": "Log out"
+}

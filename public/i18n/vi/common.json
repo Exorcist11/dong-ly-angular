@@ -1,0 +1,43 @@
+{
+  "actions": {
+    "search": "Tìm kiếm",
+    "continue": "Tiếp tục",
+    "cancel": "Hủy bỏ",
+    "save": "Lưu thay đổi",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "close": "Đóng",
+    "back": "Quay lại",
+    "confirm": "Xác nhận",
+    "retry": "Thử lại",
+    "viewDetails": "Xem chi tiết"
+  },
+  "states": {
+    "loading": "Đang tải dữ liệu...",
+    "empty": "Không có dữ liệu",
+    "error": "Đã xảy ra lỗi, vui lòng thử lại.",
+    "success": "Thao tác thành công",
+    "pending": "Đang xử lý",
+    "active": "Hoạt động",
+    "inactive": "Ngưng hoạt động"
+  },
+  "language": {
+    "vi": "Tiếng Việt",
+    "en": "English",
+    "selectLanguage": "Chọn ngôn ngữ",
+    "vietnamese": "Tiếng Việt",
+    "english": "Tiếng Anh"
+  },
+  "theme": {
+    "light": "Giao diện sáng",
+    "dark": "Giao diện tối",
+    "system": "Theo hệ thống",
+    "selectTheme": "Chọn giao diện",
+    "toggleTheme": "Chuyển giao diện"
+  },
+  "hotline": {
+    "hotlineLabel": "Tổng đài đặt vé",
+    "hotlineSupport": "Hỗ trợ 24/7",
+    "callNow": "Gọi ngay"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "title": "Thông tin hành khách",
+  "fullName": "Họ và tên",
+  "phoneNumber": "Số điện thoại nhận vé",
+  "email": "Email (tùy chọn)",
+  "pickupPoint": "Điểm đón",
+  "dropoffPoint": "Điểm trả",
+  "notes": "Ghi chú cho tài xế",
+  "policyNotice": "Bằng việc bấm Tiếp tục, quý khách đồng ý với Điều khoản đặt vé & Chính sách bảo mật của Đông Lý."
+}

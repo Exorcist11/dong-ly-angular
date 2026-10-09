@@ -1,0 +1,14 @@
+{
+  "lookupTitle": "Find Electronic Ticket",
+  "ticketCode": "Ticket Code or Phone Number",
+  "searchTicket": "Search Ticket",
+  "ticketDetails": "Ticket Details",
+  "passengerName": "Passenger",
+  "departureTime": "Departure",
+  "seatNumber": "Seat number",
+  "status": "Ticket status",
+  "statusConfirmed": "Confirmed",
+  "statusCompleted": "Completed",
+  "statusCancelled": "Cancelled",
+  "printTicket": "Print Ticket / Save PDF"
+}

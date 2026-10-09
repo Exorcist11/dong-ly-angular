@@ -1,0 +1,281 @@
+<div class="saas-dashboard-container">
+  <!-- DASHBOARD PAGE HEADER -->
+  <header class="dashboard-header">
+    <div class="header-left">
+      <div class="title-with-status">
+        <h1 class="page-title">Bàn làm việc quản trị</h1>
+        <div class="system-health-pill" title="Mọi dịch vụ máy chủ và đồng bộ vé đang hoạt động hoàn hảo">
+          <span class="pulsing-dot" aria-hidden="true"></span>
+          <span class="health-text">Hệ thống hoạt động bình thường</span>
+        </div>
+      </div>
+      <p class="page-subtitle">Tổng quan hoạt động vận tải và tình hình bán vé nhà xe Đông Lý</p>
+    </div>
+
+    <!-- HEADER RIGHT CONTROLS -->
+    <div class="header-right">
+      <!-- Time Range Select -->
+      <p-selectbutton
+        [options]="timeRangeOptions"
+        [ngModel]="selectedTimeRange()"
+        (ngModelChange)="onTimeRangeChange($event)"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="custom-selectbutton"
+      />
+
+      <!-- Refresh Button with Spin & Time Caption -->
+      <div class="refresh-btn-group">
+        <p-button
+          label="Làm mới"
+          icon="pi pi-refresh"
+          severity="secondary"
+          [outlined]="true"
+          [loading]="isRefreshing()"
+          (onClick)="refreshData()"
+          styleClass="saas-header-btn"
+        />
+        <span class="refresh-caption">Cập nhật lúc {{ lastUpdatedTime() }}</span>
+      </div>
+
+      <!-- Add Trip Primary Action -->
+      <p-button
+        label="Thêm chuyến"
+        icon="pi pi-plus"
+        (onClick)="onAddTrip()"
+        styleClass="saas-header-btn btn-primary-action"
+      />
+    </div>
+  </header>
+
+  <!-- ERROR ALERT BANNER (ONLY IF ERROR OCCURS) -->
+  @if (hasError()) {
+    <div class="error-banner-wrapper">
+      <p-message severity="error">
+        <div class="error-message-content">
+          <span>Không thể tải một số số liệu thống kê thời gian thực.</span>
+          <p-button label="Thử lại" [text]="true" size="small" (onClick)="refreshData()" />
+        </div>
+      </p-message>
+    </div>
+  }
+
+  <!-- ROW 1: KPI STAT CARDS (4 COLS / 2 TABLET / 1 MOBILE) -->
+  <section class="kpi-grid-section" aria-label="Chỉ số hiệu suất chính">
+    <app-kpi-card
+      label="Vé đã đặt"
+      value="128"
+      icon="pi pi-ticket"
+      color="red"
+      trend="+12%"
+      trendDirection="up"
+      trendText="so với hôm qua"
+      [sparklineData]="[45, 52, 68, 74, 90, 112, 128]"
+      [loading]="isLoading()"
+    />
+
+    <app-kpi-card
+      label="Doanh thu hôm nay"
+      value="32.500.000 ₫"
+      icon="pi pi-wallet"
+      color="success"
+      trend="+8.5%"
+      trendDirection="up"
+      trendText="so với hôm qua"
+      [sparklineData]="[18, 22, 24, 28, 26, 30, 32.5]"
+      [loading]="isLoading()"
+    />
+
+    <app-kpi-card
+      label="Chuyến hôm nay"
+      value="16"
+      icon="pi pi-car"
+      color="gold"
+      trend="100%"
+      trendDirection="up"
+      trendText="Đúng lịch trình 100%"
+      [sparklineData]="[12, 14, 15, 14, 16, 15, 16]"
+      [loading]="isLoading()"
+    />
+
+    <app-kpi-card
+      label="Hành khách mới"
+      value="42"
+      icon="pi pi-users"
+      color="info"
+      trend="+5"
+      trendDirection="up"
+      trendText="so với tuần trước"
+      [sparklineData]="[20, 24, 28, 30, 35, 38, 42]"
+      [loading]="isLoading()"
+    />
+  </section>
+
+  <!-- ROW 2: CHARTS (8 + 4 COLS) -->
+  <section class="dashboard-row-layout">
+    <!-- REVENUE & BOOKINGS LINE CHART (8 COLS) -->
+    <div class="col-main">
+      <p-card styleClass="saas-card chart-card">
+        <div class="card-header-flex">
+          <div class="header-titles">
+            <h2 class="card-title">Doanh thu & vé đặt</h2>
+            <p class="card-subtitle">Biểu đồ đối soát doanh thu vận hành và tổng lượng vé bán ra</p>
+          </div>
+          <p-selectbutton
+            [options]="chartFilterOptions"
+            [ngModel]="revenueFilter()"
+            (ngModelChange)="onRevenueFilterChange($event)"
+            optionLabel="label"
+            optionValue="value"
+            styleClass="custom-selectbutton selectbutton-sm"
+          />
+        </div>
+
+        <div class="chart-canvas-wrapper line-chart-container">
+          <p-chart
+            type="line"
+            [data]="lineChartData"
+            [options]="lineChartOptions"
+            height="320px"
+          />
+        </div>
+      </p-card>
+    </div>
+
+    <!-- OCCUPANCY DOUGHNUT CHART (4 COLS) -->
+    <div class="col-side">
+      <p-card styleClass="saas-card doughnut-card">
+        <div class="card-header-flex">
+          <div class="header-titles">
+            <h2 class="card-title">Tỷ lệ lấp đầy</h2>
+            <p class="card-subtitle">Hiệu suất khai thác ghế toàn mạng lưới</p>
+          </div>
+        </div>
+
+        <div class="chart-canvas-wrapper doughnut-chart-container">
+          <p-chart
+            type="doughnut"
+            [data]="doughnutChartData"
+            [options]="doughnutChartOptions"
+            [plugins]="doughnutPlugins"
+            height="320px"
+          />
+        </div>
+      </p-card>
+    </div>
+  </section>
+
+  <!-- ROW 3: RECENT SCHEDULES & ACTIVITIES (8 + 4 COLS) -->
+  <section class="dashboard-row-layout">
+    <!-- RECENT SCHEDULES TABLE (8 COLS) -->
+    <div class="col-main">
+      <p-card styleClass="saas-card table-card">
+        <div class="card-header-flex">
+          <div class="header-titles">
+            <h2 class="card-title">Lịch chạy gần đây</h2>
+            <p class="card-subtitle">Theo dõi trạng thái các chuyến xe xuất bến trong ngày</p>
+          </div>
+          <a href="javascript:void(0)" class="view-all-link">
+            <span>Xem tất cả</span>
+            <i class="pi pi-arrow-right text-xs"></i>
+          </a>
+        </div>
+
+        <!-- PRIMENG DATATABLE (56px rows, sticky header, hover highlight) -->
+        <div class="table-container">
+          <p-table
+            [value]="recentTrips()"
+            [scrollable]="true"
+            scrollHeight="360px"
+            styleClass="saas-data-table"
+          >
+            <ng-template #header>
+              <tr>
+                <th style="width: 90px">Giờ chạy</th>
+                <th>Tuyến xe</th>
+                <th>Biển số</th>
+                <th>Loại xe</th>
+                <th style="width: 140px; text-align: right">Ghế ngồi</th>
+                <th style="width: 110px; text-align: center">Trạng thái</th>
+              </tr>
+            </ng-template>
+
+            <ng-template #body let-trip>
+              <tr class="trip-row">
+                <td class="cell-time">
+                  <strong>{{ trip.departureTime }}</strong>
+                </td>
+                <td class="cell-route">
+                  <span>{{ trip.route }}</span>
+                </td>
+                <td class="cell-plate">
+                  <code>{{ trip.plateNumber }}</code>
+                </td>
+                <td class="cell-vehicle">
+                  <p-tag [value]="trip.vehicleType" severity="secondary" styleClass="pill-tag-secondary" />
+                </td>
+                <td class="cell-seats" style="text-align: right">
+                  <div class="seat-progress-box">
+                    <span class="seat-count">{{ trip.occupied }}/{{ trip.total }}</span>
+                    <p-progressbar
+                      [value]="trip.occupiedPercent"
+                      [showValue]="false"
+                      styleClass="seat-progressbar"
+                    />
+                  </div>
+                </td>
+                <td class="cell-status" style="text-align: center">
+                  <p-tag
+                    [value]="trip.statusLabel"
+                    [severity]="trip.statusSeverity"
+                    styleClass="status-pill-tag"
+                  />
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template #emptymessage>
+              <tr>
+                <td colspan="6">
+                  <div class="table-empty-box">
+                    <i class="pi pi-inbox text-3xl text-muted"></i>
+                    <p>Hiện không có chuyến xe nào theo bộ lọc này.</p>
+                    <p-button label="Thêm chuyến mới" icon="pi pi-plus" size="small" (onClick)="onAddTrip()" />
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- RECENT ACTIVITIES TIMELINE (4 COLS) -->
+    <div class="col-side">
+      <p-card styleClass="saas-card timeline-card">
+        <div class="card-header-flex">
+          <div class="header-titles">
+            <h2 class="card-title">Hoạt động gần đây</h2>
+            <p class="card-subtitle">Nhật ký sự kiện điều hành và đặt vé</p>
+          </div>
+        </div>
+
+        <div class="timeline-container">
+          <p-timeline [value]="recentActivities()" styleClass="custom-saas-timeline">
+            <ng-template #marker let-act>
+              <div class="timeline-dot-marker" [class]="'marker-' + act.color">
+                <i [class]="act.icon"></i>
+              </div>
+            </ng-template>
+            <ng-template #content let-act>
+              <div class="timeline-event-body">
+                <p class="event-title">{{ act.title }}</p>
+                <span class="event-time">{{ act.time }}</span>
+              </div>
+            </ng-template>
+          </p-timeline>
+        </div>
+      </p-card>
+    </div>
+  </section>
+</div>

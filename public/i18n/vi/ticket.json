@@ -1,0 +1,14 @@
+{
+  "lookupTitle": "Tra cứu vé điện tử",
+  "ticketCode": "Mã vé hoặc Số điện thoại",
+  "searchTicket": "Tra cứu",
+  "ticketDetails": "Thông tin vé xe",
+  "passengerName": "Hành khách",
+  "departureTime": "Khởi hành",
+  "seatNumber": "Số ghế",
+  "status": "Trạng thái vé",
+  "statusConfirmed": "Đã xác nhận",
+  "statusCompleted": "Đã hoàn thành",
+  "statusCancelled": "Đã hủy",
+  "printTicket": "In vé / Lưu PDF"
+}

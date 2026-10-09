@@ -504,3 +504,41 @@ Khi có xung đột giữa các lựa chọn, ưu tiên theo thứ tự:
 7. Tính đơn giản và tốc độ triển khai.
 
 Không đoán khi thiếu thông tin. Không tự ý thay đổi phạm vi. Không che giấu lỗi. Không báo cáo kết quả chưa được xác minh.
+
+---
+
+## 19. QUY TẮC BẮT BUỘC VỀ I18N, DARK MODE VÀ DESIGN SYSTEM
+
+### 19.1. Internationalization (i18n) Rules
+* **Không hardcode chuỗi hiển thị**: Mọi văn bản hiển thị trên giao diện (tiêu đề, nhãn, nút bấm, thông báo, lỗi form) phải sử dụng translation keys thông qua `TranslatePipe` (`| translate`) hoặc `TranslationService.translate()`.
+* **Namespace & Key ổn định**: Đặt tên key theo feature hoặc namespace (`common.*`, `navigation.*`, `auth.*`, `home.*`, `booking.*`, `trip.*`, `passenger.*`, `payment.*`, `ticket.*`, `validation.*`, `dashboard.*`). Không dùng tiếng Việt nguyên văn hay index mảng làm key.
+* **Đồng bộ đầy đủ Locale**: Bắt buộc hỗ trợ cả tiếng Việt (`vi` - mặc định) và tiếng Anh (`en`). Khi thêm key mới, phải bổ sung cho cả hai ngôn ngữ trong `public/i18n/{vi,en}/*.json` và `src/app/core/i18n/translations/{vi,en}.ts`.
+* **Không dịch dữ liệu nghiệp vụ**: Biển số xe, mã vé, họ tên hành khách, mã giao dịch hoặc dữ liệu từ Backend trả về phải giữ nguyên.
+* **Định dạng theo Locale**: Sử dụng `TranslationService.formatDate()`, `formatDateTime()`, `formatCurrency()`, `formatNumber()`. Không format tiền tệ hoặc ngày giờ thủ công. Tiền tệ luôn giữ giá trị VND thực tế.
+* **Interpolation an toàn**: Sử dụng template `{{param}}` thay vì nối chuỗi thủ công khi văn bản có biến động.
+* **Phát hiện Missing Key**: Trong môi trường development, missing key sẽ được log cảnh báo; trong production, hệ thống fallback về bản dịch tiếng Việt (`vi`) trước khi trả về key thô.
+
+### 19.2. Theme Rules (Light, Dark, System)
+* **Toàn vẹn 3 chế độ**: Hỗ trợ 3 lựa chọn duy nhất: `Light`, `Dark`, và `System`.
+* **Khởi tạo và Lưu trữ**: State quản lý tập trung trong `ThemeService`, lưu trữ trong `localStorage` (`dongly_theme`). Lắng nghe thay đổi của hệ điều hành `(prefers-color-scheme: dark)` khi ở chế độ `System`.
+* **Không Flash Theme**: Trang web phải có script bootstrap trong `<head>` để gán thuộc tính `data-theme` trước khi render, loại bỏ hoàn toàn hiện tượng chớp sáng (FOUT/FOIT).
+* **Semantic Tokens là bắt buộc**: Mọi màu nền, màu chữ, viền, shadow phải sử dụng semantic CSS variables (`--color-bg`, `--color-surface`, `--color-text-primary`, `--color-border`, v.v.). Tuyệt đối không hardcode mã hex `#ffffff` hay `#000000` trong component stylesheet.
+* **Bảo tồn Brand Identity**: Màu đỏ thương hiệu `#D71920` được giữ nguyên cho các nút hành động chính (Primary Actions); màu vàng `#F2B632` dùng cho focus ring và điểm nhấn; nền dark mode dùng than chì `#121215` / `#1A1A20` thay vì đen tuyền 100%.
+* **Độ tương phản WCAG 2.2 AA**: Kiểm tra độ tương phản văn bản và viền ở cả Light và Dark mode. Không dùng opacity làm mờ thông tin quan trọng.
+
+### 19.3. Design System & Component Rules
+* **Tránh Component Style Budget Warning**: Giữ component styles `< 4.00 kB`. Các lớp CSS dùng chung (bố cục khung, nút chính, alert, switchers) phải đặt tại `src/styles.scss` hoặc component dùng chung (`shared/components/`).
+* **Không tạo Theme Switcher hay Language Switcher cục bộ**: Tái sử dụng `LanguageSwitcherComponent` và `ThemeSwitcherComponent` đã được chuẩn hóa tại `src/app/shared/components/`.
+* **Tôn trọng Preferences người dùng**: Tuân thủ `prefers-reduced-motion` trong mọi hiệu ứng animation và chuyển màu theme mượt mà.
+
+### 19.4. Quy trình triển khai Feature mới (Checklist dành cho Coding Agent)
+Khi triển khai bất kỳ màn hình hoặc tính năng mới nào, Coding Agent bắt buộc thực hiện theo các bước:
+1. Đọc `AGENTS.md` và các tài liệu liên quan trong `docs/`.
+2. Kiểm tra các component và pipes dùng chung (`TranslatePipe`, `LanguageSwitcherComponent`, `ThemeSwitcherComponent`, `ConfirmModalComponent`, v.v.).
+3. Khai báo translation keys và định nghĩa nội dung cho cả 2 ngôn ngữ (`vi` và `en`).
+4. Viết template với semantic CSS variables, kiểm tra hiển thị chuẩn ở cả 3 chế độ `Light`, `Dark`, `System`.
+5. Kiểm tra responsive trên cả Mobile (<480px, 390px) và Desktop (1200px+).
+6. Kiểm tra Accessibility: nhãn form, `aria-label`, focus visible, contrast WCAG AA.
+7. Chạy đầy đủ: `npm run typecheck`, `npm test`, `npm run build` để đảm bảo 0 lỗi và 0 warnings.
+8. Đề xuất commit message bằng tiếng Việt chuẩn Conventional Commits.
+

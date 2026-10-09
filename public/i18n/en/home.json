@@ -1,0 +1,24 @@
+{
+  "hero": {
+    "badge": "VIP Limousine Service: Thanh Hoa – Hanoi",
+    "title": "Smooth Journeys, First-Class Experience",
+    "subtitle": "Dong Ly is committed to providing premium, punctual, safe and exceptionally comfortable passenger transport.",
+    "ctaBook": "Book now",
+    "ctaSchedule": "View schedules"
+  },
+  "search": {
+    "origin": "Departure",
+    "destination": "Destination",
+    "departureDate": "Date",
+    "passengers": "Passengers",
+    "searchTrips": "Search trips",
+    "selectOrigin": "Select origin",
+    "selectDestination": "Select destination"
+  },
+  "features": {
+    "modernFleet": "Modern 9-11 seater luxury fleet",
+    "punctuality": "Punctual - Direct nonstop express",
+    "comfort": "Massage seats, high-speed Wi-Fi & USB charging",
+    "support247": "24/7 dedicated customer care hotline"
+  }
+}

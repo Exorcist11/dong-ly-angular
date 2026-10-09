@@ -1,0 +1,20 @@
+{
+  "steps": {
+    "search": "1. Search Trips",
+    "selectSeat": "2. Select Seats",
+    "passenger": "3. Passenger Details",
+    "payment": "4. Payment",
+    "confirmation": "5. Confirmation"
+  },
+  "seatSelection": {
+    "title": "Seat Map",
+    "driver": "Driver Cab",
+    "available": "Available",
+    "selected": "Selected",
+    "booked": "Reserved",
+    "selectedCount": "Selected seats: {{count}}",
+    "selectedSeats": "Seats: {{seats}}",
+    "totalPrice": "Total Amount",
+    "continue": "Continue to Passenger Info"
+  }
+}
