@@ -3,13 +3,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Button } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { Password } from 'primeng/password';
-import { Checkbox } from 'primeng/checkbox';
-import { Message } from 'primeng/message';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { ApiErrorResponse } from '../../../../core/models/api-response.model';
@@ -17,16 +10,7 @@ import { ApiErrorResponse } from '../../../../core/models/api-response.model';
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    Button,
-    InputText,
-    Password,
-    Checkbox,
-    Message,
-    IconField,
-    InputIcon,
-  ],
+  imports: [ReactiveFormsModule],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

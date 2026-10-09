@@ -1,21 +1,38 @@
-/* Design Tokens & Global Styles cho Hệ thống Nhà xe Đông Lý */
+/* Design Tokens & Global Styles cho Hệ thống Quản trị Nhà xe Đông Lý */
 
 :root {
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-navy: #0f172a;
-  --color-slate: #334155;
-  --color-muted: #64748b;
-  --color-border: #e2e8f0;
-  --color-bg: #f8fafc;
-  --color-card: #ffffff;
+  /* Brand Theme Colors */
+  --primary: #D71920;
+  --primary-dark: #A50F16;
+  --charcoal: #16161A;
+  --gold: #F2B632;
+  --gold-soft: #FFF3D1;
+  --bg-cream: #FFFBF5;
+  --surface: #FFFFFF;
+  --gray-100: #F4F1EC;
+  --gray-300: #D9D4CC;
+  --gray-500: #8A857D;
+  --gray-900: #3A3733;
+  --danger: #D71920;
+  --success: #2E9E5B;
+  --radius-input: 12px;
+  --radius-card: 20px;
+  --shadow-card: 0 8px 24px rgba(22, 22, 26, 0.08);
+  --ease: 200ms ease-out;
 
-  --color-success: #16a34a;
-  --color-warning: #d97706;
-  --color-danger: #dc2626;
-  --color-info: #0284c7;
+  /* Global Compatibility Variables */
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-dark);
+  --color-navy: var(--charcoal);
+  --color-slate: var(--gray-900);
+  --color-muted: var(--gray-500);
+  --color-border: var(--gray-300);
+  --color-bg: var(--bg-cream);
+  --color-card: var(--surface);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
 
-  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family: 'Be Vietnam Pro', Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
@@ -30,7 +47,7 @@
 body, html {
   margin: 0;
   padding: 0;
-  height: 100%;
+  min-height: 100%;
   font-family: var(--font-family);
   background-color: var(--color-bg);
   color: var(--color-slate);
@@ -46,3 +63,182 @@ body, html {
 .fw-bold { font-weight: 700; }
 .fw-semibold { font-weight: 600; }
 .fw-medium { font-weight: 500; }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   AUTH & LOGIN PAGE LAYOUT STYLES (ĐÔNG LÝ BRAND THEME)
+   ========================================================================== */
+.login-page-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  background-color: var(--charcoal, #16161A);
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(215, 25, 32, 0.18) 0%, rgba(22, 22, 26, 0) 65%),
+    radial-gradient(circle at 50% 100%, rgba(242, 182, 50, 0.06) 0%, rgba(22, 22, 26, 0) 45%);
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: radial-gradient(ellipse at 50% 100%, rgba(215, 25, 32, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+}
+
+.login-wrapper {
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  z-index: 1;
+}
+
+.brand-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.brand-logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, var(--primary, #D71920), var(--primary-dark, #A50F16));
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(215, 25, 32, 0.35);
+  margin-bottom: 16px;
+
+  .bus-icon {
+    width: 32px;
+    height: 32px;
+    color: #fff;
+  }
+}
+
+.brand-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.brand-gold-divider {
+  width: 40px;
+  height: 3px;
+  background-color: var(--gold, #F2B632);
+  border-radius: 2px;
+  margin: 8px auto 12px;
+}
+
+.brand-subtitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.login-card {
+  background: var(--surface, #fff);
+  border-radius: var(--radius-card, 20px);
+  padding: 40px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+}
+
+.card-header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--charcoal, #16161A);
+}
+
+.card-description {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--gray-900, #3A3733);
+}
+
+.card-footer {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.footer-divider {
+  height: 1px;
+  background-color: var(--gray-100, #F4F1EC);
+  margin-bottom: 20px;
+}
+
+.support-text {
+  margin: 0;
+  font-size: 14px;
+  color: var(--gray-900, #3A3733);
+  line-height: 1.6;
+
+  .support-link {
+    color: var(--primary, #D71920);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--gold, #F2B632);
+      border-radius: 4px;
+    }
+  }
+}
+
+.page-footer {
+  text-align: center;
+  margin-top: 24px;
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+
+  .brand-title {
+    font-size: 22px;
+  }
+
+  .brand-subtitle {
+    font-size: 13px;
+  }
+}

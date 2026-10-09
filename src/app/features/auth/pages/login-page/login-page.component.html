@@ -1,125 +1,234 @@
-<div class="login-container">
+<div class="login-page-container">
   <div class="login-wrapper">
     <!-- BRAND HEADER -->
     <header class="brand-header">
-      <div class="brand-logo" aria-hidden="true">
-        <i class="pi pi-compass" style="font-size: 1.75rem"></i>
+      <!-- 64px rounded square in red gradient (#D71920 -> #A50F16) with bus-front icon -->
+      <div class="brand-logo-mark" aria-hidden="true">
+        <svg
+          class="bus-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M4 6 2 7"></path>
+          <path d="M10 6h4"></path>
+          <path d="m22 7-2-1"></path>
+          <rect width="16" height="16" x="4" y="3" rx="2"></rect>
+          <path d="M4 11h16"></path>
+          <path d="M8 15h.01"></path>
+          <path d="M16 15h.01"></path>
+          <path d="M6 19v2"></path>
+          <path d="M18 19v2"></path>
+        </svg>
       </div>
       <h1 class="brand-title">NHÀ XE ĐÔNG LÝ</h1>
+      <!-- Thin gold underline accent (40px x 3px, #F2B632) -->
+      <div class="brand-gold-divider" aria-hidden="true"></div>
       <p class="brand-subtitle">Cổng Thông Tin Quản Trị Vận Tải & Bán Vé Trực Tuyến</p>
     </header>
 
     <!-- LOGIN CARD -->
     <main class="login-card">
       <div class="card-header">
-        <h2 class="form-title">Đăng Nhập Quản Trị</h2>
-        <p class="form-desc">Vui lòng nhập tài khoản được cấp quyền để truy cập hệ thống</p>
+        <h2 class="card-title">Đăng Nhập Quản Trị</h2>
+        <p class="card-description">Vui lòng nhập tài khoản được cấp quyền để truy cập hệ thống</p>
       </div>
 
-      <!-- ERROR ALERT BANNER -->
+      <!-- ERROR ALERT AREA FOR FAILED LOGINS -->
       @if (errorMessage(); as error) {
-        <div class="alert-container">
-          <p-message severity="error" [text]="error" styleClass="w-full"></p-message>
+        <div class="alert-error-box" role="alert" aria-live="assertive">
+          <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span class="alert-message">{{ error }}</span>
+          <button
+            type="button"
+            class="alert-close-btn"
+            (click)="dismissError()"
+            aria-label="Đóng thông báo lỗi"
+          >
+            &times;
+          </button>
         </div>
       }
 
       <!-- LOGIN FORM -->
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate class="login-form">
-        <!-- USERNAME FIELD -->
+        <!-- USERNAME / EMAIL FIELD -->
         <div class="form-group">
           <label for="username" class="form-label">
-            Tên đăng nhập hoặc Email <span class="required">*</span>
+            Tên đăng nhập hoặc Email <span class="required" aria-hidden="true">*</span>
           </label>
-          <p-iconfield styleClass="w-full">
-            <p-inputicon styleClass="pi pi-user"></p-inputicon>
+          <div
+            class="input-wrapper"
+            [class.has-error]="usernameControl.invalid && (usernameControl.dirty || usernameControl.touched)"
+          >
+            <!-- Visible Lucide "user" icon inside input on the left (16px from edge) -->
+            <span class="input-icon-left" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </span>
             <input
               id="username"
               type="text"
-              pInputText
-              class="w-full"
+              class="form-input"
               formControlName="username"
               placeholder="Nhập tên đăng nhập hoặc email"
               autocomplete="username"
-              [invalid]="usernameControl.invalid && (usernameControl.dirty || usernameControl.touched)"
+              tabindex="1"
+              [attr.aria-invalid]="usernameControl.invalid && (usernameControl.dirty || usernameControl.touched)"
               aria-describedby="username-error"
             />
-          </p-iconfield>
+          </div>
 
+          <!-- Inline error message under username field (14px, red, clear instruction) -->
           @if (usernameControl.invalid && (usernameControl.dirty || usernameControl.touched)) {
-            <small id="username-error" class="error-text">
+            <div id="username-error" class="inline-error" role="alert">
+              <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
               @if (usernameControl.hasError('required')) {
-                Tên đăng nhập không được để trống.
+                <span>Vui lòng nhập tên đăng nhập hoặc email.</span>
               } @else if (usernameControl.hasError('minlength')) {
-                Tên đăng nhập phải có ít nhất 3 ký tự.
+                <span>Tên đăng nhập phải có ít nhất 3 ký tự.</span>
               }
-            </small>
+            </div>
           }
         </div>
 
         <!-- PASSWORD FIELD -->
         <div class="form-group">
-          <div class="label-row">
-            <label for="password" class="form-label">
-              Mật khẩu <span class="required">*</span>
-            </label>
-          </div>
-          <p-password
-            id="password"
-            formControlName="password"
-            placeholder="Nhập mật khẩu của bạn"
-            [feedback]="false"
-            [toggleMask]="true"
-            autocomplete="current-password"
-            styleClass="w-full"
-            inputStyleClass="w-full"
-            [invalid]="passwordControl.invalid && (passwordControl.dirty || passwordControl.touched)"
-            aria-describedby="password-error"
-          ></p-password>
-
-          @if (passwordControl.invalid && (passwordControl.dirty || passwordControl.touched)) {
-            <small id="password-error" class="error-text">
-              @if (passwordControl.hasError('required')) {
-                Mật khẩu không được để trống.
-              } @else if (passwordControl.hasError('minlength')) {
-                Mật khẩu phải có ít nhất 6 ký tự.
+          <label for="password" class="form-label">
+            Mật khẩu <span class="required" aria-hidden="true">*</span>
+          </label>
+          <div
+            class="input-wrapper"
+            [class.has-error]="passwordControl.invalid && (passwordControl.dirty || passwordControl.touched)"
+          >
+            <!-- Visible Lucide "lock" icon inside input on the left (16px from edge) -->
+            <span class="input-icon-left" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </span>
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              class="form-input form-input-password"
+              formControlName="password"
+              placeholder="Nhập mật khẩu của bạn"
+              autocomplete="current-password"
+              tabindex="2"
+              [attr.aria-invalid]="passwordControl.invalid && (passwordControl.dirty || passwordControl.touched)"
+              aria-describedby="password-error"
+            />
+            <!-- Show/hide eye button: inside input, vertically centered, 16px from right edge, 44x44px tap area -->
+            <button
+              type="button"
+              class="btn-toggle-password"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="showPassword() ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'"
+              tabindex="3"
+            >
+              @if (showPassword()) {
+                <!-- Eye-off icon -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"></path>
+                  <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"></path>
+                  <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"></path>
+                  <line x1="2" x2="22" y1="2" y2="22"></line>
+                </svg>
+              } @else {
+                <!-- Eye icon -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
               }
-            </small>
+            </button>
+          </div>
+
+          <!-- Inline error message under password field (14px, red, clear instruction) -->
+          @if (passwordControl.invalid && (passwordControl.dirty || passwordControl.touched)) {
+            <div id="password-error" class="inline-error" role="alert">
+              <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              @if (passwordControl.hasError('required')) {
+                <span>Vui lòng nhập mật khẩu.</span>
+              } @else if (passwordControl.hasError('minlength')) {
+                <span>Mật khẩu phải có ít nhất 6 ký tự.</span>
+              }
+            </div>
           }
         </div>
 
-        <!-- REMEMBER ME CHECKBOX -->
+        <!-- REMEMBER ME CHECKBOX (20x20px, radius 6px, vertically aligned, clickable label) -->
         <div class="form-options">
-          <div class="checkbox-wrapper">
-            <p-checkbox formControlName="rememberMe" [binary]="true" inputId="rememberMe"></p-checkbox>
-            <label for="rememberMe" class="checkbox-label">Ghi nhớ đăng nhập</label>
-          </div>
+          <label class="checkbox-container" for="rememberMe">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              formControlName="rememberMe"
+              tabindex="4"
+            />
+            <span class="checkbox-label">Ghi nhớ đăng nhập</span>
+          </label>
         </div>
 
-        <!-- SUBMIT BUTTON -->
+        <!-- SUBMIT BUTTON (Full width, 48px, radius 12px, font-weight 600) -->
         <div class="form-actions">
-          <p-button
-            label="Đăng nhập hệ thống"
+          <button
             type="submit"
-            icon="pi pi-arrow-right"
-            iconPos="right"
-            [loading]="isLoading()"
+            class="btn-submit"
             [disabled]="isLoading() || loginForm.invalid"
-            styleClass="w-full p-button-primary submit-btn"
-          ></p-button>
+            tabindex="5"
+          >
+            @if (isLoading()) {
+              <span class="btn-spinner" aria-hidden="true"></span>
+              <span>Đang xác thực...</span>
+            } @else {
+              <span>Đăng nhập hệ thống</span>
+              <svg class="btn-icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            }
+          </button>
         </div>
       </form>
 
-      <!-- CARD FOOTER -->
+      <!-- CARD FOOTER (Divider + 14px #3A3733 help text) -->
       <footer class="card-footer">
+        <div class="footer-divider" aria-hidden="true"></div>
         <p class="support-text">
           Quên mật khẩu hoặc gặp sự cố tài khoản?
           <br />
-          Vui lòng liên hệ <span class="support-contact">Phòng CNTT & Điều Hành</span> để được hỗ trợ cấp lại.
+          Vui lòng liên hệ
+          <a
+            href="javascript:void(0)"
+            class="support-link"
+            tabindex="6"
+            title="Liên hệ Phòng CNTT Đông Lý"
+          >Phòng CNTT & Điều Hành</a>
+          để được hỗ trợ cấp lại.
         </p>
       </footer>
     </main>
 
-    <!-- PAGE FOOTER -->
+    <!-- PAGE FOOTER (13px, rgba(255,255,255,0.6)) -->
     <footer class="page-footer">
       <p>© 2026 Nhà xe Đông Lý. Bảo lưu mọi quyền.</p>
     </footer>

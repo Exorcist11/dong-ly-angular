@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nhà xe Đông Lý — Limousine Thanh Hóa – Hà Nội êm ái từng chặng</title>
+  
+  <!-- Google Fonts: Be Vietnam Pro -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* ==========================================================================
+       DESIGN TOKENS & SYSTEM VARIABLES
+       ========================================================================== */
+    :root {
+      /* Brand Color Palette */
+      --color-primary-red: #D71920;
+      --color-primary-red-hover: #A50F16;
+      --color-charcoal: #16161A;
+      --color-gold-accent: #F2B632;
+      --color-soft-gold: #FFF3D1;
+      --color-warm-cream: #FFFBF5;
+      --color-white: #FFFFFF;
+      --color-gray-100: #F4F1EC;
+      --color-gray-200: #D9D4CC;
+      --color-gray-500: #8A857D;
+      --color-gray-800: #3A3733;
+      --color-teal: #3E9DA0;
+
+      /* Typography */
+      --font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+      /* Spacing Grid (8pt) */
+      --space-1: 8px;
+      --space-2: 16px;
+      --space-3: 24px;
+      --space-4: 32px;
+      --space-5: 40px;
+      --space-6: 48px;
+      --space-8: 64px;
+
+      /* Border Radii */
+      --radius-btn: 12px;
+      --radius-card: 20px;
+      --radius-pill: 9999px;
+
+      /* Shadows */
+      --shadow-card: 0 8px 24px rgba(22, 22, 26, 0.08);
+      --shadow-float: 0 16px 36px rgba(22, 22, 26, 0.12);
+
+      /* Transitions */
+      --transition-smooth: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Base Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--color-warm-cream);
+      color: var(--color-gray-800);
+      line-height: 1.6;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: var(--space-3);
+      padding-right: var(--space-3);
+    }
+
+    /* ==========================================================================
+       HEADER & NAVIGATION
+       ========================================================================== */
+    .site-header {
+      background-color: var(--color-charcoal);
+      color: var(--color-white);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--color-primary-red), var(--color-primary-red-hover));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: var(--color-white);
+      font-size: 18px;
+      letter-spacing: -0.5px;
+      box-shadow: 0 4px 12px rgba(215, 25, 32, 0.35);
+    }
+
+    .brand-info h1 {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--color-white);
+      line-height: 1.2;
+    }
+
+    .brand-info span {
+      font-size: 11px;
+      color: var(--color-gold-accent);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-item a {
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--color-gray-100);
+      transition: var(--transition-smooth);
+      padding: 8px 4px;
+      position: relative;
+    }
+
+    .nav-item a:hover, .nav-item a.active {
+      color: var(--color-gold-accent);
+    }
+
+    .header-cta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-header-hotline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--color-gold-accent);
+      color: var(--color-charcoal);
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 18px;
+      border-radius: var(--radius-pill);
+      transition: var(--transition-smooth);
+    }
+
+    .btn-header-hotline:hover {
+      background-color: #e5a720;
+      transform: translateY(-1px);
+    }
+
+    /* ==========================================================================
+       HERO SECTION WITH FLOATING BOOKING FORM
+       ========================================================================== */
+    .hero-section {
+      background: linear-gradient(rgba(22, 22, 26, 0.82), rgba(22, 22, 26, 0.88)),
+                  url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      color: var(--color-white);
+      padding: 80px 0 110px 0;
+      position: relative;
+    }
+
+    .hero-content {
+      text-align: center;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(242, 182, 50, 0.15);
+      border: 1px solid var(--color-gold-accent);
+      color: var(--color-gold-accent);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: var(--radius-pill);
+      margin-bottom: var(--space-3);
+    }
+
+    .hero-title {
+      font-size: 44px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: var(--space-2);
+      letter-spacing: -0.5px;
+    }
+
+    .hero-title span {
+      color: var(--color-gold-accent);
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      color: var(--color-gray-100);
+      margin-bottom: var(--space-5);
+      font-weight: 400;
+    }
+
+    /* Floating Booking Widget */
+    .floating-booking-card {
+      background: var(--color-white);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-float);
+      padding: 28px 32px;
+      margin-top: 36px;
+      border: 1px solid var(--color-gray-100);
+      color: var(--color-charcoal);
+      text-align: left;
+    }
+
+    .booking-form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr) auto;
+      gap: 16px;
+      align-items: end;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-field label {
+      font-size: 12.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-gray-500);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .input-box {
+      height: 48px;
+      border: 1.5px solid var(--color-gray-200);
+      border-radius: var(--radius-btn);
+      padding: 0 14px;
+      font-family: inherit;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--color-charcoal);
+      background: var(--color-white);
+      outline: none;
+      transition: var(--transition-smooth);
+      width: 100%;
+    }
+
+    .input-box:focus {
+      border-color: var(--color-primary-red);
+      box-shadow: 0 0 0 3px rgba(215, 25, 32, 0.12);
+    }
+
+    .btn-submit-booking {
+      height: 48px;
+      background-color: var(--color-primary-red);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--radius-btn);
+      padding: 0 28px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition-smooth);
+      white-space: nowrap;
+    }
+
+    .btn-submit-booking:hover {
+      background-color: var(--color-primary-red-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(215, 25, 32, 0.35);
+    }
+
+    /* Wave Divider */
+    .wave-divider {
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+      background: var(--color-charcoal);
+    }
+
+    .wave-divider svg {
+      position: relative;
+      display: block;
+      width: calc(100% + 1.3px);
+      height: 40px;
+    }
+
+    /* ==========================================================================
+       SECTION: WHY CHOOSE US (4 LINE-ICON CARDS)
+       ========================================================================== */
+    .section-why {
+      padding: var(--space-8) 0;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto var(--space-6) auto;
+    }
+
+    .section-tag {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-primary-red);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--color-charcoal);
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+
+    .section-desc {
+      font-size: 16px;
+      color: var(--color-gray-500);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--color-white);
+      border-radius: var(--radius-card);
+      padding: 32px 24px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(217, 212, 204, 0.4);
+      transition: var(--transition-smooth);
+      text-align: center;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px rgba(22, 22, 26, 0.1);
+    }
+
+    .feature-icon-wrapper {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background-color: var(--color-soft-gold);
+      color: var(--color-primary-red);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-3);
+    }
+
+    .feature-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-charcoal);
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--color-gray-500);
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       SECTION: SCHEDULE & PRICE (TRIP CARDS)
+       ========================================================================== */
+    .section-schedule {
+      padding: var(--space-8) 0;
+      background: var(--color-gray-100);
+    }
+
+    .trips-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .trip-card {
+      background: var(--color-white);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--color-gray-200);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: var(--transition-smooth);
+    }
+
+    .trip-card:hover {
+      box-shadow: 0 12px 28px rgba(22, 22, 26, 0.12);
+      border-color: var(--color-primary-red);
+    }
+
+    .trip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .departure-time {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--color-charcoal);
+      line-height: 1;
+    }
+
+    .trip-pill {
+      background-color: var(--color-soft-gold);
+      color: #8c5d00;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+    }
+
+    .trip-route {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-gray-800);
+    }
+
+    .route-arrow {
+      color: var(--color-primary-red);
+    }
+
+    .trip-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px dashed var(--color-gray-200);
+      padding-top: 16px;
+      margin-top: auto;
+    }
+
+    .trip-price {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--color-primary-red);
+    }
+
+    .trip-price span {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-gray-500);
+    }
+
+    .btn-book-trip {
+      background-color: var(--color-primary-red);
+      color: var(--color-white);
+      border: none;
+      border-radius: var(--radius-btn);
+      padding: 10px 20px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-book-trip:hover {
+      background-color: var(--color-primary-red-hover);
+    }
+
+    /* ==========================================================================
+       SECTION: ROUTE TIMELINE
+       ========================================================================== */
+    .section-timeline {
+      padding: var(--space-8) 0;
+    }
+
+    .timeline-container {
+      background: var(--color-white);
+      border-radius: var(--radius-card);
+      padding: 40px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--color-gray-200);
+    }
+
+    .timeline-steps {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      position: relative;
+      gap: 16px;
+    }
+
+    .timeline-step {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step-marker {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--color-white);
+      border: 3px solid var(--color-primary-red);
+      color: var(--color-primary-red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px auto;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .timeline-step.active .step-marker {
+      background: var(--color-primary-red);
+      color: var(--color-white);
+    }
+
+    .step-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-charcoal);
+      margin-bottom: 4px;
+    }
+
+    .step-desc {
+      font-size: 12.5px;
+      color: var(--color-gray-500);
+    }
+
+    /* ==========================================================================
+       SECTION: GALLERY & REVIEWS
+       ========================================================================== */
+    .section-gallery {
+      padding: var(--space-8) 0;
+      background: var(--color-warm-cream);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .gallery-item {
+      border-radius: 16px;
+      overflow: hidden;
+      height: 200px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.05);
+    }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .review-card {
+      background: var(--color-white);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--color-gray-200);
+    }
+
+    .review-stars {
+      color: var(--color-gold-accent);
+      margin-bottom: 12px;
+    }
+
+    .review-text {
+      font-size: 14.5px;
+      color: var(--color-gray-800);
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+
+    .review-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .author-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--color-soft-gold);
+      color: #8c5d00;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .author-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--color-charcoal);
+    }
+
+    .author-route {
+      font-size: 12px;
+      color: var(--color-gray-500);
+    }
+
+    /* ==========================================================================
+       FOOTER
+       ========================================================================== */
+    .site-footer {
+      background: var(--color-charcoal);
+      color: var(--color-gray-100);
+      padding: 60px 0 30px 0;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.5fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer-brand h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--color-white);
+      margin-bottom: 12px;
+    }
+
+    .footer-brand p {
+      font-size: 14px;
+      color: var(--color-gray-500);
+      line-height: 1.6;
+    }
+
+    .footer-hotline-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid rgba(242, 182, 50, 0.2);
+    }
+
+    .hotline-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--color-gold-accent);
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+
+    .hotline-number {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--color-white);
+      letter-spacing: 0.5px;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--color-gray-500);
+    }
+
+    /* ==========================================================================
+       STICKY TAP-TO-CALL HOTLINE BUTTON (MOBILE & DESKTOP FLOATING)
+       ========================================================================== */
+    .sticky-hotline-bar {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 999;
+      box-shadow: 0 10px 24px rgba(242, 182, 50, 0.4);
+      border-radius: var(--radius-pill);
+    }
+
+    .btn-sticky-call {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background-color: var(--color-gold-accent);
+      color: var(--color-charcoal);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 14px 24px;
+      border-radius: var(--radius-pill);
+      min-height: 48px;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-sticky-call:hover {
+      background-color: #f5c453;
+      transform: scale(1.03);
+    }
+
+    /* ==========================================================================
+       MOBILE RESPONSIVE BREAKPOINT (390px - 768px)
+       ========================================================================== */
+    @media (max-width: 768px) {
+      .nav-links, .header-cta {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+        background: none;
+        border: none;
+        color: var(--color-white);
+        cursor: pointer;
+      }
+
+      .hero-title {
+        font-size: 28px;
+      }
+
+      .hero-subtitle {
+        font-size: 15px;
+      }
+
+      .booking-form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+
+      .trips-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline-steps {
+        grid-template-columns: 1fr;
+        text-align: left;
+      }
+
+      .timeline-step {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        text-align: left;
+      }
+
+      .step-marker {
+        margin: 0;
+        flex-shrink: 0;
+      }
+
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .reviews-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      /* Full width bottom sticky on mobile */
+      .sticky-hotline-bar {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+      }
+
+      .btn-sticky-call {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SITE HEADER -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <div class="brand-logo">
+        <div class="logo-badge">ĐL</div>
+        <div class="brand-info">
+          <h1>ĐÔNG LÝ</h1>
+          <span>VIP LIMOUSINE</span>
+        </div>
+      </div>
+
+      <nav>
+        <ul class="nav-links">
+          <li class="nav-item"><a href="#hero" class="active">Trang chủ</a></li>
+          <li class="nav-item"><a href="#why">Vì sao chọn chúng tôi</a></li>
+          <li class="nav-item"><a href="#schedule">Lịch trình & Giá vé</a></li>
+          <li class="nav-item"><a href="#route">Lộ trình đón trả</a></li>
+          <li class="nav-item"><a href="#contact">Liên hệ</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-cta">
+        <a href="tel:0941839123" class="btn-header-hotline">
+          <i data-lucide="phone-call" style="width: 16px; height: 16px;"></i>
+          <span>0941 839 123</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section id="hero" class="hero-section">
+    <div class="container hero-content">
+      <div class="hero-badge">
+        <i data-lucide="award" style="width: 14px; height: 14px;"></i>
+        <span>Hãng xe Limousine cao cấp tuyến Thanh Hóa – Hà Nội</span>
+      </div>
+      <h2 class="hero-title">Thanh Hóa – Hà Nội, <span>êm ái từng chặng</span></h2>
+      <p class="hero-subtitle">Nội thất thương gia 9 chỗ cao cấp, khởi hành đúng giờ, phục vụ tận tâm từ cửa nhà bạn.</p>
+
+      <!-- FLOATING BOOKING FORM -->
+      <div class="floating-booking-card">
+        <form class="booking-form-grid" onsubmit="event.preventDefault(); alert('Đang tìm kiếm chuyến xe phù hợp cho bạn...');">
+          <div class="form-field">
+            <label for="pickup"><i data-lucide="map-pin" style="width: 14px;"></i> Điểm đi</label>
+            <select id="pickup" class="input-box">
+              <option value="thanh-hoa">TP. Thanh Hóa (Đón tận nơi)</option>
+              <option value="bim-son">TX. Bỉm Sơn</option>
+              <option value="trieu-son">Triệu Sơn</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="dropoff"><i data-lucide="navigation" style="width: 14px;"></i> Điểm đến</label>
+            <select id="dropoff" class="input-box">
+              <option value="ha-noi">Hà Nội (Mỹ Đình / Giáp Bát / Nước Ngầm)</option>
+              <option value="san-bay">Sân bay Nội Bài</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="date"><i data-lucide="calendar" style="width: 14px;"></i> Ngày đi</label>
+            <input type="date" id="date" class="input-box" value="2026-10-10" />
+          </div>
+
+          <div class="form-field">
+            <label for="seats"><i data-lucide="users" style="width: 14px;"></i> Số ghế</label>
+            <select id="seats" class="input-box">
+              <option value="1">1 Ghế</option>
+              <option value="2">2 Ghế</option>
+              <option value="3">3 Ghế</option>
+              <option value="4">4+ Ghế (Bao xe)</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn-submit-booking">
+            <i data-lucide="search" style="width: 18px; height: 18px;"></i>
+            <span>Tìm chuyến</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- WAVE DIVIDER -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M0,0 C150,90 350,-40 500,50 C650,140 900,10 1200,40 L1200,120 L0,120 Z" fill="#FFFBF5"></path>
+    </svg>
+  </div>
+
+  <!-- WHY CHOOSE US (4 LINE-ICON CARDS) -->
+  <section id="why" class="section-why">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Cam kết dịch vụ</span>
+        <h2 class="section-title">Trải nghiệm vận tải đẳng cấp cùng Đông Lý</h2>
+        <p class="section-desc">Chúng tôi đặt trải nghiệm an toàn, tiện nghi và thời gian của bạn lên hàng đầu trên từng km hành trình.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i data-lucide="shield-check" style="width: 28px; height: 28px; stroke-width: 2px;"></i>
+          </div>
+          <h3>An toàn tuyệt đối</h3>
+          <p>Tài xế chuyên nghiệp, giàu kinh nghiệm, xe bảo dưỡng định kỳ theo tiêu chuẩn cao nhất.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i data-lucide="clock" style="width: 28px; height: 28px; stroke-width: 2px;"></i>
+          </div>
+          <h3>Đúng giờ cam kết</h3>
+          <p>Xuất bến và đến nơi chính xác theo lịch trình. Không bắt khách dọc đường.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i data-lucide="armchair" style="width: 28px; height: 28px; stroke-width: 2px;"></i>
+          </div>
+          <h3>Limousine êm ái</h3>
+          <p>Ghế bọc da massage cao cấp, giảm xóc bóng hơi êm ái, ngả lưng thoải mái như khoang máy bay.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">
+            <i data-lucide="wifi" style="width: 28px; height: 28px; stroke-width: 2px;"></i>
+          </div>
+          <h3>Wifi & nước uống</h3>
+          <p>Trang bị wifi tốc độ cao miễn phí, khăn lạnh, nước suối và cổng sạc USB tại từng vị trí ghế.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCHEDULE & PRICE -->
+  <section id="schedule" class="section-schedule">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Lịch xuất bến hàng ngày</span>
+        <h2 class="section-title">Lịch trình & Giá vé niêm yết</h2>
+        <p class="section-desc">Chuyến xe liên tục mỗi 60 phút từ 05:00 sáng đến 20:00 tối mỗi ngày.</p>
+      </div>
+
+      <div class="trips-grid">
+        <!-- Trip 1 -->
+        <div class="trip-card">
+          <div class="trip-header">
+            <div class="departure-time">05:00</div>
+            <span class="trip-pill">Limousine 9 chỗ VIP</span>
+          </div>
+          <div class="trip-route">
+            <span>TP. Thanh Hóa</span>
+            <i data-lucide="arrow-right" class="route-arrow" style="width: 16px;"></i>
+            <span>Mỹ Đình / Giáp Bát</span>
+          </div>
+          <div class="trip-footer">
+            <div class="trip-price">250.000đ <span>/ ghế</span></div>
+            <button class="btn-book-trip" onclick="alert('Chọn chuyến 05:00 - Quý khách vui lòng liên hệ hotline để giữ chỗ đẹp!')">Đặt vé</button>
+          </div>
+        </div>
+
+        <!-- Trip 2 -->
+        <div class="trip-card">
+          <div class="trip-header">
+            <div class="departure-time">07:30</div>
+            <span class="trip-pill">Limousine 9 chỗ VIP</span>
+          </div>
+          <div class="trip-route">
+            <span>TP. Thanh Hóa</span>
+            <i data-lucide="arrow-right" class="route-arrow" style="width: 16px;"></i>
+            <span>Mỹ Đình / Giáp Bát</span>
+          </div>
+          <div class="trip-footer">
+            <div class="trip-price">250.000đ <span>/ ghế</span></div>
+            <button class="btn-book-trip" onclick="alert('Chọn chuyến 07:30 - Quý khách vui lòng liên hệ hotline để giữ chỗ đẹp!')">Đặt vé</button>
+          </div>
+        </div>
+
+        <!-- Trip 3 -->
+        <div class="trip-card">
+          <div class="trip-header">
+            <div class="departure-time">09:00</div>
+            <span class="trip-pill">Limousine 9 chỗ VIP</span>
+          </div>
+          <div class="trip-route">
+            <span>TP. Thanh Hóa</span>
+            <i data-lucide="arrow-right" class="route-arrow" style="width: 16px;"></i>
+            <span>Mỹ Đình / Giáp Bát</span>
+          </div>
+          <div class="trip-footer">
+            <div class="trip-price">250.000đ <span>/ ghế</span></div>
+            <button class="btn-book-trip" onclick="alert('Chọn chuyến 09:00 - Quý khách vui lòng liên hệ hotline để giữ chỗ đẹp!')">Đặt vé</button>
+          </div>
+        </div>
+
+        <!-- Trip 4 -->
+        <div class="trip-card">
+          <div class="trip-header">
+            <div class="departure-time">11:00</div>
+            <span class="trip-pill">Limousine 9 chỗ VIP</span>
+          </div>
+          <div class="trip-route">
+            <span>TP. Thanh Hóa</span>
+            <i data-lucide="arrow-right" class="route-arrow" style="width: 16px;"></i>
+            <span>Mỹ Đình / Giáp Bát</span>
+          </div>
+          <div class="trip-footer">
+            <div class="trip-price">250.000đ <span>/ ghế</span></div>
+            <button class="btn-book-trip" onclick="alert('Chọn chuyến 11:00 - Quý khách vui lòng liên hệ hotline để giữ chỗ đẹp!')">Đặt vé</button>
+          </div>
+        </div>
+
+        <!-- Trip 5 -->
+        <div class="trip-card">
+          <div class="trip-header">
+            <div class="departure-time">14:00</div>
+            <span class="trip-pill">Limousine 9 chỗ VIP</span>
+          </div>
+          <div class="trip-route">
+            <span>TP. Thanh Hóa</span>
+            <i data-lucide="arrow-right" class="route-arrow" style="width: 16px;"></i>
+            <span>Mỹ Đình / Giáp Bát</span>
+          </div>
+          <div class="trip-footer">
+            <div class="trip-price">250.000đ <span>/ ghế</span></div>
+            <button class="btn-book-trip" onclick="alert('Chọn chuyến 14:00 - Quý khách vui lòng liên hệ hotline để giữ chỗ đẹp!')">Đặt vé</button>
+          </div>
+        </div>
+
+        <!-- Trip 6 -->
+        <div class="trip-card">
+          <div class="trip-header">
+            <div class="departure-time">17:00</div>
+            <span class="trip-pill">Limousine 9 chỗ VIP</span>
+          </div>
+          <div class="trip-route">
+            <span>TP. Thanh Hóa</span>
+            <i data-lucide="arrow-right" class="route-arrow" style="width: 16px;"></i>
+            <span>Mỹ Đình / Giáp Bát</span>
+          </div>
+          <div class="trip-footer">
+            <div class="trip-price">250.000đ <span>/ ghế</span></div>
+            <button class="btn-book-trip" onclick="alert('Chọn chuyến 17:00 - Quý khách vui lòng liên hệ hotline để giữ chỗ đẹp!')">Đặt vé</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROUTE TIMELINE -->
+  <section id="route" class="section-timeline">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Lộ trình chi tiết</span>
+        <h2 class="section-title">Điểm đón trả linh hoạt trên tuyến</h2>
+        <p class="section-desc">Hỗ trợ trung chuyển tận nơi tại nội thành TP. Thanh Hóa và trả khách thuận tiện tại các điểm trọng yếu Hà Nội.</p>
+      </div>
+
+      <div class="timeline-container">
+        <div class="timeline-steps">
+          <div class="timeline-step active">
+            <div class="step-marker">1</div>
+            <div class="step-name">TP. Thanh Hóa</div>
+            <div class="step-desc">Đón trả tận nhà nội thành</div>
+          </div>
+          <div class="timeline-step">
+            <div class="step-marker">2</div>
+            <div class="step-name">TX. Bỉm Sơn</div>
+            <div class="step-desc">Điểm dừng Quốc lộ 1A</div>
+          </div>
+          <div class="timeline-step">
+            <div class="step-marker">3</div>
+            <div class="step-name">Ninh Bình – Hà Nam</div>
+            <div class="step-desc">Trạm dừng nghỉ cao tốc</div>
+          </div>
+          <div class="timeline-step">
+            <div class="step-marker">4</div>
+            <div class="step-name">BX. Giáp Bát / Nước Ngầm</div>
+            <div class="step-desc">Cửa ngõ phía Nam Thủ đô</div>
+          </div>
+          <div class="timeline-step active">
+            <div class="step-marker">5</div>
+            <div class="step-name">BX. Mỹ Đình / Cầu Giấy</div>
+            <div class="step-desc">Trung tâm phía Tây Hà Nội</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY & REVIEWS -->
+  <section class="section-gallery">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Hình ảnh & Đánh giá</span>
+        <h2 class="section-title">Khách hàng nói gì về Đông Lý?</h2>
+      </div>
+
+      <!-- Real Bus Photo Gallery -->
+      <div class="gallery-grid">
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=600&q=80" alt="Xe Limousine Đông Lý ngoại thất" />
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=600&q=80" alt="Xe trên cao tốc" />
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=600&q=80" alt="Nội thất ghế da cao cấp" />
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1494515843206-f3117d3f51b7?auto=format&fit=crop&w=600&q=80" alt="Khoang hành khách thương gia" />
+        </div>
+      </div>
+
+      <!-- Customer Reviews -->
+      <div class="reviews-grid">
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Xe chạy rất êm, bác tài chạy cẩn thận không phóng nhanh vượt ẩu. Mình đi làm về quê cuối tuần toàn đi Đông Lý."</p>
+          <div class="review-author">
+            <div class="author-avatar">A</div>
+            <div>
+              <div class="author-name">Anh Tuấn</div>
+              <div class="author-route">Tuyến Hà Nội → Thanh Hóa</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Ghế massage ngồi rất dễ chịu, có wifi và nước suối đầy đủ. Đón đúng giờ hẹn tại nhà, rất hài lòng với dịch vụ."</p>
+          <div class="review-author">
+            <div class="author-avatar">L</div>
+            <div>
+              <div class="author-name">Chị Lan Hương</div>
+              <div class="author-route">Tuyến Thanh Hóa → Mỹ Đình</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">"Giá vé 250k quá xứng đáng cho dòng Limousine 9 chỗ VIP. Đặt vé qua hotline tư vấn nhiệt tình, nhanh chóng."</p>
+          <div class="review-author">
+            <div class="author-avatar">H</div>
+            <div>
+              <div class="author-name">Bác Hùng</div>
+              <div class="author-route">Tuyến Bỉm Sơn → Giáp Bát</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact" class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h2>NHÀ XE ĐÔNG LÝ LIMOUSINE</h2>
+          <p>Dịch vụ vận tải hành khách cao cấp chuyên tuyến Thanh Hóa – Hà Nội. Cam kết chất lượng, an toàn và đúng giờ hàng đầu khu vực miền Bắc.</p>
+        </div>
+
+        <div>
+          <h4 style="font-size: 15px; color: var(--color-white); margin-bottom: 12px;">Liên kết nhanh</h4>
+          <ul style="list-style: none; font-size: 14px; line-height: 2;">
+            <li><a href="#hero" style="color: var(--color-gray-500);">Trang chủ</a></li>
+            <li><a href="#schedule" style="color: var(--color-gray-500);">Lịch trình & Giá vé</a></li>
+            <li><a href="#route" style="color: var(--color-gray-500);">Điểm đón trả</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-hotline-box">
+          <div class="hotline-title">Tổng đài đặt vé & hỗ trợ 24/7</div>
+          <div class="hotline-number">02373 839 123</div>
+          <div class="hotline-number" style="color: var(--color-gold-accent); margin-top: 4px;">0941 839 123</div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Nhà xe Đông Lý. Bảo lưu mọi quyền. Thiết kế theo tiêu chuẩn thương hiệu vận tải cao cấp.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- STICKY TAP-TO-CALL HOTLINE BUTTON -->
+  <div class="sticky-hotline-bar">
+    <a href="tel:0941839123" class="btn-sticky-call">
+      <i data-lucide="phone" style="width: 20px; height: 20px; stroke-width: 2.5px;"></i>
+      <span>Gọi đặt vé: 0941 839 123</span>
+    </a>
+  </div>
+
+  <!-- Initialize Lucide Icons -->
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
