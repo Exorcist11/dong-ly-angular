@@ -121,4 +121,38 @@ describe('RoleFormDialogComponent', () => {
     expect(emitSpy).not.toHaveBeenCalled();
     expect(component.roleForm.touched).toBe(true);
   });
+
+  it('không nên emit sự kiện save khi đang submitting = true', () => {
+    component.role = null;
+    component.visible = true;
+    component.submitting = true;
+    component.ngOnChanges({ visible: new SimpleChange(false, true, true) });
+
+    const emitSpy = vi.spyOn(component.save, 'emit');
+
+    component.roleForm.patchValue({
+      code: 'DISPATCHER',
+      name: 'Điều hành viên',
+    });
+
+    component.onSubmit();
+
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
+
+  it('nên phát visibleChange(false) khi gọi onClose()', () => {
+    const emitSpy = vi.spyOn(component.visibleChange, 'emit');
+    component.onClose();
+    expect(emitSpy).toHaveBeenCalledWith(false);
+  });
+
+  it('nên chuẩn hóa mã vai trò thành in hoa khi nhập onCodeInput', () => {
+    component.role = null;
+    const inputMock = { value: 'role manager test' } as unknown as HTMLInputElement;
+    const eventMock = { target: inputMock } as unknown as Event;
+
+    component.onCodeInput(eventMock);
+
+    expect(component.roleForm.get('code')?.value).toBe('ROLE_MANAGER_TEST');
+  });
 });

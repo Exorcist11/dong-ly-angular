@@ -1,13 +1,16 @@
-<p-dialog
+<app-dialog
   [visible]="visible"
   (visibleChange)="onVisibleChange($event)"
   [header]="'users.roleDialog.title' | translate"
-  [modal]="true"
-  [style]="{ width: '600px', maxWidth: '95vw' }"
-  [draggable]="false"
-  [resizable]="false"
+  size="lg"
   styleClass="dl-user-role-dialog"
-  [dismissableMask]="true"
+  [submitLoading]="submitting"
+  [submitDisabled]="submitting || !hasChanges"
+  [submitLabel]="'users.roleDialog.submit' | translate"
+  [cancelLabel]="'common.actions.cancel' | translate"
+  submitIcon="pi pi-check"
+  (submitted)="onSave()"
+  (cancelled)="onCancel()"
 >
   @if (user) {
     <div class="user-info-card">
@@ -96,24 +99,5 @@
         </div>
       }
     </div>
-
-    <div class="dialog-actions">
-      <app-button
-        type="button"
-        [label]="'common.actions.cancel' | translate"
-        variant="secondary"
-        (clicked)="onCancel()"
-        [disabled]="submitting"
-      />
-      <app-button
-        type="button"
-        [label]="'users.roleDialog.submit' | translate"
-        icon="pi pi-check"
-        variant="primary"
-        (clicked)="onSave()"
-        [disabled]="submitting || !hasChanges"
-        [loading]="submitting"
-      />
-    </div>
   }
-</p-dialog>
+</app-dialog>

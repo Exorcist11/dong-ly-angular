@@ -1,15 +1,18 @@
-<p-dialog
+<app-dialog
   [visible]="visible"
-  (visibleChange)="onVisibleChange($event)"
   [header]="(isEditMode ? 'users.dialog.editTitle' : 'users.dialog.createTitle') | translate"
-  [modal]="true"
-  [style]="{ width: '540px', maxWidth: '95vw' }"
-  [draggable]="false"
-  [resizable]="false"
+  size="md"
   styleClass="dl-user-dialog"
-  [dismissableMask]="true"
+  [submitLoading]="submitting"
+  [submitDisabled]="submitting"
+  [submitLabel]="(isEditMode ? 'users.dialog.editSubmit' : 'users.dialog.createSubmit') | translate"
+  [cancelLabel]="'common.actions.cancel' | translate"
+  submitIcon="pi pi-check"
+  (visibleChange)="onVisibleChange($event)"
+  (submitted)="onSubmit()"
+  (cancelled)="onCancel()"
 >
-  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form-content">
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form-content" id="userForm">
     <!-- USERNAME (Chỉ cho phép nhập khi tạo mới) -->
     <app-input
       id="username"
@@ -91,24 +94,5 @@
         [emptyMessage]="'users.dialog.rolesEmpty' | translate"
       />
     </app-form-field>
-
-    <!-- DIALOG FOOTER -->
-    <div class="dialog-actions">
-      <app-button
-        type="button"
-        [label]="'common.actions.cancel' | translate"
-        variant="secondary"
-        (clicked)="onCancel()"
-        [disabled]="submitting"
-      />
-      <app-button
-        type="submit"
-        [label]="(isEditMode ? 'users.dialog.editSubmit' : 'users.dialog.createSubmit') | translate"
-        icon="pi pi-check"
-        variant="primary"
-        [loading]="submitting"
-        [disabled]="submitting"
-      />
-    </div>
   </form>
-</p-dialog>
+</app-dialog>

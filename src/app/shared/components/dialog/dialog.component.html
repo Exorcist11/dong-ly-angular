@@ -1,0 +1,59 @@
+<p-dialog
+  [visible]="visible()"
+  (visibleChange)="onDialogVisibleChange($event)"
+  [modal]="modal()"
+  [draggable]="draggable()"
+  [resizable]="resizable()"
+  [closable]="effectiveClosable()"
+  [closeOnEscape]="effectiveCloseOnEscape()"
+  [dismissableMask]="effectiveDismissableMask()"
+  [style]="computedDimensions()"
+  [styleClass]="computedStyleClass()"
+  [contentStyle]="contentStyle()"
+  [footerTemplate]="shouldRenderFooter() ? footerTpl : undefined"
+>
+  <!-- Header Template -->
+  <ng-template #header>
+    <div class="dl-dialog-header">
+      <ng-content select="[dialogHeader], [appDialogHeader]"></ng-content>
+      @if (!hasCustomHeader()) {
+        <span class="p-dialog-title">{{ resolvedHeader() }}</span>
+      }
+    </div>
+  </ng-template>
+
+  <!-- Content (Main Body) -->
+  <div class="dl-dialog-body">
+    <ng-content></ng-content>
+  </div>
+</p-dialog>
+
+<!-- Footer Template (Được chuyển vào p-dialog qua [footerTemplate] khi shouldRenderFooter() = true) -->
+<ng-template #footerTpl>
+  <div class="dl-dialog-footer">
+    <ng-content select="[dialogFooter], [appDialogFooter]"></ng-content>
+    @if (!hasCustomFooter() && showFooter()) {
+      <div class="dl-dialog-default-actions">
+        @if (showCancel()) {
+          <app-button
+            type="button"
+            variant="secondary"
+            [label]="resolvedCancelLabel()"
+            [icon]="cancelIcon()"
+            [disabled]="submitLoading()"
+            (clicked)="onCancel()"
+          />
+        }
+        <app-button
+          type="button"
+          [variant]="submitVariant()"
+          [label]="resolvedSubmitLabel()"
+          [icon]="submitIcon()"
+          [loading]="submitLoading()"
+          [disabled]="submitDisabled() || submitLoading()"
+          (clicked)="onSubmit()"
+        />
+      </div>
+    }
+  </div>
+</ng-template>

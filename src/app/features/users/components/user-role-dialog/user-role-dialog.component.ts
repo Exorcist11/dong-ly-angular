@@ -1,16 +1,17 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   OnChanges,
   Output,
   SimpleChanges,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Dialog } from 'primeng/dialog';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { AppDialogComponent } from '../../../../shared/components/dialog/dialog.component';
 import { Tag } from 'primeng/tag';
 import { Checkbox } from 'primeng/checkbox';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
@@ -19,12 +20,14 @@ import { Role, User } from '../../models/user.model';
 @Component({
   selector: 'app-user-role-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslatePipe, Dialog, ButtonComponent, Tag, Checkbox],
+  imports: [CommonModule, FormsModule, TranslatePipe, AppDialogComponent, Tag, Checkbox],
   templateUrl: './user-role-dialog.component.html',
   styleUrl: './user-role-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserRoleDialogComponent implements OnChanges {
+  private readonly cdr = inject(ChangeDetectorRef);
+
   @Input() visible = false;
   @Input() user: User | null = null;
   @Input() availableRoles: Role[] = [];
@@ -41,6 +44,7 @@ export class UserRoleDialogComponent implements OnChanges {
       const current = this.user.roles ?? [];
       this.selectedRoleCodes = new Set(current);
       this.initialRoleCodes = new Set(current);
+      this.cdr.markForCheck();
     }
   }
 
@@ -55,6 +59,7 @@ export class UserRoleDialogComponent implements OnChanges {
       this.selectedRoleCodes.add(code);
     }
     this.selectedRoleCodes = new Set(this.selectedRoleCodes);
+    this.cdr.markForCheck();
   }
 
   get addedRoles(): string[] {
@@ -70,16 +75,18 @@ export class UserRoleDialogComponent implements OnChanges {
   }
 
   onVisibleChange(val: boolean): void {
+    if (!val && this.submitting) return;
     this.visible = val;
     this.visibleChange.emit(val);
   }
 
   onCancel(): void {
+    if (this.submitting) return;
     this.onVisibleChange(false);
   }
 
   onSave(): void {
-    if (!this.user || !this.hasChanges) return;
+    if (this.submitting || !this.user || !this.hasChanges) return;
 
     this.saveRoles.emit({
       userId: this.user.id,

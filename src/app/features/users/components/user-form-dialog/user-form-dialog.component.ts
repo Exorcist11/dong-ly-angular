@@ -15,9 +15,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Dialog } from 'primeng/dialog';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { MultiSelect } from 'primeng/multiselect';
+import { AppDialogComponent } from '../../../../shared/components/dialog/dialog.component';
 import { FormFieldComponent } from '../../../../shared/components/form-field/form-field.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
@@ -30,8 +29,7 @@ import { CreateUserRequest, Role, UpdateUserRequest, User } from '../../models/u
     CommonModule,
     ReactiveFormsModule,
     TranslatePipe,
-    Dialog,
-    ButtonComponent,
+    AppDialogComponent,
     MultiSelect,
     FormFieldComponent,
     InputComponent,
@@ -85,6 +83,8 @@ export class UserFormDialogComponent implements OnChanges {
   }
 
   onSubmit(): void {
+    if (this.submitting) return;
+
     if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
       return;

@@ -1,14 +1,19 @@
-<p-dialog
+<app-dialog
   [visible]="visible"
-  [modal]="true"
-  [closable]="!submitting"
-  [dismissableMask]="!submitting"
   [header]="(isEditMode ? 'roles.dialog.editTitle' : 'roles.dialog.createTitle') | translate"
+  size="sm"
   styleClass="dl-role-dialog"
-  [style]="{ width: '480px', maxWidth: '95vw' }"
+  [submitLoading]="submitting"
+  [submitDisabled]="submitting"
+  [submitLabel]="(isEditMode ? 'roles.dialog.editSubmit' : 'roles.dialog.createSubmit') | translate"
+  [cancelLabel]="'common.actions.cancel' | translate"
+  submitIcon="pi pi-check"
+  cancelIcon="pi pi-times"
   (visibleChange)="visibleChange.emit($event)"
+  (submitted)="onSubmit()"
+  (cancelled)="onClose()"
 >
-  <form [formGroup]="roleForm" (ngSubmit)="onSubmit()" class="role-form-content">
+  <form [formGroup]="roleForm" (ngSubmit)="onSubmit()" class="role-form-content" id="roleForm">
     @if (isSystemRole) {
       <div class="system-role-notice">
         <i class="pi pi-shield"></i>
@@ -64,25 +69,5 @@
         [class.ng-invalid]="roleForm.get('description')?.invalid && roleForm.get('description')?.touched"
       ></textarea>
     </app-form-field>
-
-    <!-- Actions -->
-    <div class="dialog-actions">
-      <app-button
-        [label]="'common.actions.cancel' | translate"
-        icon="pi pi-times"
-        variant="secondary"
-        (clicked)="onClose()"
-        [disabled]="submitting"
-      />
-
-      <app-button
-        type="submit"
-        [label]="(isEditMode ? 'roles.dialog.editSubmit' : 'roles.dialog.createSubmit') | translate"
-        icon="pi pi-check"
-        variant="primary"
-        [loading]="submitting"
-        [disabled]="submitting"
-      />
-    </div>
   </form>
-</p-dialog>
+</app-dialog>

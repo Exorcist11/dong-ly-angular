@@ -15,10 +15,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Dialog } from 'primeng/dialog';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { Textarea } from 'primeng/textarea';
-import { Tag } from 'primeng/tag';
+import { AppDialogComponent } from '../../../../shared/components/dialog/dialog.component';
 import { FormFieldComponent } from '../../../../shared/components/form-field/form-field.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
@@ -36,8 +34,7 @@ import {
     CommonModule,
     ReactiveFormsModule,
     TranslatePipe,
-    Dialog,
-    ButtonComponent,
+    AppDialogComponent,
     InputComponent,
     Textarea,
     FormFieldComponent,
@@ -121,6 +118,8 @@ export class RoleFormDialogComponent implements OnChanges {
   }
 
   onSubmit(): void {
+    if (this.submitting) return;
+
     if (this.roleForm.invalid) {
       this.roleForm.markAllAsTouched();
       return;

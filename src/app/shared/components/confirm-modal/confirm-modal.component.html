@@ -1,32 +1,16 @@
-@if (isOpen) {
-  <div class="modal-backdrop" (click)="onCancel()">
-    <div class="modal-dialog" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3 class="modal-title">{{ title || ('common.dialogs.confirmTitle' | translate) }}</h3>
-        <app-button
-          variant="text"
-          icon="pi pi-times"
-          [ariaLabel]="'common.actions.close' | translate"
-          (clicked)="onCancel()"
-        />
-      </div>
-
-      <div class="modal-body">
-        <p>{{ message || ('common.dialogs.confirmMessage' | translate) }}</p>
-      </div>
-
-      <div class="modal-footer">
-        <app-button
-          variant="secondary"
-          [label]="cancelText || ('common.actions.cancel' | translate)"
-          (clicked)="onCancel()"
-        />
-        <app-button
-          [variant]="danger ? 'danger' : 'primary'"
-          [label]="confirmText || ('common.actions.confirm' | translate)"
-          (clicked)="onConfirm()"
-        />
-      </div>
-    </div>
+<app-dialog
+  [visible]="isOpen"
+  [header]="resolvedTitle"
+  size="sm"
+  [submitVariant]="danger ? 'danger' : 'primary'"
+  [submitLabel]="resolvedConfirmText"
+  [cancelLabel]="resolvedCancelText"
+  [submitLoading]="loading"
+  styleClass="dl-confirm-modal"
+  (submitted)="onConfirm()"
+  (cancelled)="onCancel()"
+>
+  <div class="confirm-modal-body">
+    <p class="confirm-message">{{ message || ('common.dialogs.confirmMessage' | translate) }}</p>
   </div>
-}
+</app-dialog>

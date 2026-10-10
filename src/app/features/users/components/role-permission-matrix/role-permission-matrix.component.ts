@@ -12,7 +12,11 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Dialog } from 'primeng/dialog';
+import {
+  AppDialogComponent,
+  DialogFooterDirective,
+  DialogHeaderDirective,
+} from '../../../../shared/components/dialog/dialog.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { Checkbox } from 'primeng/checkbox';
 import { Tag } from 'primeng/tag';
@@ -45,7 +49,9 @@ export const CORE_ADMIN_PERMISSIONS = [
     CommonModule,
     FormsModule,
     TranslatePipe,
-    Dialog,
+    AppDialogComponent,
+    DialogHeaderDirective,
+    DialogFooterDirective,
     ButtonComponent,
     Checkbox,
     Tag,
@@ -304,7 +310,7 @@ export class RolePermissionMatrixComponent implements OnChanges {
    * Lưu ma trận phân quyền lên backend.
    */
   savePermissions(): void {
-    if (!this.roleId) return;
+    if (this.saving() || !this.roleId) return;
 
     // Ràng buộc bảo vệ trước khi gửi: Nếu là ADMIN, bảo đảm không bị sót quyền cốt lõi
     const codes = Array.from(this.selectedCodes());
@@ -341,7 +347,14 @@ export class RolePermissionMatrixComponent implements OnChanges {
       });
   }
 
+  onVisibleChange(val: boolean): void {
+    if (!val && this.saving()) return;
+    this.visible = val;
+    this.visibleChange.emit(val);
+  }
+
   onClose(): void {
-    this.visibleChange.emit(false);
+    if (this.saving()) return;
+    this.onVisibleChange(false);
   }
 }
