@@ -21,6 +21,8 @@ export interface VehicleSummary {
   totalFloors: number;
   totalRows: number;
   totalColumns: number;
+  seatRows?: number;
+  seatColumns?: number;
   totalSeats: number;
   status: VehicleStatus;
   description?: string | null;

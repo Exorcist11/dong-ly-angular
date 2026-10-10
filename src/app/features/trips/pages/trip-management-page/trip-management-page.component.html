@@ -63,19 +63,22 @@
       <ng-template appTableCell="drivers" let-item>
         <div class="drivers-cell">
           @if (item.driverName) {
-            <div class="driver-row">
+            <div class="driver-row" [title]="item.driverPhone ? (item.driverName + ' (' + item.driverPhone + ')') : item.driverName">
               <span class="role-tag primary">{{ 'trips.labels.primaryDriver' | translate }}</span>
               <span class="driver-name">{{ item.driverName }}</span>
             </div>
           }
           @if (item.assistantDriverName) {
-            <div class="driver-row">
+            <div class="driver-row" [title]="item.assistantDriverPhone ? (item.assistantDriverName + ' (' + item.assistantDriverPhone + ')') : item.assistantDriverName">
               <span class="role-tag assistant">{{ 'trips.labels.assistantDriver' | translate }}</span>
               <span class="driver-name">{{ item.assistantDriverName }}</span>
             </div>
           }
           @if (!item.driverName && !item.assistantDriverName) {
-            <span class="empty-driver">{{ 'trips.labels.unassignedDriver' | translate }}</span>
+            <div class="empty-driver">
+              <i class="pi pi-user-minus"></i>
+              <span>{{ 'trips.labels.unassignedDriver' | translate }}</span>
+            </div>
           }
         </div>
       </ng-template>

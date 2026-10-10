@@ -115,7 +115,7 @@ export class TripManagementPageComponent implements OnInit {
       { field: 'departureTime', header: this.i18n.translate('trips.columns.departureTime'), sortable: true, width: '150px' },
       { field: 'route', header: this.i18n.translate('trips.columns.route'), width: '200px' },
       { field: 'vehicle', header: this.i18n.translate('trips.columns.vehicle'), width: '150px' },
-      { field: 'drivers', header: this.i18n.translate('trips.columns.drivers'), width: '220px' },
+      { field: 'drivers', header: this.i18n.translate('trips.columns.drivers'), width: '240px' },
       { field: 'basePrice', header: this.i18n.translate('trips.columns.basePrice'), width: '130px' },
       { field: 'status', header: this.i18n.translate('trips.columns.status'), width: '140px' },
       { field: 'actions', header: this.i18n.translate('trips.columns.actions'), align: 'center', width: '120px' },

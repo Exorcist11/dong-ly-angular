@@ -67,7 +67,12 @@
       <ng-template appTableCell="seatInfo" let-item>
         <div class="seat-info-col">
           <strong>{{ item.totalSeats }} {{ 'fleet.vehicles.columns.availableSeats' | translate }}</strong>
-          <span class="grid-spec">{{ item.totalFloors }} {{ 'fleet.vehicles.columns.floors' | translate }} • {{ 'fleet.vehicles.columns.grid' | translate }}: {{ item.seatRows }}x{{ item.seatColumns }}</span>
+          <span class="grid-spec">
+            {{ item.totalFloors }} {{ 'fleet.vehicles.columns.floors' | translate }}
+            @if (item.totalRows || item.seatRows) {
+              • {{ 'fleet.vehicles.columns.grid' | translate }}: {{ item.totalRows || item.seatRows }}x{{ item.totalColumns || item.seatColumns }}
+            }
+          </span>
         </div>
       </ng-template>
 
