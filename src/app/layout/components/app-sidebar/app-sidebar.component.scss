@@ -30,6 +30,14 @@
       margin: 0 auto 4px auto;
     }
 
+    .sidebar-nav {
+      padding: 16px 4px;
+
+      &::-webkit-scrollbar {
+        width: 3px;
+      }
+    }
+
     .sidebar-bottom {
       padding: 12px 8px;
     }
@@ -94,9 +102,44 @@
 
 .sidebar-nav {
   flex: 1;
-  padding: 16px 12px;
+  padding: 16px 8px 16px 12px;
   overflow-y: auto;
   overflow-x: hidden;
+
+  /* Modern Slim Dark Scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 4px 0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    transition: background-color var(--ease, 200ms ease);
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.35);
+    }
+
+    &:active {
+      background-color: rgba(255, 255, 255, 0.55);
+    }
+  }
+
+  &:hover {
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
 }
 
 .nav-group {
