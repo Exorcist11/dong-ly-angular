@@ -98,12 +98,15 @@ providePrimeNG({
   - **Table**: `<p-table [value]="data" [paginator]="true" ...>`
 
 ### 4.2. Khi nào tạo Shared Wrapper Component:
-Chỉ tạo wrapper khi giải quyết nhu cầu nghiệp vụ đặc thù hoặc đóng gói logic phức tạp:
+Chỉ tạo wrapper khi giải quyết nhu cầu nghiệp vụ đặc thù hoặc đóng gói logic phức tạp (xem chi tiết tại [`shared-ui-guidelines.md`](./architecture/shared-ui-guidelines.md)):
 1. `ConfirmModalComponent`: Đóng gói luồng xác nhận hành động nguy hiểm (xóa vé, hủy chuyến xe, khóa tài khoản).
 2. `LoadingSpinnerComponent`: Trạng thái loading toàn màn hình hoặc vùng dữ liệu có kèm backdrop blur.
 3. `EmptyStateComponent`: Hiển thị trạng thái dữ liệu rỗng kèm icon và nút tạo mới.
 4. `PageHeaderComponent`: Tiêu đề trang chuẩn hóa kèm breadcrumbs và các nút thao tác chính.
-5. Form control phức tạp: Sơ đồ chọn ghế xe giường nằm / ghế ngồi xe khách Đông Lý (kết hợp `ControlValueAccessor`).
+5. `StatusBadgeComponent`: Chuẩn hóa màu sắc và nhãn hiển thị cho mọi enum trạng thái hệ thống.
+6. `SearchInputComponent`: Ô tìm kiếm có debounce tự động và nút xóa nhanh, giảm tải gọi API.
+7. `FormFieldComponent`: Bọc label, required mark, hint và tự động bắt lỗi validation theo tiếng Việt.
+8. Form control phức tạp: Sơ đồ chọn ghế xe giường nằm / ghế ngồi xe khách Đông Lý (`SeatMapSelector`, kết hợp `ControlValueAccessor`).
 
 **Nghiêm cấm**: Tạo component chỉ để bọc `<p-button>` hay `<input pInputText>` nhằm mục đích đổi tên selector mà không cung cấp giá trị bổ sung.
 
@@ -113,7 +116,8 @@ Chỉ tạo wrapper khi giải quyết nhu cầu nghiệp vụ đặc thù hoặ
 
 1. **Reactive Forms bắt buộc**: Sử dụng `FormBuilder.nonNullable` hoặc Typed FormGroup.
 2. **Hiển thị lỗi**:
-   - Sử dụng `<small class="error-text">` hoặc `<p-message severity="error">`.
+   - Ưu tiên sử dụng `FormFieldComponent` để tự động hóa việc hiển thị lỗi, tránh trùng lặp mã ở các feature.
+   - Khi tùy biến: Sử dụng `<small class="error-text">` hoặc `<p-message severity="error">`.
    - Chỉ hiển thị lỗi khi control `invalid` VÀ (`dirty` hoặc `touched`).
    - Đặt `[invalid]="control.invalid && (control.dirty || control.touched)"` trên PrimeNG input controls để kích hoạt viền đỏ cảnh báo.
 3. **Ngôn ngữ thông báo**: 100% bằng tiếng Việt thân thiện, rõ ràng, không chứa thuật ngữ kỹ thuật.
@@ -125,10 +129,12 @@ Chỉ tạo wrapper khi giải quyết nhu cầu nghiệp vụ đặc thù hoặ
 
 ## 6. QUY CHUẨN BẢNG DỮ LIỆU (TABLES)
 
-Cho các tính năng tiếp theo (User Management, Trip Management, Booking...):
-1. Luôn sử dụng `<p-table>` với cấu hình Responsive.
-2. Xử lý 4 trạng thái bắt buộc:
+Cho tất cả các tính năng quản trị (User Management, Trip Management, Booking, Routes, Vehicles...):
+1. Luôn sử dụng `<p-table>` với cấu hình Responsive và typed columns (`TableColumn<T>`).
+2. Tương thích chuẩn phân trang Backend Go REST API (`PageResponse<T>` / `PaginationMeta`).
+3. Xử lý 4 trạng thái bắt buộc:
    - **Loading State**: Hiển thị Skeleton hoặc Spinner khi đang tải dữ liệu từ API.
    - **Empty State**: Hiển thị `EmptyStateComponent` khi danh sách rỗng hoặc không tìm thấy kết quả tìm kiếm.
    - **Error State**: Hiển thị thông báo khi gọi API thất bại kèm nút "Thử lại".
    - **Data State**: Hiển thị bảng kèm phân trang theo chuẩn `PageResponse<T>`.
+4. Tham khảo hướng dẫn chi tiết tại [`shared-ui-guidelines.md`](./architecture/shared-ui-guidelines.md).

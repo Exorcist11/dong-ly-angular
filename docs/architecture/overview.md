@@ -46,12 +46,13 @@ Hệ thống được tổ chức theo 4 phân tầng chính:
    - **Quy tắc**: Không import ngược từ `features` hay `shared`.
 
 2. **Shared Layer (`src/app/shared/`)**:
-   - Chứa các thành phần UI dùng chung: `PageHeader`, `LoadingSpinner`, `EmptyState`, `StatCard`, `ConfirmModal`.
-   - Chứa Directives (`HasPermissionDirective`), Pipes (`CurrencyVndPipe`, `DateViPipe`), Pure Utilities (`date-utils.ts`).
+   - Chứa các thành phần UI dùng chung: `PageHeader`, `LoadingSpinner`, `EmptyState`, `StatCard`, `ConfirmModal`, `ThemeSwitcher`, `LanguageSwitcher`, `StatusBadge`, `SearchInput`, `FormField`.
+   - Chứa Directives (`HasPermissionDirective`), Pipes (`CurrencyVndPipe`, `DateViPipe`, `TranslatePipe`), Pure Utilities (`date-utils.ts`, `number-utils.ts`), và Shared Models (`table.model.ts`, `select-option.model.ts`).
+   - Quy chuẩn chi tiết: xem [`shared-ui-guidelines.md`](./shared-ui-guidelines.md).
    - **Quy tắc**: Tuyệt đối không chứa business logic đặc thù của bất kỳ feature nào.
 
-3. **Layouts Layer (`src/app/layouts/`)**:
-   - Định nghĩa layout khung ứng dụng: `AdminLayoutComponent` gồm Sidebar điều hướng, Header hồ sơ cá nhân và Toast Notification container.
+3. **Layout Layer (`src/app/layout/`)**:
+   - Định nghĩa shell khung ứng dụng: `LayoutShellComponent` gồm Sidebar điều hướng, Topbar hồ sơ cá nhân, Language & Theme switchers, Toast Notification container và `<router-outlet>`.
 
 4. **Features Layer (`src/app/features/`)**:
    - Chứa các miền nghiệp vụ độc lập: `dashboard`, `users`, `trips`, `bookings`, `routes`, `vehicles`, `reports`.

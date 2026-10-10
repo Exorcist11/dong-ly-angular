@@ -159,7 +159,8 @@ admin/ (Angular-FE/)
 ├── docs/                             # Tài liệu kỹ thuật dự án
 │   ├── architecture/
 │   │   ├── overview.md               # Kiến trúc tổng thể và phân tầng
-│   │   └── folder-structure.md       # Cấu trúc thư mục chi tiết
+│   │   ├── folder-structure.md       # Cấu trúc thư mục chi tiết
+│   │   └── shared-ui-guidelines.md   # Quy chuẩn kiến trúc Shared UI Components
 │   └── engineering/
 │       ├── coding-standards.md       # Tiêu chuẩn lập trình TypeScript & Angular
 │       ├── clean-code.md             # Nguyên tắc Clean Code & SOLID
@@ -175,15 +176,14 @@ admin/ (Angular-FE/)
 │   │   │   ├── services/             # notification.service.ts
 │   │   │   ├── models/               # api-response.model.ts (Envelope)
 │   │   │   └── error-handling/       # global-error-handler.ts, not-found/
-│   │   ├── layouts/                  # Bố cục ứng dụng và điều hướng
-│   │   │   └── admin-layout/         # AdminLayoutComponent (Sidebar, Topbar, Toasts)
-│   │   ├── shared/                   # Thành phần dùng chung (UI primitives, pipe, directive)
-│   │   │   ├── components/           # confirm-modal, page-header, stat-card, loading-spinner, empty-state
+│   │   ├── layout/                   # Bố cục ứng dụng và điều hướng (LayoutShellComponent)
+│   │   ├── shared/                   # Thành phần dùng chung (UI primitives, pipe, directive, models)
+│   │   │   ├── components/           # confirm-modal, page-header, stat-card, loading-spinner, empty-state, status-badge, search-input, form-field
 │   │   │   ├── directives/           # has-permission.directive.ts
-│   │   │   ├── pipes/                # currency-vnd.pipe.ts, date-vi.pipe.ts
-│   │   │   └── utils/                # date-utils.ts (pure functions)
-│   │   ├── features/                 # Các module nghiệp vụ độc lập (Lazy loaded)
-│   │   │   └── dashboard/            # Bàn làm việc mẫu
+│   │   │   ├── pipes/                # currency-vnd.pipe.ts, date-vi.pipe.ts, translate.pipe.ts
+│   │   │   ├── models/               # table.model.ts, select-option.model.ts
+│   │   │   └── utils/                # date-utils.ts, number-utils.ts (pure functions)
+│   │   ├── features/                 # Các module nghiệp vụ độc lập (Lazy loaded: dashboard, users, roles...)
 │   │   ├── app.config.ts             # Cấu hình providers (provideHttpClient, provideRouter...)
 │   │   └── app.routes.ts             # Tuyến điều hướng cấp cao
 │   ├── environments/                 # Cấu hình môi trường (production, development)
@@ -197,24 +197,61 @@ admin/ (Angular-FE/)
 
 ---
 
-## 7. COMPONENT VÀ UI REUSE (PRIMENG & DESIGN SYSTEM)
+## 7. KIẾN TRÚC SHARED UI COMPONENTS & PRIMENG DESIGN SYSTEM
 
-PrimeNG 21.x là thư viện UI chính của toàn bộ hệ thống Đông Lý Admin.
-Thư viện Icons chính thức: PrimeIcons 8.x (`primeicons`).
+PrimeNG 21.x là thư viện UI nền tảng của toàn bộ hệ thống Đông Lý Admin.
+Thư viện Icons: PrimeIcons 8.x (`primeicons`).
 Theme Preset thống nhất: `DongLyThemePreset` (`src/app/core/theme/theme.config.ts`), mở rộng từ `Aura` preset với Primary color Blue `#2563eb` và Dark Mode disabled mặc định.
+Chi tiết tài liệu hướng dẫn xem tại: [`docs/architecture/shared-ui-guidelines.md`](file:///E:/du-an-ma/Angular-FE/docs/architecture/shared-ui-guidelines.md).
 
-### 7.1. Nguyên tắc sử dụng PrimeNG:
-1. **Ưu tiên sử dụng trực tiếp**: Nếu component PrimeNG (`p-button`, `pInputText`, `p-password`, `p-checkbox`, `p-message`, `p-toast`, `p-table`, `p-dialog`...) đã đáp ứng đầy đủ yêu cầu UX/UI, hãy sử dụng trực tiếp trong template.
-2. **Không tạo wrapper dư thừa**: Tuyệt đối không tạo wrapper chỉ để đổi tên component PrimeNG (ví dụ `app-button` chỉ bọc `p-button` mà không thêm logic giá trị).
-3. **Khi nào tạo Component dùng chung (Shared Wrapper)**: Chỉ tạo wrapper khi mang lại giá trị thực tế rõ rệt:
-   * Chuẩn hóa logic form phức tạp (kết hợp `ControlValueAccessor`).
-   * Đóng gói format chuyên biệt (ví dụ: currency VND input, biển số xe format, sơ đồ ghế xe khách).
-   * Chuẩn hóa Dialog xác nhận hành vi nguy hiểm (`ConfirmModalComponent`).
+### 7.1. Nguyên tắc sử dụng Thư viện UI (PrimeNG Trực tiếp vs Shared Wrapper)
+1. **Ưu tiên sử dụng trực tiếp**: Nếu component PrimeNG (`p-button`, `input[pInputText]`, `p-password`, `p-checkbox`, `p-message`, `p-toast`, `p-datepicker`, `p-select`) đã đáp ứng đầy đủ yêu cầu UX/UI, accessibility và data binding thì **bắt buộc sử dụng trực tiếp** trong template.
+2. **Nghiêm cấm tạo wrapper vô giá trị**: Tuyệt đối không tạo component chỉ để đổi tên thẻ PrimeNG (ví dụ tạo `app-button` chỉ để bọc `<p-button>` mà không thêm bất kỳ logic giá trị gia tăng nào).
+3. **Khi nào tạo Shared Wrapper / UI Component**: Chỉ tạo khi mang lại giá trị kiến trúc rõ rệt:
+   * **Đóng gói Form Validation lặp lại**: `FormFieldComponent` (tự động render nhãn, required mark, kiểm tra touched/invalid và hiển thị lỗi tiếng Việt chuẩn hóa).
+   * **Thanh tìm kiếm & lọc tối ưu**: `SearchInputComponent` (kèm icon kính lúp, nút xóa và cơ chế debounce để giảm tải API).
+   * **Đóng gói định dạng chuyên biệt**: Format tiền tệ VND, biển số xe, sơ đồ ghế xe khách 2 tầng Đông Lý (kết hợp `ControlValueAccessor`).
+   * **Chuẩn hóa Dialog nguy hiểm**: `ConfirmModalComponent` (xác nhận xóa, tạm khóa, hủy vé với trạng thái loading an toàn).
+   * **Chuẩn hóa Huy hiệu trạng thái**: `StatusBadgeComponent` (tập trung hóa ánh xạ màu sắc và nhãn hiển thị cho mọi enum trạng thái).
 4. **Không trộn nhiều UI library**: Tuyệt đối không cài thêm Angular Material, Bootstrap, Ant Design hay Tailwind UI vào dự án.
-5. **Tùy biến CSS an toàn**:
-   * Sử dụng CSS variables và Theme tokens chính thức của PrimeNG.
-   * Hạn chế tối đa việc lạm dụng `::ng-deep` và `!important`.
-   * Tuân thủ ngân sách bundle style (component style budget <= 4kB).
+
+### 7.2. Quy tắc Thiết kế Shared Component
+1. **Độc lập và Trách nhiệm rõ ràng (SRP)**: Shared UI chỉ chịu trách nhiệm hiển thị và tương tác UI. Tuyệt đối **không** import models của feature, không gọi API service nghiệp vụ.
+2. **Type Safety 100% (Không dùng `any`)**: Mọi Input, Output, event payload phải có interface/type cụ thể. Sử dụng Angular Signal Inputs (`input()`, `input.required()`) và Outputs (`output()`) theo chuẩn Angular 21.
+3. **Tích hợp Angular Forms & ControlValueAccessor**: Mọi custom form control phải triển khai `ControlValueAccessor` đúng chuẩn; không can thiệp DOM trực tiếp.
+4. **Xử lý đầy đủ các trạng thái UI**: Loading, Empty, Error, Disabled, Focus, Hover.
+5. **Accessibility (A11y)**: Phải hỗ trợ điều hướng bàn phím (`Tab`, `Enter`, `Escape`), có `aria-label` cho nút biểu tượng không chữ và độ tương phản WCAG 2.2 AA.
+
+### 7.3. Quy chuẩn Bảng Dữ liệu (Reusable Data Table)
+1. **Cấu hình cột có type (`TableColumn<T>`)**: Xác định `field`, `header`, `width`, `sortable`, `align`, `template`. Không ép cứng các cột cho toàn bộ bảng.
+2. **Generic Type `<T>`**: Hỗ trợ kiểu dữ liệu linh hoạt, an toàn loại hình cho từng feature.
+3. **Tương thích Phân trang Backend**: Bắt buộc hỗ trợ `lazy="true"`, phát sự kiện `(lazyLoad)` chứa `page`, `size`, `sortField`, `sortOrder` đồng bộ với `PaginationMeta` của Backend Go REST API.
+4. **4 Trạng thái bắt buộc**:
+   * **Loading State**: Spinner hoặc Skeleton khi đang tải API.
+   * **Empty State**: Tự động hiển thị `EmptyStateComponent` kèm thông điệp phù hợp khi danh sách rỗng.
+   * **Error State**: Vùng thông báo lỗi kèm nút "Thử lại".
+   * **Data State**: Hiển thị bảng kèm phân trang tiếng Việt (*"Hiển thị {first} - {last} trong tổng số {totalRecords} bản ghi"*).
+5. **Custom Cell & Row Actions**: Chiếu `ng-template` cho các cột tùy biến (avatar, status badge, action buttons) thay vì nhúng logic nghiệp vụ vào table.
+
+### 7.4. Quy chuẩn Biểu mẫu & Form Controls (Input & Form)
+1. **Reactive Forms thống nhất**: Sử dụng `FormBuilder.nonNullable` hoặc Typed Forms.
+2. **Không lặp lại logic validation**: Sử dụng `FormFieldComponent` hoặc helper tập trung để hiển thị lỗi validation; không copy-paste hàng loạt khối `@if (control.hasError('...'))` giữa các màn hình.
+3. **Chuẩn hóa thông báo lỗi**: 100% thông báo lỗi bằng tiếng Việt, rõ ràng và thân thiện (Required, MinLength, MaxLength, Email, Pattern).
+4. **Đồng bộ hóa giá trị**: Các control Select, DatePicker, Checkbox phải hai chiều đồng bộ chuẩn xác với FormGroup, tự động phản hồi trạng thái disabled.
+
+### 7.5. Quy chuẩn Modal & Dialog
+1. **Modal xác nhận hành vi nguy hiểm**: Bắt buộc sử dụng `ConfirmModalComponent` cho các thao tác xóa, hủy, tạm khóa tài khoản hoặc thay đổi trạng thái quan trọng.
+2. **Hộp thoại Form (`p-dialog`)**: Chuẩn hóa cấu hình `[modal]="true"`, `[draggable]="false"`, `[resizable]="false"`, `[dismissableMask]="true"`, hỗ trợ đóng bằng phím ESC.
+3. **Footer Action chuẩn**: Nút Hủy (Secondary, outlined) bên trái, Nút Xác nhận/Lưu (Primary hoặc Danger) bên phải kèm trạng thái `[loading]`.
+
+### 7.6. Quy tắc Tái sử dụng & Bắt buộc cho Feature Mới
+Mọi AI Coding Agent và Developer khi phát triển hoặc sửa đổi tính năng **bắt buộc tuân thủ quy trình 6 bước**:
+1. **Khảo sát trước khi viết code**: Tìm kiếm trong `src/app/shared/components/` các thành phần đã có (`PageHeader`, `EmptyState`, `ConfirmModal`, `StatusBadge`, `SearchInput`).
+2. **Bắt buộc tái sử dụng**: Nếu đã có component đáp ứng yêu cầu, bắt buộc tái sử dụng.
+3. **Mở rộng trước khi tạo mới (Extend before Fork)**: Nếu component hiện có đáp ứng một phần, ưu tiên mở rộng qua `@Input()`, configuration hoặc `<ng-content>` thay vì sao chép code ra component mới.
+4. **Không tạo component dùng chung quá phức tạp (Universal Component)**: Tránh dồn mọi biến thể vào một component duy nhất bằng hàng chục cờ logic (flags).
+5. **Không sao chép HTML/CSS/Validation**: Nghiêm cấm copy-paste đoạn mã tìm kiếm, phân trang hoặc kiểm tra form giữa các feature.
+6. **Kiểm thử & Đảm bảo không hồi quy**: Viết unit test cho component mới hoặc mở rộng; chạy kiểm thử toàn bộ dự án (`npm test`, `npm run typecheck`) trước khi hoàn thành task.
 
 ---
 
