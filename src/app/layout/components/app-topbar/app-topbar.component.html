@@ -1,0 +1,144 @@
+<header class="app-topbar" role="banner">
+  <!-- LEFT SECTION -->
+  <div class="topbar-left">
+    <!-- Collapse / Hamburger Button -->
+    <p-button
+      [text]="true"
+      [rounded]="true"
+      icon="pi pi-bars"
+      styleClass="topbar-icon-btn"
+      aria-label="Thu gọn hoặc mở rộng thanh điều hướng"
+      (onClick)="onToggleSidebar()"
+    />
+
+    <!-- Breadcrumb -->
+    <app-breadcrumb />
+  </div>
+
+  <!-- CENTER SEARCH WITH CTRL+K -->
+  <div class="topbar-center">
+    <div class="search-trigger" (click)="openCommandPalette()">
+      <p-iconfield>
+        <p-inputicon styleClass="pi pi-search" />
+        <input
+          pInputText
+          type="text"
+          readonly
+          placeholder="Tìm chuyến xe, vé, khách hàng..."
+          class="topbar-search-input"
+        />
+      </p-iconfield>
+      <kbd class="shortcut-hint">Ctrl K</kbd>
+    </div>
+  </div>
+
+  <!-- RIGHT SECTION -->
+  <div class="topbar-right">
+    <!-- Language Select (Compact VI / EN) -->
+    <div class="lang-select-wrapper">
+      <p-select
+        [options]="languageOptions"
+        [(ngModel)]="selectedLanguage"
+        (onChange)="onLanguageChange($event.value)"
+        optionLabel="label"
+        optionValue="code"
+        styleClass="compact-lang-select"
+        panelStyleClass="lang-select-panel"
+        aria-label="Lựa chọn ngôn ngữ"
+      >
+        <ng-template #selectedItem>
+          <div class="selected-lang-box">
+            <i class="pi pi-globe lang-icon" aria-hidden="true"></i>
+            <span class="lang-code-text">{{ currentLangCode() }}</span>
+          </div>
+        </ng-template>
+        <ng-template #item let-opt>
+          <div class="lang-dropdown-row">
+            <span class="lang-name">{{ opt.label }}</span>
+            <span class="lang-badge">{{ opt.shortLabel }}</span>
+          </div>
+        </ng-template>
+      </p-select>
+    </div>
+
+    <!-- ONE Theme Button cycling Light -> Dark -> System -->
+    <p-button
+      [text]="true"
+      [rounded]="true"
+      [icon]="themeIcon()"
+      [attr.aria-label]="themeAriaLabel()"
+      [pTooltip]="themeTooltip()"
+      tooltipPosition="bottom"
+      styleClass="topbar-icon-btn"
+      (onClick)="layoutService.cycleTheme()"
+    />
+
+    <!-- Notification Bell with OverlayBadge -->
+    <p-button
+      [text]="true"
+      [rounded]="true"
+      pTooltip="Thông báo hệ thống (1 thông báo mới)"
+      tooltipPosition="bottom"
+      styleClass="topbar-icon-btn"
+      aria-label="Thông báo"
+    >
+      <ng-template #icon>
+        <p-overlaybadge severity="danger" styleClass="badge-dot">
+          <i class="pi pi-bell text-lg"></i>
+        </p-overlaybadge>
+      </ng-template>
+    </p-button>
+
+    <!-- Avatar Quick Link -->
+    <p-avatar
+      label="ĐL"
+      shape="circle"
+      styleClass="topbar-avatar"
+      pTooltip="Nhà xe Đông Lý Admin"
+      tooltipPosition="bottom"
+    />
+  </div>
+</header>
+
+<!-- COMMAND PALETTE DIALOG -->
+<p-dialog
+  [(visible)]="commandPaletteVisible"
+  [modal]="true"
+  [dismissableMask]="true"
+  [header]="'Tìm kiếm nhanh (Command Palette)'"
+  styleClass="command-palette-dialog"
+  [style]="{ width: '540px' }"
+>
+  <div class="palette-content">
+    <p-iconfield styleClass="palette-search-field">
+      <p-inputicon styleClass="pi pi-search" />
+      <input
+        pInputText
+        [(ngModel)]="searchQuery"
+        placeholder="Gõ từ khóa tìm kiếm (bàn làm việc, chuyến xe, vé...)"
+        autofocus
+        class="w-full"
+      />
+    </p-iconfield>
+
+    <div class="quick-results-list">
+      <div class="palette-group-title">LỐI TẮT HỆ THỐNG</div>
+      @for (item of filteredResults(); track item.label) {
+        <div class="quick-result-item" (click)="onSelectQuickItem(item)">
+          <i [class]="item.icon + ' item-icon'"></i>
+          <div class="item-text">
+            <span class="item-name">{{ item.label }}</span>
+            <span class="item-cat">{{ item.category }}</span>
+          </div>
+          <i class="pi pi-arrow-right item-arrow"></i>
+        </div>
+      }
+      @if (filteredResults().length === 0) {
+        <div class="empty-search-state">
+          <i class="pi pi-search text-xl text-muted"></i>
+          <p>Không tìm thấy kết quả phù hợp cho "{{ searchQuery }}"</p>
+        </div>
+      }
+    </div>
+  </div>
+</p-dialog>

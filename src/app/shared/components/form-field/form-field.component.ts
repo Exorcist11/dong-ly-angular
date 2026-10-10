@@ -9,85 +9,8 @@ import { AbstractControl } from '@angular/forms';
 @Component({
   selector: 'app-form-field',
   standalone: true,
-  template: `
-    <div class="dl-form-field" [class]="styleClass()">
-      @if (label()) {
-        <div class="field-header">
-          <label [attr.for]="forId()" class="field-label">
-            {{ label() }}
-            @if (required()) {
-              <span class="required-mark" aria-hidden="true">*</span>
-            }
-          </label>
-          <ng-content select="[labelSuffix]" />
-        </div>
-      }
-
-      <div class="control-wrapper">
-        <ng-content />
-      </div>
-
-      @if (hint() && !hasError()) {
-        <small class="field-hint">{{ hint() }}</small>
-      }
-
-      @if (hasError()) {
-        <small class="error-message" role="alert">
-          {{ activeErrorMessage() }}
-        </small>
-      }
-    </div>
-  `,
-  styles: `
-    .dl-form-field {
-      display: flex;
-      flex-direction: column;
-      gap: 0.375rem;
-      margin-bottom: 1rem;
-      width: 100%;
-    }
-
-    .field-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-
-    .field-label {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--color-text-primary, #16161a);
-      user-select: none;
-    }
-
-    .required-mark {
-      color: var(--color-danger, #dc2626);
-      font-weight: bold;
-      margin-left: 0.125rem;
-    }
-
-    .control-wrapper {
-      position: relative;
-      width: 100%;
-    }
-
-    .field-hint {
-      font-size: 0.75rem;
-      color: var(--color-text-muted, #8a857d);
-      line-height: 1.4;
-    }
-
-    .error-message {
-      font-size: 0.75rem;
-      color: var(--color-danger, #dc2626);
-      font-weight: 500;
-      line-height: 1.4;
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-  `,
+  templateUrl: './form-field.component.html',
+  styleUrl: './form-field.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormFieldComponent {

@@ -1,0 +1,54 @@
+<p-card styleClass="saas-kpi-card">
+  @if (loading()) {
+    <div class="kpi-skeleton-box">
+      <div class="skeleton-header">
+        <p-skeleton width="60%" height="16px" />
+        <p-skeleton shape="circle" size="40px" />
+      </div>
+      <p-skeleton width="80%" height="36px" styleClass="my-3" />
+      <p-skeleton width="50%" height="16px" />
+    </div>
+  } @else {
+    <div class="kpi-container">
+      <!-- TOP ROW: LABEL + TINTED ICON SQUARE -->
+      <div class="kpi-top-row">
+        <span class="kpi-label">{{ label() }}</span>
+        <div class="kpi-icon-square" [class]="'tint-' + color()">
+          <i [class]="icon()"></i>
+        </div>
+      </div>
+
+      <!-- BIG VALUE -->
+      <div class="kpi-value-row">
+        <span class="kpi-value">{{ value() }}</span>
+      </div>
+
+      <!-- BOTTOM ROW: TREND TAG + COMPARISON TEXT + SPARKLINE -->
+      <div class="kpi-bottom-row">
+        <div class="trend-group">
+          @if (trend()) {
+            <p-tag
+              [severity]="trendDirection() === 'up' ? 'success' : 'danger'"
+              [icon]="trendDirection() === 'up' ? 'pi pi-arrow-up-right' : 'pi pi-arrow-down-right'"
+              [value]="trend()"
+              styleClass="kpi-trend-tag"
+            />
+          }
+          <span class="trend-text">{{ trendText() }}</span>
+        </div>
+
+        @if (sparklineData() && sparklineData()!.length > 0) {
+          <div class="sparkline-wrapper">
+            <p-chart
+              type="line"
+              [data]="chartData()"
+              [options]="chartOptions"
+              width="80px"
+              height="28px"
+            />
+          </div>
+        }
+      </div>
+    </div>
+  }
+</p-card>

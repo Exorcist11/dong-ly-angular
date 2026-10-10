@@ -1,0 +1,16 @@
+<div class="stat-card" [style.--accent-color]="color || 'var(--color-primary, #D71920)'">
+  <div class="stat-content">
+    <span class="stat-label">{{ label }}</span>
+    <div class="stat-value">{{ value }}</div>
+    @if (changeText) {
+      <div class="stat-footer" [class.positive]="isPositive" [class.negative]="isNegative">
+        <span class="stat-change">{{ changeText }}</span>
+      </div>
+    }
+  </div>
+  @if (icon) {
+    <div class="stat-icon-wrapper">
+      <span class="stat-icon">{{ icon }}</span>
+    </div>
+  }
+</div>

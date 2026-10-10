@@ -1,0 +1,54 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+}
+
+.app-breadcrumb-nav {
+  display: inline-flex;
+  align-items: center;
+}
+
+:host ::ng-deep .custom-breadcrumb {
+  background: transparent !important;
+  padding: 0 !important;
+  border: none !important;
+
+  .p-breadcrumb-list {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+.breadcrumb-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-muted, #8A857D);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: color var(--ease, 200ms ease);
+
+  &:hover {
+    color: var(--color-text-primary, #16161A);
+  }
+
+  &.active-item {
+    color: var(--color-text-primary, #16161A);
+    font-weight: 600;
+    pointer-events: none;
+  }
+}
+
+.breadcrumb-separator {
+  font-size: 11px;
+  color: var(--color-text-muted, #8A857D);
+  margin: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.8;
+}

@@ -1,0 +1,27 @@
+<div class="dl-form-field" [class]="styleClass()">
+  @if (label()) {
+    <div class="field-header">
+      <label [attr.for]="forId()" class="field-label">
+        {{ label() }}
+        @if (required()) {
+          <span class="required-mark" aria-hidden="true">*</span>
+        }
+      </label>
+      <ng-content select="[labelSuffix]" />
+    </div>
+  }
+
+  <div class="control-wrapper">
+    <ng-content />
+  </div>
+
+  @if (hint() && !hasError()) {
+    <small class="field-hint">{{ hint() }}</small>
+  }
+
+  @if (hasError()) {
+    <small class="error-message" role="alert">
+      {{ activeErrorMessage() }}
+    </small>
+  }
+</div>

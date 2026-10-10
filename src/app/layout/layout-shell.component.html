@@ -1,0 +1,23 @@
+<div class="app-layout-root">
+  <!-- GLOBAL TOAST NOTIFICATIONS -->
+  <p-toast position="top-right" />
+
+  <!-- SIDEBAR (DESKTOP & DRAWER) -->
+  <app-sidebar />
+
+  <!-- MAIN WRAPPER -->
+  <div class="layout-main-wrapper">
+    <!-- TOPBAR -->
+    <app-topbar />
+
+    <!-- ROUTER OUTLET CONTAINER -->
+    <main class="layout-page-content" role="main">
+      <router-outlet />
+    </main>
+
+    <!-- SLIM FOOTER -->
+    <footer class="layout-slim-footer" role="contentinfo">
+      <p>© 2026 Nhà xe Đông Lý. Bảo lưu mọi quyền. (v1.0.0)</p>
+    </footer>
+  </div>
+</div>

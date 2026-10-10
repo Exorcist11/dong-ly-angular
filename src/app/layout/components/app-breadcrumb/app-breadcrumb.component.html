@@ -1,0 +1,23 @@
+<nav class="app-breadcrumb-nav" aria-label="Breadcrumb">
+  <p-breadcrumb
+    [model]="items"
+    [home]="home"
+    styleClass="custom-breadcrumb"
+  >
+    <ng-template #item let-item>
+      <a
+        [routerLink]="item.url"
+        class="breadcrumb-link"
+        [class.active-item]="item.id === 'active'"
+      >
+        @if (item.icon) {
+          <span [class]="item.icon"></span>
+        }
+        <span class="breadcrumb-label">{{ item.label }}</span>
+      </a>
+    </ng-template>
+    <ng-template #separator>
+      <span class="pi pi-chevron-right breadcrumb-separator" aria-hidden="true"></span>
+    </ng-template>
+  </p-breadcrumb>
+</nav>

@@ -1,0 +1,58 @@
+.not-found-container {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.not-found-card {
+  background: var(--surface-card, #ffffff);
+  border: 1px solid var(--surface-border, #e2e8f0);
+  border-radius: 12px;
+  padding: 48px;
+  text-align: center;
+  max-width: 480px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.error-code {
+  font-size: 72px;
+  font-weight: 800;
+  color: var(--primary-color, #2563eb);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.error-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-color, #0f172a);
+  margin: 0 0 12px 0;
+}
+
+.error-message {
+  font-size: 14px;
+  color: var(--text-color-secondary, #64748b);
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.btn-primary {
+  background: var(--primary-color, #2563eb);
+  color: #ffffff;
+
+  &:hover {
+    background: #1d4ed8;
+  }
+}

@@ -1,0 +1,35 @@
+<div class="user-menu-wrapper">
+  <button
+    type="button"
+    class="user-card-btn"
+    [class.collapsed]="collapsed()"
+    [pTooltip]="collapsed() ? userName() : ''"
+    tooltipPosition="right"
+    (click)="menu.toggle($event)"
+    aria-haspopup="true"
+    aria-expanded="false"
+    aria-label="Menu tài khoản người dùng"
+  >
+    <p-avatar
+      [label]="userInitial()"
+      shape="circle"
+      styleClass="custom-avatar"
+    />
+
+    @if (!collapsed()) {
+      <div class="user-meta">
+        <span class="user-name">{{ userName() }}</span>
+        <span class="user-role">{{ userRole() }}</span>
+      </div>
+      <span class="pi pi-ellipsis-v menu-indicator" aria-hidden="true"></span>
+    }
+  </button>
+
+  <p-menu
+    #menu
+    [model]="menuItems"
+    [popup]="true"
+    [appendTo]="'body'"
+    styleClass="custom-user-popup"
+  />
+</div>

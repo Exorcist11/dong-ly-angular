@@ -5,7 +5,8 @@ import { LayoutShellComponent } from '../../layout/layout-shell.component';
   selector: 'app-admin-layout',
   standalone: true,
   imports: [LayoutShellComponent],
-  template: `<app-layout-shell />`,
+  templateUrl: './admin-layout.component.html',
+  styleUrl: './admin-layout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminLayoutComponent {}

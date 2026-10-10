@@ -1,0 +1,15 @@
+<div class="lang-switcher-wrapper" role="group" aria-label="Lựa chọn ngôn ngữ">
+  @for (lang of translationService.supportedLanguages; track lang.code) {
+    <button
+      type="button"
+      class="lang-btn"
+      [class.active]="translationService.currentLang() === lang.code"
+      [attr.aria-pressed]="translationService.currentLang() === lang.code"
+      [attr.aria-label]="lang.nativeLabel"
+      (click)="setLanguage(lang.code)"
+      [title]="lang.label"
+    >
+      <span class="lang-code">{{ lang.code.toUpperCase() }}</span>
+    </button>
+  }
+</div>

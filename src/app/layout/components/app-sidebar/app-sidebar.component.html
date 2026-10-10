@@ -1,0 +1,94 @@
+<!-- DESKTOP SIDEBAR -->
+<aside
+  class="app-sidebar-desktop"
+  [class.collapsed]="layoutService.sidebarCollapsed()"
+  aria-label="Thanh điều hướng chính"
+>
+  <ng-container *ngTemplateOutlet="sidebarContent"></ng-container>
+</aside>
+
+<!-- MOBILE DRAWER -->
+<p-drawer
+  [visible]="layoutService.mobileMenuOpen()"
+  (visibleChange)="onMobileDrawerChange($event)"
+  position="left"
+  styleClass="app-sidebar-drawer"
+>
+  <div class="drawer-inner">
+    <ng-container *ngTemplateOutlet="sidebarContent"></ng-container>
+  </div>
+</p-drawer>
+
+<!-- REUSABLE SIDEBAR CONTENT TEMPLATE -->
+<ng-template #sidebarContent>
+  <div class="sidebar-container">
+    <!-- BRAND BLOCK -->
+    <div class="brand-block">
+      <div class="brand-logo-square">
+        <span class="logo-text">ĐL</span>
+      </div>
+      @if (!layoutService.sidebarCollapsed() || layoutService.mobileMenuOpen()) {
+        <div class="brand-info">
+          <span class="brand-name">ĐÔNG LÝ</span>
+          <span class="brand-portal">Admin Portal</span>
+        </div>
+      }
+    </div>
+
+    <!-- NAVIGATION GROUPS -->
+    <nav class="sidebar-nav" role="navigation">
+      @for (group of menuGroups; track group.title) {
+        <div class="nav-group">
+          @if (!layoutService.sidebarCollapsed() || layoutService.mobileMenuOpen()) {
+            <div class="group-title">{{ group.title }}</div>
+          }
+
+          <div class="group-items">
+            @for (item of group.items; track item.label) {
+              @if (hasItemAccess(item)) {
+                @if (item.isUpcoming) {
+                  <!-- Upcoming Item -->
+                  <div
+                    class="nav-item upcoming-item"
+                    [pTooltip]="layoutService.sidebarCollapsed() ? (item.label + ' (Tính năng đang phát triển)') : 'Tính năng đang phát triển'"
+                    tooltipPosition="right"
+                  >
+                    <i [class]="item.icon + ' item-icon'"></i>
+                    @if (!layoutService.sidebarCollapsed() || layoutService.mobileMenuOpen()) {
+                      <span class="item-label">{{ item.label }}</span>
+                      <p-tag
+                        value="Sắp ra mắt"
+                        styleClass="upcoming-tag"
+                      />
+                    }
+                  </div>
+                } @else {
+                  <!-- Active Link Item -->
+                  <a
+                    [routerLink]="item.route"
+                    routerLinkActive="active-link"
+                    [routerLinkActiveOptions]="{ exact: false }"
+                    class="nav-item link-item"
+                    [pTooltip]="layoutService.sidebarCollapsed() ? item.label : ''"
+                    tooltipPosition="right"
+                    (click)="onNavigate()"
+                  >
+                    <i [class]="item.icon + ' item-icon'"></i>
+                    @if (!layoutService.sidebarCollapsed() || layoutService.mobileMenuOpen()) {
+                      <span class="item-label">{{ item.label }}</span>
+                    }
+                  </a>
+                }
+              }
+            }
+          </div>
+        </div>
+      }
+    </nav>
+
+    <!-- USER CARD AT BOTTOM -->
+    <div class="sidebar-bottom">
+      <app-user-menu [collapsed]="layoutService.sidebarCollapsed() && !layoutService.mobileMenuOpen()" />
+    </div>
+  </div>
+</ng-template>
