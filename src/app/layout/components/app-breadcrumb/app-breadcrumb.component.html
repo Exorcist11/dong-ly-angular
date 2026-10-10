@@ -5,16 +5,27 @@
     styleClass="custom-breadcrumb"
   >
     <ng-template #item let-item>
-      <a
-        [routerLink]="item.url"
-        class="breadcrumb-link"
-        [class.active-item]="item.id === 'active'"
-      >
-        @if (item.icon) {
-          <span [class]="item.icon"></span>
-        }
-        <span class="breadcrumb-label">{{ item.label }}</span>
-      </a>
+      @if (item.routerLink && item.id !== 'active') {
+        <a
+          [routerLink]="item.routerLink"
+          class="breadcrumb-link link-clickable"
+        >
+          @if (item.icon) {
+            <span [class]="item.icon + ' breadcrumb-icon'" aria-hidden="true"></span>
+          }
+          <span class="breadcrumb-label">{{ item.label }}</span>
+        </a>
+      } @else {
+        <span
+          class="breadcrumb-link"
+          [class.active-item]="item.id === 'active'"
+        >
+          @if (item.icon) {
+            <span [class]="item.icon + ' breadcrumb-icon'" aria-hidden="true"></span>
+          }
+          <span class="breadcrumb-label">{{ item.label }}</span>
+        </span>
+      }
     </ng-template>
     <ng-template #separator>
       <span class="pi pi-chevron-right breadcrumb-separator" aria-hidden="true"></span>
