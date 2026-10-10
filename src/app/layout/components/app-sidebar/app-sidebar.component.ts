@@ -57,7 +57,7 @@ export const MENU_CONFIG: NavGroup[] = [
           },
           {
             labelKey: 'navigation.items.stopPoints',
-            route: '/routes/stops',
+            route: '/stops',
             icon: 'pi pi-map-marker',
             permission: 'ROUTE_READ',
           },
@@ -76,7 +76,7 @@ export const MENU_CONFIG: NavGroup[] = [
           },
           {
             labelKey: 'navigation.items.tripRuns',
-            route: '/trips/runs',
+            route: '/trip-runs',
             icon: 'pi pi-calendar',
             permission: 'TRIP_READ',
           },
@@ -95,7 +95,7 @@ export const MENU_CONFIG: NavGroup[] = [
           },
           {
             labelKey: 'navigation.items.driverList',
-            route: '/vehicles/drivers',
+            route: '/drivers',
             icon: 'pi pi-id-card',
             permission: 'FLEET_READ',
           },
