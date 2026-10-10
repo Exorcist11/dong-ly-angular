@@ -13,12 +13,13 @@ import { Dialog } from 'primeng/dialog';
 import { Button } from 'primeng/button';
 import { Tag } from 'primeng/tag';
 import { Checkbox } from 'primeng/checkbox';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { Role, User } from '../../models/user.model';
 
 @Component({
   selector: 'app-user-role-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, Dialog, Button, Tag, Checkbox],
+  imports: [CommonModule, FormsModule, TranslatePipe, Dialog, Button, Tag, Checkbox],
   templateUrl: './user-role-dialog.component.html',
   styleUrl: './user-role-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -8,8 +8,10 @@ import { Tooltip } from 'primeng/tooltip';
 import { Drawer } from 'primeng/drawer';
 import { AuthService } from '../../../core/auth/auth.service';
 
+import { TranslatePipe } from '../../../core/i18n/translate.pipe';
+
 export interface NavItem {
-  label: string;
+  labelKey: string;
   route?: string;
   icon: string;
   isUpcoming?: boolean;
@@ -17,53 +19,53 @@ export interface NavItem {
 }
 
 export interface NavGroup {
-  title: string;
+  titleKey: string;
   items: NavItem[];
 }
 
 export const MENU_CONFIG: NavGroup[] = [
   {
-    title: 'TỔNG QUAN',
+    titleKey: 'navigation.groups.overview',
     items: [
       {
-        label: 'Bàn làm việc',
+        labelKey: 'navigation.items.dashboard',
         route: '/dashboard',
         icon: 'pi pi-objects-column',
       },
     ],
   },
   {
-    title: 'VẬN HÀNH',
+    titleKey: 'navigation.groups.operations',
     items: [
       {
-        label: 'Quản lý người dùng',
+        labelKey: 'navigation.items.users',
         route: '/users',
         icon: 'pi pi-users',
         permission: 'USER_READ',
       },
       {
-        label: 'Chuyến xe & Tuyến',
+        labelKey: 'navigation.items.tripsAndRoutes',
         icon: 'pi pi-car',
         isUpcoming: true,
       },
       {
-        label: 'Vé & Giữ chỗ',
+        labelKey: 'navigation.items.bookings',
         icon: 'pi pi-ticket',
         isUpcoming: true,
       },
     ],
   },
   {
-    title: 'HỆ THỐNG',
+    titleKey: 'navigation.groups.system',
     items: [
       {
-        label: 'Vai trò & Phân quyền',
+        labelKey: 'navigation.items.rolesAndPermissions',
         route: '/roles',
         icon: 'pi pi-shield',
         permission: 'ROLE_READ',
       },
       {
-        label: 'Cài đặt hệ thống',
+        labelKey: 'navigation.items.settings',
         icon: 'pi pi-cog',
         isUpcoming: true,
       },
@@ -82,6 +84,7 @@ export const MENU_CONFIG: NavGroup[] = [
     Tag,
     Tooltip,
     Drawer,
+    TranslatePipe,
   ],
   templateUrl: './app-sidebar.component.html',
   styleUrl: './app-sidebar.component.scss',

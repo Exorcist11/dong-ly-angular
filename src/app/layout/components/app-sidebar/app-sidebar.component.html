@@ -2,7 +2,7 @@
 <aside
   class="app-sidebar-desktop"
   [class.collapsed]="layoutService.sidebarCollapsed()"
-  aria-label="Thanh điều hướng chính"
+  [attr.aria-label]="'navigation.items.mainNavAria' | translate"
 >
   <ng-container *ngTemplateOutlet="sidebarContent"></ng-container>
 </aside>
@@ -37,27 +37,27 @@
 
     <!-- NAVIGATION GROUPS -->
     <nav class="sidebar-nav" role="navigation">
-      @for (group of menuGroups; track group.title) {
+      @for (group of menuGroups; track group.titleKey) {
         <div class="nav-group">
           @if (!layoutService.sidebarCollapsed() || layoutService.mobileMenuOpen()) {
-            <div class="group-title">{{ group.title }}</div>
+            <div class="group-title">{{ group.titleKey | translate }}</div>
           }
 
           <div class="group-items">
-            @for (item of group.items; track item.label) {
+            @for (item of group.items; track item.labelKey) {
               @if (hasItemAccess(item)) {
                 @if (item.isUpcoming) {
                   <!-- Upcoming Item -->
                   <div
                     class="nav-item upcoming-item"
-                    [pTooltip]="layoutService.sidebarCollapsed() ? (item.label + ' (Tính năng đang phát triển)') : 'Tính năng đang phát triển'"
+                    [pTooltip]="layoutService.sidebarCollapsed() ? ((item.labelKey | translate) + ' (' + ('navigation.items.upcomingTooltip' | translate) + ')') : ('navigation.items.upcomingTooltip' | translate)"
                     tooltipPosition="right"
                   >
                     <i [class]="item.icon + ' item-icon'"></i>
                     @if (!layoutService.sidebarCollapsed() || layoutService.mobileMenuOpen()) {
-                      <span class="item-label">{{ item.label }}</span>
+                      <span class="item-label">{{ item.labelKey | translate }}</span>
                       <p-tag
-                        value="Sắp ra mắt"
+                        [value]="'navigation.items.upcoming' | translate"
                         styleClass="upcoming-tag"
                       />
                     }
@@ -69,13 +69,13 @@
                     routerLinkActive="active-link"
                     [routerLinkActiveOptions]="{ exact: false }"
                     class="nav-item link-item"
-                    [pTooltip]="layoutService.sidebarCollapsed() ? item.label : ''"
+                    [pTooltip]="layoutService.sidebarCollapsed() ? (item.labelKey | translate) : ''"
                     tooltipPosition="right"
                     (click)="onNavigate()"
                   >
                     <i [class]="item.icon + ' item-icon'"></i>
                     @if (!layoutService.sidebarCollapsed() || layoutService.mobileMenuOpen()) {
-                      <span class="item-label">{{ item.label }}</span>
+                      <span class="item-label">{{ item.labelKey | translate }}</span>
                     }
                   </a>
                 }

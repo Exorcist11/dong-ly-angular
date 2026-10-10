@@ -13,17 +13,17 @@
         <i class="pi pi-shield title-icon"></i>
         <div class="title-details">
           <div class="main-title">
-            <span>Phân quyền vai trò:</span>
+            <span>{{ 'roles.matrix.titlePrefix' | translate }}</span>
             <strong class="role-title-name">{{ roleName }}</strong>
             <span class="role-code-badge">{{ roleCode }}</span>
             @if (isSystemRole) {
-              <p-tag value="Hệ thống" severity="contrast" styleClass="role-tag" />
+              <p-tag [value]="'common.status.system' | translate" severity="contrast" styleClass="role-tag" />
             } @else {
-              <p-tag value="Tùy chỉnh" severity="secondary" styleClass="role-tag" />
+              <p-tag [value]="'common.status.custom' | translate" severity="secondary" styleClass="role-tag" />
             }
           </div>
           <span class="sub-title">
-            Thiết lập danh mục các chức năng và quyền hạn được phép thực thi trong hệ thống
+            {{ 'roles.matrix.subtitle' | translate }}
           </span>
         </div>
       </div>
@@ -35,9 +35,9 @@
       <div class="admin-safety-notice">
         <i class="pi pi-lock-open lock-icon"></i>
         <div class="notice-desc">
-          <strong>Cơ chế bảo vệ quản trị tối cao (ADMIN):</strong>
+          <strong>{{ 'roles.matrix.adminNoticeTitle' | translate }}</strong>
           <span>
-            Hệ thống tự động bảo vệ và duy trì 5 quyền cốt lõi (ROLE_READ, ROLE_CREATE, ROLE_UPDATE, ROLE_ASSIGN, PERMISSION_READ) nhằm ngăn chặn việc tự thu hồi quyền quản trị.
+            {{ 'roles.matrix.adminNoticeDesc' | translate }}
           </span>
         </div>
       </div>
@@ -50,13 +50,13 @@
           [value]="searchQuery()"
           (searchChange)="searchQuery.set($event)"
           (clear)="searchQuery.set('')"
-          placeholder="Tìm quyền theo tên, mã (VD: USER_READ)..."
+          [placeholder]="'roles.matrix.searchPlaceholder' | translate"
         />
       </div>
 
       <div class="quick-actions">
         <p-button
-          label="Chọn tất cả"
+          [label]="'roles.matrix.selectAll' | translate"
           icon="pi pi-check-square"
           severity="secondary"
           [outlined]="true"
@@ -66,7 +66,7 @@
         />
 
         <p-button
-          label="Bỏ chọn tất cả"
+          [label]="'roles.matrix.deselectAll' | translate"
           icon="pi pi-stop"
           severity="secondary"
           [outlined]="true"
@@ -77,7 +77,7 @@
 
         @if (hasChanges()) {
           <p-button
-            label="Hoàn tác"
+            [label]="'roles.matrix.reset' | translate"
             icon="pi pi-refresh"
             severity="warn"
             [text]="true"
@@ -93,23 +93,23 @@
     <div class="matrix-stats-bar">
       <div class="stats-counts">
         <span class="stat-item total">
-          Đã chọn: <strong>{{ selectedCount() }}</strong> / {{ totalSystemPermissions() }} quyền hạn
+          {{ 'roles.matrix.selectedCount' | translate:{ selected: selectedCount(), total: totalSystemPermissions() } }}
         </span>
       </div>
 
       <div class="diff-badges">
         @if (addedCount() > 0) {
           <span class="diff-badge added">
-            <i class="pi pi-plus"></i> Thêm {{ addedCount() }} quyền mới
+            <i class="pi pi-plus"></i> {{ 'roles.matrix.addCount' | translate:{ count: addedCount() } }}
           </span>
         }
         @if (removedCount() > 0) {
           <span class="diff-badge removed">
-            <i class="pi pi-minus"></i> Thu hồi {{ removedCount() }} quyền
+            <i class="pi pi-minus"></i> {{ 'roles.matrix.removeCount' | translate:{ count: removedCount() } }}
           </span>
         }
         @if (!hasChanges()) {
-          <span class="diff-badge unchanged">Chưa có thay đổi</span>
+          <span class="diff-badge unchanged">{{ 'roles.matrix.unchanged' | translate }}</span>
         }
       </div>
     </div>
@@ -118,7 +118,7 @@
     @if (loading()) {
       <div class="matrix-loading-state">
         <i class="pi pi-spin pi-spinner loading-spinner"></i>
-        <span>Đang tải ma trận phân quyền...</span>
+        <span>{{ 'roles.matrix.loading' | translate }}</span>
       </div>
     } @else {
       <div class="matrix-modules-container">
@@ -138,7 +138,7 @@
 
               <div class="module-summary">
                 <span class="module-count-badge">
-                  {{ group.permissions.length }} quyền hạn
+                  {{ 'roles.matrix.permissionCount' | translate:{ count: group.permissions.length } }}
                 </span>
               </div>
             </div>
@@ -168,10 +168,10 @@
                       @if (isCoreAdminPermission(perm.code)) {
                         <span
                           class="core-perm-badge"
-                          pTooltip="Quyền cốt lõi bắt buộc đối với ADMIN, không thể thu hồi"
+                          [pTooltip]="'roles.matrix.coreTooltip' | translate"
                           tooltipPosition="top"
                         >
-                          <i class="pi pi-lock"></i> Cốt lõi
+                          <i class="pi pi-lock"></i> {{ 'roles.matrix.coreBadge' | translate }}
                         </span>
                       }
                     </div>
@@ -187,7 +187,7 @@
         } @empty {
           <div class="matrix-empty-search">
             <i class="pi pi-search"></i>
-            <p>Không tìm thấy quyền hạn nào khớp với từ khóa "{{ searchQuery() }}"</p>
+            <p>{{ 'roles.matrix.emptySearch' | translate:{ query: searchQuery() } }}</p>
           </div>
         }
       </div>
@@ -199,14 +199,14 @@
       <div class="footer-left">
         @if (hasChanges()) {
           <span class="unsaved-hint">
-            <i class="pi pi-info-circle"></i> Bạn có các thay đổi chưa lưu
+            <i class="pi pi-info-circle"></i> {{ 'roles.matrix.unsavedChanges' | translate }}
           </span>
         }
       </div>
 
       <div class="footer-actions">
         <p-button
-          label="Hủy bỏ"
+          [label]="'common.actions.cancel' | translate"
           icon="pi pi-times"
           severity="secondary"
           [outlined]="true"
@@ -215,7 +215,7 @@
         />
 
         <p-button
-          label="Lưu ma trận quyền"
+          [label]="'roles.matrix.saveSubmit' | translate"
           icon="pi pi-check"
           severity="primary"
           (onClick)="savePermissions()"

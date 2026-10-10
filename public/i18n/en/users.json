@@ -1,0 +1,81 @@
+{
+  "title": "User Management",
+  "subtitle": "Directory of staff, dispatchers, and customers in the Dong Ly system",
+  "breadcrumbs": {
+    "users": "Users"
+  },
+  "actions": {
+    "create": "Add User",
+    "edit": "Edit Details",
+    "assignRole": "Assign Roles (RBAC)",
+    "lock": "Lock Account",
+    "unlock": "Reactivate Account"
+  },
+  "columns": {
+    "accountAndName": "Account & Full Name",
+    "contact": "Email & Phone Number",
+    "status": "Status",
+    "roles": "Roles",
+    "createdAt": "Created At",
+    "actions": "Actions"
+  },
+  "statusFilter": "Status:",
+  "allStatuses": "All statuses",
+  "searchPlaceholder": "Search by name, username, email, phone...",
+  "pageReport": "Showing {first} - {last} of {totalRecords} users",
+  "youBadge": "(You)",
+  "unassigned": "Unassigned",
+  "dialog": {
+    "createTitle": "Add New User",
+    "editTitle": "Update User Information",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "e.g., john_doe",
+    "usernamePatternError": "Username can only contain letters, numbers, and . _ -",
+    "fullNameLabel": "Full Name",
+    "fullNamePlaceholder": "e.g., John Doe",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "e.g., john@dongly.vn",
+    "passwordLabel": "Initial Password",
+    "passwordPlaceholder": "Minimum 8 characters",
+    "passwordPrompt": "Enter a strong password",
+    "passwordWeak": "Weak",
+    "passwordMedium": "Medium",
+    "passwordStrong": "Strong",
+    "phoneLabel": "Phone Number",
+    "phonePlaceholder": "e.g., 0987654321",
+    "phonePatternError": "Invalid phone number format (10 digits).",
+    "rolesLabel": "System Roles",
+    "rolesHint": "User will inherit all permissions associated with selected roles.",
+    "rolesPlaceholder": "Select roles (default: Customer)",
+    "rolesEmpty": "No roles available",
+    "createSubmit": "Create Account",
+    "editSubmit": "Save Changes"
+  },
+  "roleDialog": {
+    "title": "Permissions & Role Assignment",
+    "selectRolesTitle": "Select applicable roles:",
+    "diffTitle": "Preview Changes:",
+    "addedRoles": "Roles to add:",
+    "removedRoles": "Roles to revoke:",
+    "noChange": "None",
+    "tokenWarning": "Note: Changing roles will automatically invalidate all active sessions (Refresh Tokens) of this account to preserve security.",
+    "submit": "Confirm & Update"
+  },
+  "statusModal": {
+    "lockTitle": "Lock User Account",
+    "lockMessage": "Are you sure you want to lock account \"{{name}}\" (@{{username}})? This user will be logged out and cannot sign in.",
+    "lockConfirm": "Lock Account",
+    "unlockTitle": "Reactivate Account",
+    "unlockMessage": "Reactivate account \"{{name}}\" (@{{username}})? The user will be able to sign in normally.",
+    "unlockConfirm": "Reactivate"
+  },
+  "notifications": {
+    "createSuccess": "User account created successfully.",
+    "updateSuccess": "User information updated successfully.",
+    "updateRolesSuccess": "User roles updated successfully.",
+    "cannotLockSelf": "You cannot lock your own account.",
+    "activateSuccess": "Account activated successfully.",
+    "lockSuccess": "User account locked successfully.",
+    "loadError": "Could not connect or load user directory."
+  }
+}

@@ -12,6 +12,8 @@ import { Button } from 'primeng/button';
 import { Tooltip } from 'primeng/tooltip';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { TranslationService } from '../../../../core/i18n/translation.service';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { ConfirmModalComponent } from '../../../../shared/components/confirm-modal/confirm-modal.component';
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
@@ -45,6 +47,7 @@ import { UserRoleDialogComponent } from '../../components/user-role-dialog/user-
   imports: [
     CommonModule,
     FormsModule,
+    TranslatePipe,
     DataTableComponent,
     TableCellDirective,
     Button,
@@ -66,6 +69,7 @@ export class UserListPageComponent implements OnInit {
   private readonly roleService = inject(RoleService);
   private readonly authService = inject(AuthService);
   private readonly notification = inject(NotificationService);
+  private readonly translationService = inject(TranslationService);
 
   // DATA SIGNALS
   readonly users = signal<User[]>([]);
@@ -76,14 +80,23 @@ export class UserListPageComponent implements OnInit {
   readonly sortField = signal<string>('createdAt,desc');
 
   // SHARED TABLE CONFIG
-  readonly columns: TableColumn<User>[] = [
-    { field: 'fullName', header: 'Tài khoản & Họ tên', width: '260px' },
-    { field: 'email', header: 'Email & Số điện thoại', width: '220px' },
-    { field: 'status', header: 'Trạng thái', width: '140px' },
-    { field: 'roles', header: 'Vai trò', width: '220px' },
-    { field: 'createdAt', header: 'Ngày tạo', width: '130px', sortable: true },
-    { field: 'actions', header: 'Thao tác', width: '120px', align: 'center' },
-  ];
+  readonly columns = computed<TableColumn<User>[]>(() => {
+    this.translationService.currentLang();
+    return [
+      { field: 'fullName', header: this.translationService.translate('users.columns.accountAndName'), width: '260px' },
+      { field: 'email', header: this.translationService.translate('users.columns.contact'), width: '220px' },
+      { field: 'status', header: this.translationService.translate('users.columns.status'), width: '140px' },
+      { field: 'roles', header: this.translationService.translate('users.columns.roles'), width: '220px' },
+      { field: 'createdAt', header: this.translationService.translate('users.columns.createdAt'), width: '130px', sortable: true },
+      { field: 'actions', header: this.translationService.translate('users.columns.actions'), width: '120px', align: 'center' },
+    ];
+  });
+
+  readonly breadcrumbs = computed(() => [
+    { label: this.translationService.translate('navigation.home'), url: '/dashboard' },
+    { label: this.translationService.translate('navigation.systemGroup') },
+    { label: this.translationService.translate('users.breadcrumbs.users') },
+  ]);
 
   readonly rowClass = (u: User) => (this.isCurrentUser(u) ? 'self-row' : '');
 
@@ -110,26 +123,29 @@ export class UserListPageComponent implements OnInit {
     isDanger: boolean;
     targetStatus: UserStatus;
   }>({
-    title: 'Xác nhận thao tác',
+    title: '',
     message: '',
-    confirmText: 'Xác nhận',
+    confirmText: '',
     isDanger: false,
     targetStatus: 'ACTIVE',
   });
 
-  readonly statusOptions: SelectOption<UserStatus | 'ALL'>[] = [
-    { label: 'Tất cả trạng thái', value: 'ALL' },
-    { label: 'Đang hoạt động', value: 'ACTIVE' },
-    { label: 'Ngưng hoạt động', value: 'INACTIVE' },
-    { label: 'Đã khóa', value: 'LOCKED' },
-  ];
+  readonly statusOptions = computed<SelectOption<UserStatus | 'ALL'>[]>(() => {
+    this.translationService.currentLang();
+    return [
+      { label: this.translationService.translate('users.allStatuses'), value: 'ALL' },
+      { label: this.translationService.translate('common.status.active'), value: 'ACTIVE' },
+      { label: this.translationService.translate('common.status.inactive'), value: 'INACTIVE' },
+      { label: this.translationService.translate('common.status.locked'), value: 'LOCKED' },
+    ];
+  });
 
   readonly tableFilters = computed<TableFilterConfig<UserStatus | 'ALL'>[]>(() => [
     {
       key: 'status',
-      label: 'Trạng thái:',
-      placeholder: 'Tất cả trạng thái',
-      options: this.statusOptions,
+      label: this.translationService.translate('users.statusFilter'),
+      placeholder: this.translationService.translate('users.allStatuses'),
+      options: this.statusOptions(),
       value: this.selectedStatus(),
       width: '180px',
     },
@@ -257,7 +273,7 @@ export class UserListPageComponent implements OnInit {
           next: () => {
             this.isSubmitting.set(false);
             this.isFormDialogOpen.set(false);
-            this.notification.success('Cập nhật thông tin người dùng thành công.');
+            this.notification.success(this.translationService.translate('users.notifications.updateSuccess'));
             this.loadUsers();
           },
           error: () => {
@@ -272,7 +288,7 @@ export class UserListPageComponent implements OnInit {
           next: () => {
             this.isSubmitting.set(false);
             this.isFormDialogOpen.set(false);
-            this.notification.success('Tạo người dùng mới thành công.');
+            this.notification.success(this.translationService.translate('users.notifications.createSuccess'));
             this.loadUsers();
           },
           error: () => {
@@ -303,7 +319,7 @@ export class UserListPageComponent implements OnInit {
         next: () => {
           this.isSubmitting.set(false);
           this.isRoleDialogOpen.set(false);
-          this.notification.success('Cập nhật vai trò người dùng thành công.');
+          this.notification.success(this.translationService.translate('users.notifications.updateRolesSuccess'));
           this.loadUsers();
         },
         error: () => {
@@ -315,7 +331,7 @@ export class UserListPageComponent implements OnInit {
   // STATUS CHANGE MODAL
   confirmToggleStatus(user: User): void {
     if (this.isCurrentUser(user)) {
-      this.notification.warning('Không thể tự khóa tài khoản của chính mình.');
+      this.notification.warning(this.translationService.translate('users.notifications.cannotLockSelf'));
       return;
     }
 
@@ -323,17 +339,23 @@ export class UserListPageComponent implements OnInit {
 
     if (user.status === 'ACTIVE') {
       this.statusModalConfig.set({
-        title: 'Khóa tài khoản người dùng',
-        message: `Bạn có chắc chắn muốn khóa tài khoản "${user.fullName}" (@${user.username})? Người dùng này sẽ bị thu hồi phiên làm việc và không thể đăng nhập.`,
-        confirmText: 'Khóa tài khoản',
+        title: this.translationService.translate('users.statusModal.lockTitle'),
+        message: this.translationService.translate('users.statusModal.lockMessage', {
+          name: user.fullName,
+          username: user.username,
+        }),
+        confirmText: this.translationService.translate('users.statusModal.lockConfirm'),
         isDanger: true,
         targetStatus: 'LOCKED',
       });
     } else {
       this.statusModalConfig.set({
-        title: 'Kích hoạt lại tài khoản',
-        message: `Kích hoạt lại tài khoản "${user.fullName}" (@${user.username})? Người dùng có thể đăng nhập bình thường sau khi kích hoạt.`,
-        confirmText: 'Kích hoạt',
+        title: this.translationService.translate('users.statusModal.unlockTitle'),
+        message: this.translationService.translate('users.statusModal.unlockMessage', {
+          name: user.fullName,
+          username: user.username,
+        }),
+        confirmText: this.translationService.translate('users.statusModal.unlockConfirm'),
         isDanger: false,
         targetStatus: 'ACTIVE',
       });
@@ -361,8 +383,8 @@ export class UserListPageComponent implements OnInit {
           this.statusTargetUser.set(null);
           this.notification.success(
             newStatus === 'ACTIVE'
-              ? 'Kích hoạt tài khoản thành công.'
-              : 'Đã khóa tài khoản người dùng.'
+              ? this.translationService.translate('users.notifications.activateSuccess')
+              : this.translationService.translate('users.notifications.lockSuccess')
           );
           this.loadUsers();
         },

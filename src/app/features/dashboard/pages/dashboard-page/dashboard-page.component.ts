@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   inject,
   signal,
@@ -8,6 +9,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LayoutService } from '../../../../layout/layout.service';
+import { TranslationService } from '../../../../core/i18n/translation.service';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { KpiCardComponent } from '../../components/kpi-card/kpi-card.component';
 
 import { Card } from 'primeng/card';
@@ -50,6 +53,7 @@ export interface RecentActivity {
   imports: [
     CommonModule,
     FormsModule,
+    TranslatePipe,
     KpiCardComponent,
     Card,
     Button,
@@ -68,15 +72,19 @@ export interface RecentActivity {
 })
 export class DashboardPageComponent {
   private readonly layoutService = inject(LayoutService);
+  private readonly translationService = inject(TranslationService);
 
-  readonly tripColumns: TableColumn<TripSchedule>[] = [
-    { field: 'departureTime', header: 'Giờ chạy', width: '90px' },
-    { field: 'route', header: 'Tuyến xe' },
-    { field: 'plateNumber', header: 'Biển số' },
-    { field: 'vehicleType', header: 'Loại xe' },
-    { field: 'occupied', header: 'Ghế ngồi', width: '140px', align: 'right' },
-    { field: 'status', header: 'Trạng thái', width: '110px', align: 'center' },
-  ];
+  readonly tripColumns = computed<TableColumn<TripSchedule>[]>(() => {
+    this.translationService.currentLang();
+    return [
+      { field: 'departureTime', header: this.translationService.translate('dashboard.columns.departureTime'), width: '90px' },
+      { field: 'route', header: this.translationService.translate('dashboard.columns.route') },
+      { field: 'plateNumber', header: this.translationService.translate('dashboard.columns.plateNumber') },
+      { field: 'vehicleType', header: this.translationService.translate('dashboard.columns.vehicleType') },
+      { field: 'occupied', header: this.translationService.translate('dashboard.columns.occupied'), width: '140px', align: 'right' },
+      { field: 'status', header: this.translationService.translate('dashboard.columns.status'), width: '110px', align: 'center' },
+    ];
+  });
 
   readonly isLoading = signal<boolean>(false);
   readonly isRefreshing = signal<boolean>(false);
@@ -84,18 +92,24 @@ export class DashboardPageComponent {
   readonly lastUpdatedTime = signal<string>(this.getCurrentTimeString());
 
   readonly selectedTimeRange = signal<string>('today');
-  readonly timeRangeOptions = [
-    { label: 'Hôm nay', value: 'today' },
-    { label: '7 ngày', value: '7d' },
-    { label: '30 ngày', value: '30d' },
-  ];
+  readonly timeRangeOptions = computed(() => {
+    this.translationService.currentLang();
+    return [
+      { label: this.translationService.translate('dashboard.timeRange.today'), value: 'today' },
+      { label: this.translationService.translate('dashboard.timeRange.sevenDays'), value: '7d' },
+      { label: this.translationService.translate('dashboard.timeRange.thirtyDays'), value: '30d' },
+    ];
+  });
 
   readonly revenueFilter = signal<string>('week');
-  readonly chartFilterOptions = [
-    { label: 'Ngày', value: 'day' },
-    { label: 'Tuần', value: 'week' },
-    { label: 'Tháng', value: 'month' },
-  ];
+  readonly chartFilterOptions = computed(() => {
+    this.translationService.currentLang();
+    return [
+      { label: this.translationService.translate('dashboard.chartFilter.day'), value: 'day' },
+      { label: this.translationService.translate('dashboard.chartFilter.week'), value: 'week' },
+      { label: this.translationService.translate('dashboard.chartFilter.month'), value: 'month' },
+    ];
+  });
 
   // LINE CHART CONFIG
   lineChartData: Record<string, unknown> | null = null;
@@ -213,9 +227,11 @@ export class DashboardPageComponent {
   constructor() {
     this.initCenterTextPlugin();
 
-    // Effect rebuilds charts when theme changes
+    // Effect rebuilds charts when theme or language changes
     effect(() => {
       this.layoutService.resolvedTheme();
+      this.translationService.currentLang();
+      this.initCenterTextPlugin();
       this.initCharts();
     });
   }
@@ -242,6 +258,19 @@ export class DashboardPageComponent {
     this.initRevenueChart();
   }
 
+  getTripStatusKey(status: TripSchedule['status']): string {
+    switch (status) {
+      case 'departing_soon':
+        return 'dashboard.tripStatus.departingSoon';
+      case 'on_route':
+        return 'dashboard.tripStatus.onRoute';
+      case 'delayed':
+        return 'dashboard.tripStatus.delayed';
+      default:
+        return status;
+    }
+  }
+
   private initCharts(): void {
     this.initRevenueChart();
     this.initOccupancyChart();
@@ -253,10 +282,18 @@ export class DashboardPageComponent {
     const gridColor = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)';
 
     this.lineChartData = {
-      labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+      labels: [
+        this.translationService.translate('dashboard.weekdays.mon'),
+        this.translationService.translate('dashboard.weekdays.tue'),
+        this.translationService.translate('dashboard.weekdays.wed'),
+        this.translationService.translate('dashboard.weekdays.thu'),
+        this.translationService.translate('dashboard.weekdays.fri'),
+        this.translationService.translate('dashboard.weekdays.sat'),
+        this.translationService.translate('dashboard.weekdays.sun'),
+      ],
       datasets: [
         {
-          label: 'Doanh thu (triệu ₫)',
+          label: this.translationService.translate('dashboard.revenueLabel'),
           data: [22.5, 26.0, 24.2, 28.5, 31.0, 38.5, 32.5],
           fill: true,
           borderColor: '#D71920',
@@ -270,7 +307,7 @@ export class DashboardPageComponent {
           pointHoverRadius: 6,
         },
         {
-          label: 'Vé đã đặt',
+          label: this.translationService.translate('dashboard.bookingsLabel'),
           data: [88, 102, 95, 110, 122, 150, 128],
           fill: false,
           borderColor: '#F2B632',
@@ -346,7 +383,11 @@ export class DashboardPageComponent {
     const emptyColor = isDark ? '#26262D' : '#E8E4DD';
 
     this.doughnutChartData = {
-      labels: ['Limousine 9-11 chỗ', 'Giường nằm VIP', 'Ghế trống'],
+      labels: [
+        this.translationService.translate('dashboard.limousineFleet'),
+        this.translationService.translate('dashboard.vipSleeper'),
+        this.translationService.translate('dashboard.emptySeats'),
+      ],
       datasets: [
         {
           data: [65, 20, 15],
@@ -400,7 +441,7 @@ export class DashboardPageComponent {
 
           ctx.font = '500 12px "Be Vietnam Pro", sans-serif';
           ctx.fillStyle = '#8A857D';
-          ctx.fillText('Lấp đầy', width / 2, height / 2 + 14);
+          ctx.fillText(this.translationService.translate('dashboard.occupiedCenter'), width / 2, height / 2 + 14);
           ctx.restore();
         },
       },

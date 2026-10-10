@@ -1,4 +1,4 @@
-<div class="lang-switcher-wrapper" role="group" aria-label="Lựa chọn ngôn ngữ">
+<div class="lang-switcher-wrapper" role="group" [attr.aria-label]="'common.language.selectLanguage' | translate">
   @for (lang of translationService.supportedLanguages; track lang.code) {
     <button
       type="button"

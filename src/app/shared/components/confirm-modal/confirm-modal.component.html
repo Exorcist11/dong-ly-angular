@@ -2,19 +2,24 @@
   <div class="modal-backdrop" (click)="onCancel()">
     <div class="modal-dialog" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h3 class="modal-title">{{ title }}</h3>
-        <button type="button" class="btn-close" (click)="onCancel()" aria-label="Đóng">
+        <h3 class="modal-title">{{ title || ('common.dialogs.confirmTitle' | translate) }}</h3>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="onCancel()"
+          [attr.aria-label]="'common.actions.close' | translate"
+        >
           &times;
         </button>
       </div>
 
       <div class="modal-body">
-        <p>{{ message }}</p>
+        <p>{{ message || ('common.dialogs.confirmMessage' | translate) }}</p>
       </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="onCancel()">
-          {{ cancelText }}
+          {{ cancelText || ('common.actions.cancel' | translate) }}
         </button>
         <button
           type="button"
@@ -23,7 +28,7 @@
           [class.btn-primary]="!danger"
           (click)="onConfirm()"
         >
-          {{ confirmText }}
+          {{ confirmText || ('common.actions.confirm' | translate) }}
         </button>
       </div>
     </div>

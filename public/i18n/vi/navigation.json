@@ -11,5 +11,56 @@
   "users": "Quản lý người dùng",
   "vehicles": "Phương tiện & Tài xế",
   "bookings": "Vé & Giữ chỗ",
-  "logout": "Đăng xuất"
+  "logout": "Đăng xuất",
+  "system": "Hệ thống",
+  "systemGroup": "Hệ thống",
+  "roles": "Vai trò & Phân quyền",
+  "settings": "Cài đặt hệ thống",
+  "groups": {
+    "overview": "TỔNG QUAN",
+    "operations": "VẬN HÀNH",
+    "system": "HỆ THỐNG"
+  },
+  "items": {
+    "dashboard": "Bàn làm việc",
+    "users": "Quản lý người dùng",
+    "tripsAndRoutes": "Chuyến xe & Tuyến",
+    "bookings": "Vé & Giữ chỗ",
+    "rolesAndPermissions": "Vai trò & Phân quyền",
+    "settings": "Cài đặt hệ thống",
+    "upcoming": "Sắp ra mắt",
+    "upcomingTooltip": "Tính năng đang phát triển",
+    "mainNavAria": "Thanh điều hướng chính"
+  },
+  "topbar": {
+    "toggleSidebar": "Thu gọn hoặc mở rộng thanh điều hướng",
+    "searchPlaceholder": "Tìm chuyến xe, vé, khách hàng...",
+    "selectLanguageAria": "Lựa chọn ngôn ngữ",
+    "themeCurrent": "Đổi giao diện (Hiện tại: {{theme}})",
+    "themeLight": "Giao diện: Sáng",
+    "themeDark": "Giao diện: Tối",
+    "themeSystem": "Giao diện: Theo hệ điều hành",
+    "notificationsTooltip": "Thông báo hệ thống (1 thông báo mới)",
+    "notificationsAria": "Thông báo",
+    "avatarTooltip": "Nhà xe Đông Lý Admin",
+    "commandPaletteTitle": "Tìm kiếm nhanh (Command Palette)",
+    "commandPalettePlaceholder": "Gõ từ khóa tìm kiếm (bàn làm việc, chuyến xe, vé...)",
+    "commandPaletteShortcuts": "LỐI TẮT HỆ THỐNG",
+    "commandPaletteNoResults": "Không tìm thấy kết quả phù hợp cho \"{{query}}\"",
+    "quickOverview": "Bàn làm việc tổng quan",
+    "quickNavigation": "Điều hướng",
+    "quickTrips": "Quản lý chuyến xe (Thanh Hóa → Hà Nội)",
+    "quickOperations": "Vận hành",
+    "quickBookings": "Quản lý vé & giữ chỗ hành khách",
+    "quickTicketing": "Bán vé",
+    "quickCustomers": "Tra cứu thông tin khách hàng",
+    "quickCustomerCategory": "Khách hàng"
+  },
+  "userMenu": {
+    "ariaLabel": "Menu tài khoản người dùng",
+    "adminDefault": "Quản trị viên",
+    "profile": "Hồ sơ cá nhân",
+    "settings": "Cài đặt hệ thống",
+    "logout": "Đăng xuất"
+  }
 }

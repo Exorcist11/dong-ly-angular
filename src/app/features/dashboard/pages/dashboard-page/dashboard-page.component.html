@@ -3,20 +3,20 @@
   <header class="dashboard-header">
     <div class="header-left">
       <div class="title-with-status">
-        <h1 class="page-title">Bàn làm việc quản trị</h1>
-        <div class="system-health-pill" title="Mọi dịch vụ máy chủ và đồng bộ vé đang hoạt động hoàn hảo">
+        <h1 class="page-title">{{ 'dashboard.title' | translate }}</h1>
+        <div class="system-health-pill" [title]="'dashboard.systemHealthTooltip' | translate">
           <span class="pulsing-dot" aria-hidden="true"></span>
-          <span class="health-text">Hệ thống hoạt động bình thường</span>
+          <span class="health-text">{{ 'dashboard.systemHealthGood' | translate }}</span>
         </div>
       </div>
-      <p class="page-subtitle">Tổng quan hoạt động vận tải và tình hình bán vé nhà xe Đông Lý</p>
+      <p class="page-subtitle">{{ 'dashboard.subtitle' | translate }}</p>
     </div>
 
     <!-- HEADER RIGHT CONTROLS -->
     <div class="header-right">
       <!-- Time Range Select -->
       <p-selectbutton
-        [options]="timeRangeOptions"
+        [options]="timeRangeOptions()"
         [ngModel]="selectedTimeRange()"
         (ngModelChange)="onTimeRangeChange($event)"
         optionLabel="label"
@@ -27,7 +27,7 @@
       <!-- Refresh Button with Spin & Time Caption -->
       <div class="refresh-btn-group">
         <p-button
-          label="Làm mới"
+          [label]="'common.actions.refresh' | translate"
           icon="pi pi-refresh"
           severity="secondary"
           [outlined]="true"
@@ -35,12 +35,12 @@
           (onClick)="refreshData()"
           styleClass="saas-header-btn"
         />
-        <span class="refresh-caption">Cập nhật lúc {{ lastUpdatedTime() }}</span>
+        <span class="refresh-caption">{{ 'dashboard.updatedAt' | translate:{ time: lastUpdatedTime() } }}</span>
       </div>
 
       <!-- Add Trip Primary Action -->
       <p-button
-        label="Thêm chuyến"
+        [label]="'dashboard.addTrip' | translate"
         icon="pi pi-plus"
         (onClick)="onAddTrip()"
         styleClass="saas-header-btn btn-primary-action"
@@ -53,59 +53,59 @@
     <div class="error-banner-wrapper">
       <p-message severity="error">
         <div class="error-message-content">
-          <span>Không thể tải một số số liệu thống kê thời gian thực.</span>
-          <p-button label="Thử lại" [text]="true" size="small" (onClick)="refreshData()" />
+          <span>{{ 'dashboard.errorRealtime' | translate }}</span>
+          <p-button [label]="'common.actions.retry' | translate" [text]="true" size="small" (onClick)="refreshData()" />
         </div>
       </p-message>
     </div>
   }
 
   <!-- ROW 1: KPI STAT CARDS (4 COLS / 2 TABLET / 1 MOBILE) -->
-  <section class="kpi-grid-section" aria-label="Chỉ số hiệu suất chính">
+  <section class="kpi-grid-section" [attr.aria-label]="'dashboard.kpiAriaLabel' | translate">
     <app-kpi-card
-      label="Vé đã đặt"
+      [label]="'dashboard.statsBookings' | translate"
       value="128"
       icon="pi pi-ticket"
       color="red"
       trend="+12%"
       trendDirection="up"
-      trendText="so với hôm qua"
+      [trendText]="'dashboard.vsYesterday' | translate"
       [sparklineData]="[45, 52, 68, 74, 90, 112, 128]"
       [loading]="isLoading()"
     />
 
     <app-kpi-card
-      label="Doanh thu hôm nay"
+      [label]="'dashboard.statsRevenue' | translate"
       value="32.500.000 ₫"
       icon="pi pi-wallet"
       color="success"
       trend="+8.5%"
       trendDirection="up"
-      trendText="so với hôm qua"
+      [trendText]="'dashboard.vsYesterday' | translate"
       [sparklineData]="[18, 22, 24, 28, 26, 30, 32.5]"
       [loading]="isLoading()"
     />
 
     <app-kpi-card
-      label="Chuyến hôm nay"
+      [label]="'dashboard.statsTrips' | translate"
       value="16"
       icon="pi pi-car"
       color="gold"
       trend="100%"
       trendDirection="up"
-      trendText="Đúng lịch trình 100%"
+      [trendText]="'dashboard.onSchedule100' | translate"
       [sparklineData]="[12, 14, 15, 14, 16, 15, 16]"
       [loading]="isLoading()"
     />
 
     <app-kpi-card
-      label="Hành khách mới"
+      [label]="'dashboard.statsCustomers' | translate"
       value="42"
       icon="pi pi-users"
       color="info"
       trend="+5"
       trendDirection="up"
-      trendText="so với tuần trước"
+      [trendText]="'dashboard.vsLastWeek' | translate"
       [sparklineData]="[20, 24, 28, 30, 35, 38, 42]"
       [loading]="isLoading()"
     />
@@ -118,11 +118,11 @@
       <p-card styleClass="saas-card chart-card">
         <div class="card-header-flex">
           <div class="header-titles">
-            <h2 class="card-title">Doanh thu & vé đặt</h2>
-            <p class="card-subtitle">Biểu đồ đối soát doanh thu vận hành và tổng lượng vé bán ra</p>
+            <h2 class="card-title">{{ 'dashboard.revenueAndBookings' | translate }}</h2>
+            <p class="card-subtitle">{{ 'dashboard.revenueAndBookingsSubtitle' | translate }}</p>
           </div>
           <p-selectbutton
-            [options]="chartFilterOptions"
+            [options]="chartFilterOptions()"
             [ngModel]="revenueFilter()"
             (ngModelChange)="onRevenueFilterChange($event)"
             optionLabel="label"
@@ -147,8 +147,8 @@
       <p-card styleClass="saas-card doughnut-card">
         <div class="card-header-flex">
           <div class="header-titles">
-            <h2 class="card-title">Tỷ lệ lấp đầy</h2>
-            <p class="card-subtitle">Hiệu suất khai thác ghế toàn mạng lưới</p>
+            <h2 class="card-title">{{ 'dashboard.occupancy' | translate }}</h2>
+            <p class="card-subtitle">{{ 'dashboard.occupancySubtitle' | translate }}</p>
           </div>
         </div>
 
@@ -172,11 +172,11 @@
       <p-card styleClass="saas-card table-card">
         <div class="card-header-flex">
           <div class="header-titles">
-            <h2 class="card-title">Lịch chạy gần đây</h2>
-            <p class="card-subtitle">Theo dõi trạng thái các chuyến xe xuất bến trong ngày</p>
+            <h2 class="card-title">{{ 'dashboard.recentSchedules' | translate }}</h2>
+            <p class="card-subtitle">{{ 'dashboard.recentSchedulesSubtitle' | translate }}</p>
           </div>
           <a href="javascript:void(0)" class="view-all-link">
-            <span>Xem tất cả</span>
+            <span>{{ 'dashboard.viewAll' | translate }}</span>
             <i class="pi pi-arrow-right text-xs"></i>
           </a>
         </div>
@@ -185,15 +185,15 @@
         <div class="table-container">
           <app-data-table
             [data]="recentTrips()"
-            [columns]="tripColumns"
+            [columns]="tripColumns()"
             [lazy]="false"
             [paginator]="false"
             [scrollable]="true"
             scrollHeight="360px"
             rowClass="trip-row"
             tableStyleClass="saas-data-table"
-            emptyTitle="Không có chuyến xe"
-            emptyMessage="Hiện không có chuyến xe nào theo bộ lọc này."
+            [emptyTitle]="'dashboard.noTripsTitle' | translate"
+            [emptyMessage]="'dashboard.noTripsMessage' | translate"
           >
             <ng-template appTableCell="departureTime" let-trip>
               <span class="cell-time">
@@ -228,7 +228,7 @@
 
             <ng-template appTableCell="status" let-trip>
               <p-tag
-                [value]="trip.statusLabel"
+                [value]="getTripStatusKey(trip.status) | translate"
                 [severity]="trip.statusSeverity"
                 styleClass="status-pill-tag"
               />
@@ -243,8 +243,8 @@
       <p-card styleClass="saas-card timeline-card">
         <div class="card-header-flex">
           <div class="header-titles">
-            <h2 class="card-title">Hoạt động gần đây</h2>
-            <p class="card-subtitle">Nhật ký sự kiện điều hành và đặt vé</p>
+            <h2 class="card-title">{{ 'dashboard.activities' | translate }}</h2>
+            <p class="card-subtitle">{{ 'dashboard.activitiesSubtitle' | translate }}</p>
           </div>
         </div>
 

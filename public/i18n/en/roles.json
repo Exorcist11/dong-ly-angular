@@ -1,0 +1,101 @@
+{
+  "title": "Roles & Permissions Management",
+  "breadcrumbs": {
+    "roles": "Roles & Permissions"
+  },
+  "actions": {
+    "create": "Add New Role",
+    "matrix": "Permissions Matrix",
+    "edit": "Edit Info",
+    "lock": "Deactivate Role",
+    "unlock": "Activate Role",
+    "delete": "Delete Role"
+  },
+  "columns": {
+    "code": "Role Code",
+    "name": "Role Name",
+    "isSystem": "Role Type",
+    "description": "Description",
+    "permissions": "Permissions",
+    "status": "Status",
+    "createdAt": "Created At",
+    "actions": "Actions"
+  },
+  "statusFilterPlaceholder": "Filter status",
+  "searchPlaceholder": "Search by role code or name...",
+  "pageReport": "Showing {first} to {last} of {totalRecords} roles",
+  "emptyFilteredTitle": "No matching roles found",
+  "emptyFilteredMessage": "Please try again with a different keyword or filter.",
+  "emptySystemTitle": "No roles currently in system",
+  "emptySystemMessage": "No roles have been recorded in the system.",
+  "systemProtectedTooltip": "System platform role with protected integrity",
+  "systemActiveTooltip": "System roles remain permanently active",
+  "noDescription": "No description provided",
+  "matrixCountTooltip": "Click to view permission matrix",
+  "permissionCountLabel": "{{count}} permissions",
+  "dialog": {
+    "createTitle": "Add New Role",
+    "editTitle": "Edit Role Information",
+    "systemRoleNoticeTitle": "Protected System Role:",
+    "systemRoleNoticeDesc": "Role identifier and status are permanently locked by the system. You can only update display name and description.",
+    "codeLabel": "Role Code",
+    "codeHint": "Unique identifier (uppercase letters, numbers, and underscores). Example: DISPATCHER, AGENT.",
+    "codePlaceholder": "Example: TICKET_INSPECTOR, MODERATOR",
+    "codeReadonly": "Read-only",
+    "codePatternError": "Can only contain uppercase letters, numbers, and underscores (_).",
+    "nameLabel": "Role Name",
+    "namePlaceholder": "Example: Ticket Inspector & Dispatcher",
+    "descLabel": "Description",
+    "descPlaceholder": "Describe the scope and responsibilities of this role...",
+    "createSubmit": "Create Role",
+    "editSubmit": "Save Changes"
+  },
+  "matrix": {
+    "titlePrefix": "Assign Permissions:",
+    "subtitle": "Configure system capabilities and executable privileges for this role",
+    "adminNoticeTitle": "Super Admin Protection (ADMIN):",
+    "adminNoticeDesc": "The system automatically preserves 5 core administrative permissions (ROLE_READ, ROLE_CREATE, ROLE_UPDATE, ROLE_ASSIGN, PERMISSION_READ) to prevent accidental lockouts.",
+    "searchPlaceholder": "Search by permission name or code (e.g., USER_READ)...",
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All",
+    "reset": "Reset Changes",
+    "selectedCount": "Selected: {{selected}} / {{total}} permissions",
+    "addCount": "Add {{count}} new permissions",
+    "removeCount": "Revoke {{count}} permissions",
+    "unchanged": "No changes made",
+    "loading": "Loading permission matrix...",
+    "permissionCount": "{{count}} permissions",
+    "coreBadge": "Core",
+    "coreTooltip": "Core permission required for ADMIN, cannot be revoked",
+    "emptySearch": "No permissions match \"{{query}}\"",
+    "unsavedChanges": "You have unsaved changes",
+    "saveSubmit": "Save Permissions",
+    "saveSuccess": "Updated {{count}} permissions for role \"{{name}}\"",
+    "saveError": "Could not save permission matrix for this role"
+  },
+  "statusModal": {
+    "activateTitle": "Activate Role",
+    "lockTitle": "Deactivate Role",
+    "message": "Are you sure you want to {{action}} role {{name}}?",
+    "actionActivate": "activate",
+    "actionLock": "deactivate",
+    "confirmActivate": "Activate",
+    "confirmLock": "Deactivate"
+  },
+  "deleteModal": {
+    "title": "Delete Custom Role",
+    "message": "This action will permanently delete role \"{{name}}\". If users are currently assigned this role, the operation will be rejected. Are you sure you want to delete?",
+    "confirm": "Delete Role"
+  },
+  "notifications": {
+    "createSuccess": "Role created successfully",
+    "updateSuccess": "Role updated successfully",
+    "systemRoleProtected": "Cannot modify system role status",
+    "updateStatusSuccess": "Role status updated successfully",
+    "systemRoleCannotDelete": "System role is protected and cannot be deleted.",
+    "deleteSuccess": "Deleted role \"{{name}}\"",
+    "deleteRoleInUse": "Cannot delete role because it is currently assigned to users. Please unassign the role first.",
+    "deleteError": "Could not delete this role.",
+    "updateStatusError": "Could not update role status"
+  }
+}

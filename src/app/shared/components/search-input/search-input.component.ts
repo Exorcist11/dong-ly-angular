@@ -14,6 +14,8 @@ import { FormsModule } from '@angular/forms';
 import { InputText } from 'primeng/inputtext';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
+import { TranslationService } from '../../../core/i18n/translation.service';
+
 @Component({
   selector: 'app-search-input',
   standalone: true,
@@ -24,10 +26,11 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 })
 export class SearchInputComponent {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly i18n = inject(TranslationService);
   private readonly searchSubject$ = new Subject<string>();
 
   /** Placeholder cho input */
-  readonly placeholder = input<string>('Tìm kiếm...');
+  readonly placeholder = input<string | undefined>(undefined);
 
   /** Giá trị ban đầu */
   readonly value = input<string>('');
@@ -42,10 +45,25 @@ export class SearchInputComponent {
   readonly styleClass = input<string>('');
 
   /** Nhãn accessibility cho ô tìm kiếm */
-  readonly ariaLabel = input<string>('Tìm kiếm');
+  readonly ariaLabel = input<string | undefined>(undefined);
 
   /** Nhãn accessibility cho nút xóa */
-  readonly clearAriaLabel = input<string>('Xóa nội dung tìm kiếm');
+  readonly clearAriaLabel = input<string | undefined>(undefined);
+
+  readonly effectivePlaceholder = computed(() => {
+    this.i18n.currentLang();
+    return this.placeholder() ?? (this.i18n.translate('common.actions.search') + '...');
+  });
+
+  readonly effectiveAriaLabel = computed(() => {
+    this.i18n.currentLang();
+    return this.ariaLabel() ?? this.i18n.translate('common.actions.search');
+  });
+
+  readonly effectiveClearAriaLabel = computed(() => {
+    this.i18n.currentLang();
+    return this.clearAriaLabel() ?? this.i18n.translate('common.actions.clearSearch');
+  });
 
   /** Phát ra giá trị tìm kiếm sau khi debounce */
   readonly searchChange = output<string>();

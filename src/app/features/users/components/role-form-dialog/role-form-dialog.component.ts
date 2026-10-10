@@ -21,6 +21,7 @@ import { InputText } from 'primeng/inputtext';
 import { Textarea } from 'primeng/textarea';
 import { Tag } from 'primeng/tag';
 import { FormFieldComponent } from '../../../../shared/components/form-field/form-field.component';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import {
   CreateRoleRequest,
   Role,
@@ -34,6 +35,7 @@ import {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    TranslatePipe,
     Dialog,
     Button,
     InputText,

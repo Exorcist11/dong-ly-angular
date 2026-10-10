@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
 } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
+import { TranslationService } from '../../../core/i18n/translation.service';
 
 @Component({
   selector: 'app-form-field',
@@ -14,6 +16,8 @@ import { AbstractControl } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormFieldComponent {
+  private readonly i18n = inject(TranslationService);
+
   /** Nhãn hiển thị của trường nhập */
   readonly label = input<string>();
 
@@ -56,9 +60,11 @@ export class FormFieldComponent {
     const ctrl = this.control();
     if (!ctrl || !ctrl.errors) return '';
 
+    this.i18n.currentLang();
+
     const errors = ctrl.errors;
     const customMap = this.errorMessages();
-    const fieldName = this.label() || 'Trường này';
+    const fieldName = this.label() || this.i18n.translate('validation.thisField');
 
     // 2. Kiểm tra bảng lỗi tùy biến trước
     for (const key of Object.keys(errors)) {
@@ -67,23 +73,23 @@ export class FormFieldComponent {
       }
     }
 
-    // 3. Chuẩn hóa lỗi mặc định bằng tiếng Việt
+    // 3. Chuẩn hóa lỗi theo ngôn ngữ hiện tại
     if (errors['required']) {
-      return `${fieldName} không được để trống.`;
+      return this.i18n.translate('validation.fieldRequired', { field: fieldName });
     }
     if (errors['minlength']) {
       const min = errors['minlength'].requiredLength;
-      return `${fieldName} phải có ít nhất ${min} ký tự.`;
+      return this.i18n.translate('validation.fieldMinLength', { field: fieldName, min });
     }
     if (errors['maxlength']) {
       const max = errors['maxlength'].requiredLength;
-      return `${fieldName} không được vượt quá ${max} ký tự.`;
+      return this.i18n.translate('validation.fieldMaxLength', { field: fieldName, max });
     }
     if (errors['email']) {
-      return `Email không đúng định dạng.`;
+      return this.i18n.translate('validation.invalidEmail');
     }
     if (errors['pattern']) {
-      return `${fieldName} không đúng định dạng quy định.`;
+      return this.i18n.translate('validation.fieldPattern', { field: fieldName });
     }
 
     // 4. Fallback: Nếu có lỗi khác dạng string
@@ -93,6 +99,6 @@ export class FormFieldComponent {
       return firstError;
     }
 
-    return `${fieldName} không hợp lệ.`;
+    return this.i18n.translate('validation.fieldInvalid', { field: fieldName });
   });
 }

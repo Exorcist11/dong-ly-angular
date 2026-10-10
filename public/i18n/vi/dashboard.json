@@ -8,5 +8,64 @@
   "statsCustomers": "Hành khách mới",
   "recentTrips": "Lịch chạy gần đây",
   "quickActions": "Thao tác nhanh",
-  "systemStatus": "Trạng thái hệ thống"
+  "systemStatus": "Trạng thái hệ thống",
+  "subtitle": "Tổng quan hoạt động vận tải và tình hình bán vé nhà xe Đông Lý",
+  "systemHealthGood": "Hệ thống hoạt động bình thường",
+  "systemHealthTooltip": "Mọi dịch vụ máy chủ và đồng bộ vé đang hoạt động hoàn hảo",
+  "updatedAt": "Cập nhật lúc {{time}}",
+  "addTrip": "Thêm chuyến",
+  "errorRealtime": "Không thể tải một số số liệu thống kê thời gian thực.",
+  "kpiAriaLabel": "Chỉ số hiệu suất chính",
+  "vsYesterday": "so với hôm qua",
+  "vsLastWeek": "so với tuần trước",
+  "onSchedule100": "Đúng lịch trình 100%",
+  "revenueAndBookings": "Doanh thu & vé đặt",
+  "revenueAndBookingsSubtitle": "Biểu đồ đối soát doanh thu vận hành và tổng lượng vé bán ra",
+  "revenueLabel": "Doanh thu (triệu ₫)",
+  "bookingsLabel": "Vé đã đặt",
+  "occupancy": "Tỷ lệ lấp đầy",
+  "occupancySubtitle": "Hiệu suất khai thác ghế toàn mạng lưới",
+  "limousineFleet": "Limousine 9-11 chỗ",
+  "vipSleeper": "Giường nằm VIP",
+  "emptySeats": "Ghế trống",
+  "occupiedCenter": "Lấp đầy",
+  "timeRange": {
+    "today": "Hôm nay",
+    "sevenDays": "7 ngày",
+    "thirtyDays": "30 ngày"
+  },
+  "chartFilter": {
+    "day": "Ngày",
+    "week": "Tuần",
+    "month": "Tháng"
+  },
+  "weekdays": {
+    "mon": "T2",
+    "tue": "T3",
+    "wed": "T4",
+    "thu": "T5",
+    "fri": "T6",
+    "sat": "T7",
+    "sun": "CN"
+  },
+  "recentSchedules": "Lịch chạy gần đây",
+  "recentSchedulesSubtitle": "Theo dõi trạng thái các chuyến xe xuất bến trong ngày",
+  "viewAll": "Xem tất cả",
+  "noTripsTitle": "Không có chuyến xe",
+  "noTripsMessage": "Hiện không có chuyến xe nào theo bộ lọc này.",
+  "columns": {
+    "departureTime": "Giờ chạy",
+    "route": "Tuyến xe",
+    "plateNumber": "Biển số",
+    "vehicleType": "Loại xe",
+    "occupied": "Ghế ngồi",
+    "status": "Trạng thái"
+  },
+  "tripStatus": {
+    "departingSoon": "Sắp chạy",
+    "onRoute": "Đang chạy",
+    "delayed": "Trễ chuyến"
+  },
+  "activities": "Hoạt động gần đây",
+  "activitiesSubtitle": "Nhật ký sự kiện điều hành và đặt vé"
 }

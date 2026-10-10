@@ -12,6 +12,8 @@ import { Button } from 'primeng/button';
 import { Tooltip } from 'primeng/tooltip';
 
 import { NotificationService } from '../../../../core/services/notification.service';
+import { TranslationService } from '../../../../core/i18n/translation.service';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { ConfirmModalComponent } from '../../../../shared/components/confirm-modal/confirm-modal.component';
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
@@ -45,6 +47,7 @@ import { finalize } from 'rxjs';
   imports: [
     CommonModule,
     FormsModule,
+    TranslatePipe,
     DataTableComponent,
     TableCellDirective,
     Button,
@@ -64,6 +67,7 @@ import { finalize } from 'rxjs';
 export class RoleListPageComponent implements OnInit {
   private readonly roleService = inject(RoleService);
   private readonly notification = inject(NotificationService);
+  private readonly translationService = inject(TranslationService);
 
   // DATA SIGNALS
   readonly roles = signal<Role[]>([]);
@@ -73,16 +77,24 @@ export class RoleListPageComponent implements OnInit {
   readonly sortField = signal<string>('createdAt,desc');
 
   // SHARED TABLE CONFIG
-  readonly columns: TableColumn<Role>[] = [
-    { field: 'code', header: 'Mã vai trò', width: '160px' },
-    { field: 'name', header: 'Tên vai trò', minWidth: '180px' },
-    { field: 'isSystem', header: 'Loại vai trò', width: '130px' },
-    { field: 'description', header: 'Mô tả', minWidth: '220px' },
-    { field: 'permissionCount', header: 'Quyền hạn', width: '130px', align: 'center' },
-    { field: 'status', header: 'Trạng thái', width: '130px', align: 'center' },
-    { field: 'createdAt', header: 'Ngày tạo', width: '140px' },
-    { field: 'actions', header: 'Thao tác', width: '160px', align: 'right' },
-  ];
+  readonly columns = computed<TableColumn<Role>[]>(() => {
+    this.translationService.currentLang();
+    return [
+      { field: 'code', header: this.translationService.translate('roles.columns.code'), width: '160px' },
+      { field: 'name', header: this.translationService.translate('roles.columns.name'), minWidth: '180px' },
+      { field: 'isSystem', header: this.translationService.translate('roles.columns.isSystem'), width: '130px' },
+      { field: 'description', header: this.translationService.translate('roles.columns.description'), minWidth: '220px' },
+      { field: 'permissionCount', header: this.translationService.translate('roles.columns.permissions'), width: '130px', align: 'center' },
+      { field: 'status', header: this.translationService.translate('roles.columns.status'), width: '130px', align: 'center' },
+      { field: 'createdAt', header: this.translationService.translate('roles.columns.createdAt'), width: '140px' },
+      { field: 'actions', header: this.translationService.translate('roles.columns.actions'), width: '160px', align: 'right' },
+    ];
+  });
+
+  readonly breadcrumbs = computed(() => [
+    { label: this.translationService.translate('navigation.systemGroup') },
+    { label: this.translationService.translate('roles.breadcrumbs.roles') },
+  ]);
 
   // FILTER SIGNALS
   readonly searchTerm = signal<string>('');
@@ -108,17 +120,20 @@ export class RoleListPageComponent implements OnInit {
   readonly roleForDelete = signal<Role | null>(null);
 
   // OPTIONS
-  readonly statusFilterOptions: SelectOption<RoleStatus | 'ALL'>[] = [
-    { label: 'Tất cả trạng thái', value: 'ALL' },
-    { label: 'Đang hoạt động', value: 'ACTIVE' },
-    { label: 'Tạm khóa', value: 'INACTIVE' },
-  ];
+  readonly statusFilterOptions = computed<SelectOption<RoleStatus | 'ALL'>[]>(() => {
+    this.translationService.currentLang();
+    return [
+      { label: this.translationService.translate('common.status.all'), value: 'ALL' },
+      { label: this.translationService.translate('common.status.active'), value: 'ACTIVE' },
+      { label: this.translationService.translate('common.status.inactive'), value: 'INACTIVE' },
+    ];
+  });
 
   readonly tableFilters = computed<TableFilterConfig<RoleStatus | 'ALL'>[]>(() => [
     {
       key: 'status',
-      placeholder: 'Lọc trạng thái',
-      options: this.statusFilterOptions,
+      placeholder: this.translationService.translate('roles.statusFilterPlaceholder'),
+      options: this.statusFilterOptions(),
       value: this.selectedStatus(),
       width: '180px',
     },
@@ -234,14 +249,14 @@ export class RoleListPageComponent implements OnInit {
         .subscribe({
           next: (res) => {
             if (res.success) {
-              this.notification.success('Đã cập nhật thông tin vai trò');
+              this.notification.success(this.translationService.translate('roles.notifications.updateSuccess'));
               this.roleFormVisible.set(false);
               this.loadRoles();
             }
           },
           error: (err) => {
             this.notification.error(
-              err.error?.message || 'Không thể cập nhật thông tin vai trò'
+              err.error?.message || this.translationService.translate('roles.notifications.updateStatusError')
             );
           },
         });
@@ -253,14 +268,14 @@ export class RoleListPageComponent implements OnInit {
         .subscribe({
           next: (res) => {
             if (res.success) {
-              this.notification.success('Đã tạo vai trò mới thành công');
+              this.notification.success(this.translationService.translate('roles.notifications.createSuccess'));
               this.roleFormVisible.set(false);
               this.loadRoles();
             }
           },
           error: (err) => {
             this.notification.error(
-              err.error?.message || 'Không thể tạo mới vai trò'
+              err.error?.message || this.translationService.translate('roles.notifications.updateStatusError')
             );
           },
         });
@@ -271,7 +286,7 @@ export class RoleListPageComponent implements OnInit {
   confirmStatusChange(role: Role): void {
     if (role.isSystem) {
       this.notification.info(
-        'Vai trò hệ thống luôn ở trạng thái hoạt động và không thể khóa.'
+        this.translationService.translate('roles.notifications.systemRoleProtected')
       );
       return;
     }
@@ -292,15 +307,14 @@ export class RoleListPageComponent implements OnInit {
     this.roleService.updateRoleStatus(role.id, payload).subscribe({
       next: (res) => {
         if (res.success) {
-          const actionText = nextStatus === 'ACTIVE' ? 'kích hoạt' : 'tạm khóa';
-          this.notification.success(`Đã ${actionText} vai trò "${role.name}"`);
+          this.notification.success(this.translationService.translate('roles.notifications.updateStatusSuccess'));
           this.statusConfirmVisible.set(false);
           this.loadRoles();
         }
       },
       error: (err) => {
         this.notification.error(
-          err.error?.message || 'Không thể cập nhật trạng thái vai trò'
+          err.error?.message || this.translationService.translate('roles.notifications.updateStatusError')
         );
         this.statusConfirmVisible.set(false);
       },
@@ -311,7 +325,7 @@ export class RoleListPageComponent implements OnInit {
   confirmDeleteRole(role: Role): void {
     if (role.isSystem) {
       this.notification.error(
-        'Vai trò hệ thống được bảo vệ và không thể xóa.'
+        this.translationService.translate('roles.notifications.systemRoleCannotDelete')
       );
       return;
     }
@@ -327,7 +341,9 @@ export class RoleListPageComponent implements OnInit {
     this.roleService.deleteRole(role.id).subscribe({
       next: (res) => {
         if (res.success) {
-          this.notification.success(`Đã xóa vai trò "${role.name}"`);
+          this.notification.success(
+            this.translationService.translate('roles.notifications.deleteSuccess', { name: role.name })
+          );
           this.deleteConfirmVisible.set(false);
           this.loadRoles();
         }
@@ -335,8 +351,8 @@ export class RoleListPageComponent implements OnInit {
       error: (err) => {
         const msg =
           err.error?.code === 'ROLE_IN_USE'
-            ? 'Không thể xóa vai trò vì đang có người dùng được gán. Vui lòng gỡ vai trò khỏi người dùng trước khi xóa.'
-            : err.error?.message || 'Không thể xóa vai trò này.';
+            ? this.translationService.translate('roles.notifications.deleteRoleInUse')
+            : err.error?.message || this.translationService.translate('roles.notifications.deleteError');
         this.notification.error(msg);
         this.deleteConfirmVisible.set(false);
       },

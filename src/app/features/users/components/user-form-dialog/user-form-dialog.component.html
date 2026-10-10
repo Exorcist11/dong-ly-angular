@@ -1,7 +1,7 @@
 <p-dialog
   [visible]="visible"
   (visibleChange)="onVisibleChange($event)"
-  [header]="isEditMode ? 'Cập nhật thông tin người dùng' : 'Thêm mới người dùng'"
+  [header]="(isEditMode ? 'users.dialog.editTitle' : 'users.dialog.createTitle') | translate"
   [modal]="true"
   [style]="{ width: '540px', maxWidth: '95vw' }"
   [draggable]="false"
@@ -12,12 +12,12 @@
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form-content">
     <!-- USERNAME (Chỉ cho phép nhập khi tạo mới) -->
     <app-form-field
-      label="Tên đăng nhập"
+      [label]="'users.dialog.usernameLabel' | translate"
       forId="username"
       [required]="true"
       [control]="userForm.get('username')"
       [errorMessages]="{
-        pattern: 'Tên đăng nhập chỉ chứa chữ cái, số và ký tự . _ -'
+        pattern: ('users.dialog.usernamePatternError' | translate)
       }"
     >
       <input
@@ -25,7 +25,7 @@
         type="text"
         pInputText
         formControlName="username"
-        placeholder="vd: nguyen_van_a"
+        [placeholder]="'users.dialog.usernamePlaceholder' | translate"
         class="dl-input"
         [class.ng-invalid]="isFieldInvalid('username')"
       />
@@ -33,7 +33,7 @@
 
     <!-- HỌ VÀ TÊN -->
     <app-form-field
-      label="Họ và tên"
+      [label]="'users.dialog.fullNameLabel' | translate"
       forId="fullName"
       [required]="true"
       [control]="userForm.get('fullName')"
@@ -43,7 +43,7 @@
         type="text"
         pInputText
         formControlName="fullName"
-        placeholder="vd: Nguyễn Văn A"
+        [placeholder]="'users.dialog.fullNamePlaceholder' | translate"
         class="dl-input"
         [class.ng-invalid]="isFieldInvalid('fullName')"
       />
@@ -51,7 +51,7 @@
 
     <!-- EMAIL -->
     <app-form-field
-      label="Email liên hệ"
+      [label]="'users.dialog.emailLabel' | translate"
       forId="email"
       [required]="true"
       [control]="userForm.get('email')"
@@ -61,7 +61,7 @@
         type="email"
         pInputText
         formControlName="email"
-        placeholder="vd: nguyen.a@dongly.vn"
+        [placeholder]="'users.dialog.emailPlaceholder' | translate"
         class="dl-input"
         [class.ng-invalid]="isFieldInvalid('email')"
       />
@@ -70,7 +70,7 @@
     <!-- MẬT KHẨU (Chỉ bắt buộc khi tạo mới) -->
     @if (!isEditMode) {
       <app-form-field
-        label="Mật khẩu khởi tạo"
+        [label]="'users.dialog.passwordLabel' | translate"
         forId="password"
         [required]="true"
         [control]="userForm.get('password')"
@@ -80,24 +80,24 @@
           formControlName="password"
           [toggleMask]="true"
           [feedback]="true"
-          promptLabel="Nhập mật khẩu an toàn"
-          weakLabel="Yếu"
-          mediumLabel="Trung bình"
-          strongLabel="Mạnh"
+          [promptLabel]="'users.dialog.passwordPrompt' | translate"
+          [weakLabel]="'users.dialog.passwordWeak' | translate"
+          [mediumLabel]="'users.dialog.passwordMedium' | translate"
+          [strongLabel]="'users.dialog.passwordStrong' | translate"
           styleClass="w-full"
           inputStyleClass="w-full dl-input"
-          placeholder="Tối thiểu 8 ký tự"
+          [placeholder]="'users.dialog.passwordPlaceholder' | translate"
         />
       </app-form-field>
     }
 
     <!-- SỐ ĐIỆN THOẠI -->
     <app-form-field
-      label="Số điện thoại"
+      [label]="'users.dialog.phoneLabel' | translate"
       forId="phone"
       [control]="userForm.get('phone')"
       [errorMessages]="{
-        pattern: 'Số điện thoại không đúng định dạng Việt Nam (10 số).'
+        pattern: ('users.dialog.phonePatternError' | translate)
       }"
     >
       <input
@@ -105,7 +105,7 @@
         type="tel"
         pInputText
         formControlName="phone"
-        placeholder="vd: 0987654321"
+        [placeholder]="'users.dialog.phonePlaceholder' | translate"
         class="dl-input"
         [class.ng-invalid]="isFieldInvalid('phone')"
       />
@@ -113,9 +113,9 @@
 
     <!-- VAI TRÒ GÁN (ROLES) -->
     <app-form-field
-      label="Vai trò trong hệ thống"
+      [label]="'users.dialog.rolesLabel' | translate"
       forId="roleCodes"
-      hint="Người dùng sẽ nhận tập hợp quyền tương ứng từ các vai trò này."
+      [hint]="'users.dialog.rolesHint' | translate"
     >
       <p-multiselect
         id="roleCodes"
@@ -123,10 +123,10 @@
         [options]="roleOptions"
         optionLabel="label"
         optionValue="value"
-        placeholder="Chọn vai trò (mặc định: Khách hàng)"
+        [placeholder]="'users.dialog.rolesPlaceholder' | translate"
         styleClass="w-full dl-multiselect"
         display="chip"
-        emptyMessage="Không có vai trò nào"
+        [emptyMessage]="'users.dialog.rolesEmpty' | translate"
       />
     </app-form-field>
 
@@ -134,7 +134,7 @@
     <div class="dialog-actions">
       <p-button
         type="button"
-        label="Hủy bỏ"
+        [label]="'common.actions.cancel' | translate"
         severity="secondary"
         [outlined]="true"
         (onClick)="onCancel()"
@@ -142,7 +142,7 @@
       />
       <p-button
         type="submit"
-        [label]="isEditMode ? 'Lưu thay đổi' : 'Tạo tài khoản'"
+        [label]="(isEditMode ? 'users.dialog.editSubmit' : 'users.dialog.createSubmit') | translate"
         [icon]="submitting ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
         severity="danger"
         [disabled]="submitting"

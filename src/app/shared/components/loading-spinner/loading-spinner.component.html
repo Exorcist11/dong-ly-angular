@@ -1,6 +1,10 @@
 <div [class.overlay]="overlay" class="spinner-container">
   <div class="spinner"></div>
-  @if (message) {
-    <p class="spinner-text">{{ message }}</p>
+  @if (message !== undefined) {
+    @if (message) {
+      <p class="spinner-text">{{ message }}</p>
+    }
+  } @else {
+    <p class="spinner-text">{{ 'common.states.loading' | translate }}</p>
   }
 </div>

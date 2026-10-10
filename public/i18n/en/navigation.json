@@ -11,5 +11,56 @@
   "users": "User Management",
   "vehicles": "Vehicles & Drivers",
   "bookings": "Tickets & Bookings",
-  "logout": "Log out"
+  "logout": "Log out",
+  "system": "System",
+  "systemGroup": "System",
+  "roles": "Roles & Permissions",
+  "settings": "System Settings",
+  "groups": {
+    "overview": "OVERVIEW",
+    "operations": "OPERATIONS",
+    "system": "SYSTEM"
+  },
+  "items": {
+    "dashboard": "Dashboard",
+    "users": "User Management",
+    "tripsAndRoutes": "Trips & Routes",
+    "bookings": "Tickets & Bookings",
+    "rolesAndPermissions": "Roles & Permissions",
+    "settings": "System Settings",
+    "upcoming": "Coming Soon",
+    "upcomingTooltip": "Feature under development",
+    "mainNavAria": "Main navigation bar"
+  },
+  "topbar": {
+    "toggleSidebar": "Toggle sidebar navigation",
+    "searchPlaceholder": "Search trips, tickets, customers...",
+    "selectLanguageAria": "Select language",
+    "themeCurrent": "Switch theme (Current: {{theme}})",
+    "themeLight": "Theme: Light",
+    "themeDark": "Theme: Dark",
+    "themeSystem": "Theme: System",
+    "notificationsTooltip": "System notifications (1 new notification)",
+    "notificationsAria": "Notifications",
+    "avatarTooltip": "Dong Ly Bus Admin",
+    "commandPaletteTitle": "Quick Search (Command Palette)",
+    "commandPalettePlaceholder": "Type keywords to search (dashboard, trips, tickets...)",
+    "commandPaletteShortcuts": "SYSTEM SHORTCUTS",
+    "commandPaletteNoResults": "No matching results found for \"{{query}}\"",
+    "quickOverview": "Overview Dashboard",
+    "quickNavigation": "Navigation",
+    "quickTrips": "Trip Management (Thanh Hoa → Hanoi)",
+    "quickOperations": "Operations",
+    "quickBookings": "Tickets & Seat Bookings",
+    "quickTicketing": "Ticketing",
+    "quickCustomers": "Customer Lookup",
+    "quickCustomerCategory": "Customers"
+  },
+  "userMenu": {
+    "ariaLabel": "User account menu",
+    "adminDefault": "Administrator",
+    "profile": "Profile",
+    "settings": "System Settings",
+    "logout": "Log out"
+  }
 }

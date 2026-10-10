@@ -3,7 +3,7 @@
   [modal]="true"
   [closable]="!submitting"
   [dismissableMask]="!submitting"
-  [header]="isEditMode ? 'Chỉnh sửa thông tin vai trò' : 'Thêm mới vai trò'"
+  [header]="(isEditMode ? 'roles.dialog.editTitle' : 'roles.dialog.createTitle') | translate"
   styleClass="dl-role-dialog"
   [style]="{ width: '480px', maxWidth: '95vw' }"
   (visibleChange)="visibleChange.emit($event)"
@@ -13,31 +13,31 @@
       <div class="system-role-notice">
         <i class="pi pi-shield"></i>
         <div class="notice-text">
-          <strong>Vai trò hệ thống được bảo vệ:</strong>
-          <span>Mã định danh và trạng thái được hệ thống khóa cố định. Bạn chỉ có thể cập nhật tên hiển thị và mô tả.</span>
+          <strong>{{ 'roles.dialog.systemRoleNoticeTitle' | translate }}</strong>
+          <span>{{ 'roles.dialog.systemRoleNoticeDesc' | translate }}</span>
         </div>
       </div>
     }
 
     <!-- Mã vai trò -->
     <app-form-field
-      label="Mã vai trò"
+      [label]="'roles.dialog.codeLabel' | translate"
       forId="roleCode"
       [required]="!isEditMode"
       [control]="roleForm.get('code')"
-      hint="Mã định danh duy nhất (chữ in hoa, số và gạch dưới). Ví dụ: DISPATCHER, AGENT."
+      [hint]="'roles.dialog.codeHint' | translate"
       [errorMessages]="{
-        pattern: 'Chỉ được chứa chữ cái, số và dấu gạch dưới (_).'
+        pattern: ('roles.dialog.codePatternError' | translate)
       }"
     >
       @if (isEditMode) {
-        <span labelSuffix class="readonly-badge">Không thể sửa</span>
+        <span labelSuffix class="readonly-badge">{{ 'roles.dialog.codeReadonly' | translate }}</span>
       }
       <input
         pInputText
         id="roleCode"
         formControlName="code"
-        placeholder="Ví dụ: TICKET_INSPECTOR, MODERATOR"
+        [placeholder]="'roles.dialog.codePlaceholder' | translate"
         class="dl-input"
         [class.ng-invalid]="roleForm.get('code')?.invalid && roleForm.get('code')?.touched"
         (input)="onCodeInput($event)"
@@ -46,7 +46,7 @@
 
     <!-- Tên vai trò hiển thị -->
     <app-form-field
-      label="Tên vai trò"
+      [label]="'roles.dialog.nameLabel' | translate"
       forId="roleName"
       [required]="true"
       [control]="roleForm.get('name')"
@@ -55,7 +55,7 @@
         pInputText
         id="roleName"
         formControlName="name"
-        placeholder="Ví dụ: Soát vé & Điều độ"
+        [placeholder]="'roles.dialog.namePlaceholder' | translate"
         class="dl-input"
         [class.ng-invalid]="roleForm.get('name')?.invalid && roleForm.get('name')?.touched"
       />
@@ -63,7 +63,7 @@
 
     <!-- Mô tả vai trò -->
     <app-form-field
-      label="Mô tả chức năng"
+      [label]="'roles.dialog.descLabel' | translate"
       forId="roleDescription"
       [control]="roleForm.get('description')"
     >
@@ -72,7 +72,7 @@
         id="roleDescription"
         formControlName="description"
         rows="3"
-        placeholder="Mô tả phạm vi quyền hạn và trách nhiệm của vai trò này..."
+        [placeholder]="'roles.dialog.descPlaceholder' | translate"
         class="dl-textarea"
         [class.ng-invalid]="roleForm.get('description')?.invalid && roleForm.get('description')?.touched"
       ></textarea>
@@ -81,7 +81,7 @@
     <!-- Actions -->
     <div class="dialog-actions">
       <p-button
-        label="Hủy bỏ"
+        [label]="'common.actions.cancel' | translate"
         icon="pi pi-times"
         severity="secondary"
         [outlined]="true"
@@ -91,7 +91,7 @@
 
       <p-button
         type="submit"
-        [label]="isEditMode ? 'Lưu thay đổi' : 'Tạo vai trò'"
+        [label]="(isEditMode ? 'roles.dialog.editSubmit' : 'roles.dialog.createSubmit') | translate"
         icon="pi pi-check"
         severity="primary"
         [loading]="submitting"

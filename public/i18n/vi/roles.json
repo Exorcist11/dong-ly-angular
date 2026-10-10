@@ -1,0 +1,101 @@
+{
+  "title": "Quản lý Vai trò & Phân quyền",
+  "breadcrumbs": {
+    "roles": "Vai trò & Phân quyền"
+  },
+  "actions": {
+    "create": "Thêm vai trò mới",
+    "matrix": "Phân quyền vai trò",
+    "edit": "Sửa thông tin",
+    "lock": "Tạm khóa vai trò",
+    "unlock": "Kích hoạt vai trò",
+    "delete": "Xóa vai trò"
+  },
+  "columns": {
+    "code": "Mã vai trò",
+    "name": "Tên vai trò",
+    "isSystem": "Loại vai trò",
+    "description": "Mô tả",
+    "permissions": "Quyền hạn",
+    "status": "Trạng thái",
+    "createdAt": "Ngày tạo",
+    "actions": "Thao tác"
+  },
+  "statusFilterPlaceholder": "Lọc trạng thái",
+  "searchPlaceholder": "Tìm theo mã hoặc tên vai trò...",
+  "pageReport": "Hiển thị {first} đến {last} trong tổng số {totalRecords} vai trò",
+  "emptyFilteredTitle": "Không tìm thấy vai trò phù hợp",
+  "emptyFilteredMessage": "Vui lòng thử lại với từ khóa hoặc bộ lọc khác.",
+  "emptySystemTitle": "Chưa có vai trò nào trong hệ thống",
+  "emptySystemMessage": "Hệ thống chưa ghi nhận vai trò nào.",
+  "systemProtectedTooltip": "Vai trò nền tảng được bảo vệ toàn vẹn",
+  "systemActiveTooltip": "Vai trò hệ thống luôn ở trạng thái hoạt động",
+  "noDescription": "Chưa có mô tả",
+  "matrixCountTooltip": "Nhấn để xem ma trận phân quyền",
+  "permissionCountLabel": "{{count}} quyền",
+  "dialog": {
+    "createTitle": "Thêm mới vai trò",
+    "editTitle": "Chỉnh sửa thông tin vai trò",
+    "systemRoleNoticeTitle": "Vai trò hệ thống được bảo vệ:",
+    "systemRoleNoticeDesc": "Mã định danh và trạng thái được hệ thống khóa cố định. Bạn chỉ có thể cập nhật tên hiển thị và mô tả.",
+    "codeLabel": "Mã vai trò",
+    "codeHint": "Mã định danh duy nhất (chữ in hoa, số và gạch dưới). Ví dụ: DISPATCHER, AGENT.",
+    "codePlaceholder": "Ví dụ: TICKET_INSPECTOR, MODERATOR",
+    "codeReadonly": "Không thể sửa",
+    "codePatternError": "Chỉ được chứa chữ cái, số và dấu gạch dưới (_).",
+    "nameLabel": "Tên vai trò",
+    "namePlaceholder": "Ví dụ: Soát vé & Điều độ",
+    "descLabel": "Mô tả chức năng",
+    "descPlaceholder": "Mô tả phạm vi quyền hạn và trách nhiệm của vai trò này...",
+    "createSubmit": "Tạo vai trò",
+    "editSubmit": "Lưu thay đổi"
+  },
+  "matrix": {
+    "titlePrefix": "Phân quyền vai trò:",
+    "subtitle": "Thiết lập danh mục các chức năng và quyền hạn được phép thực thi trong hệ thống",
+    "adminNoticeTitle": "Cơ chế bảo vệ quản trị tối cao (ADMIN):",
+    "adminNoticeDesc": "Hệ thống tự động bảo vệ và duy trì 5 quyền cốt lõi (ROLE_READ, ROLE_CREATE, ROLE_UPDATE, ROLE_ASSIGN, PERMISSION_READ) nhằm ngăn chặn việc tự thu hồi quyền quản trị.",
+    "searchPlaceholder": "Tìm quyền theo tên, mã (VD: USER_READ)...",
+    "selectAll": "Chọn tất cả",
+    "deselectAll": "Bỏ chọn tất cả",
+    "reset": "Hoàn tác",
+    "selectedCount": "Đã chọn: {{selected}} / {{total}} quyền hạn",
+    "addCount": "Thêm {{count}} quyền mới",
+    "removeCount": "Thu hồi {{count}} quyền",
+    "unchanged": "Chưa có thay đổi",
+    "loading": "Đang tải ma trận phân quyền...",
+    "permissionCount": "{{count}} quyền hạn",
+    "coreBadge": "Cốt lõi",
+    "coreTooltip": "Quyền cốt lõi bắt buộc đối với ADMIN, không thể thu hồi",
+    "emptySearch": "Không tìm thấy quyền hạn nào khớp với từ khóa \"{{query}}\"",
+    "unsavedChanges": "Bạn có các thay đổi chưa lưu",
+    "saveSubmit": "Lưu ma trận quyền",
+    "saveSuccess": "Đã cập nhật {{count}} quyền hạn cho vai trò \"{{name}}\"",
+    "saveError": "Không thể lưu ma trận quyền hạn cho vai trò"
+  },
+  "statusModal": {
+    "activateTitle": "Kích hoạt vai trò",
+    "lockTitle": "Tạm khóa vai trò",
+    "message": "Bạn có chắc chắn muốn {{action}} vai trò {{name}}?",
+    "actionActivate": "kích hoạt",
+    "actionLock": "tạm khóa",
+    "confirmActivate": "Kích hoạt",
+    "confirmLock": "Tạm khóa"
+  },
+  "deleteModal": {
+    "title": "Xóa vai trò tùy chỉnh",
+    "message": "Hành động này sẽ xóa vĩnh viễn vai trò \"{{name}}\". Nếu có người dùng đang giữ vai trò này, hệ thống sẽ từ chối thao tác. Bạn có chắc chắn muốn xóa?",
+    "confirm": "Xóa vai trò"
+  },
+  "notifications": {
+    "createSuccess": "Tạo mới vai trò thành công",
+    "updateSuccess": "Cập nhật vai trò thành công",
+    "systemRoleProtected": "Không thể cập nhật trạng thái của vai trò hệ thống",
+    "updateStatusSuccess": "Cập nhật trạng thái vai trò thành công",
+    "systemRoleCannotDelete": "Vai trò hệ thống được bảo vệ và không thể xóa.",
+    "deleteSuccess": "Đã xóa vai trò \"{{name}}\"",
+    "deleteRoleInUse": "Không thể xóa vai trò vì đang có người dùng được gán. Vui lòng gỡ vai trò khỏi người dùng trước khi xóa.",
+    "deleteError": "Không thể xóa vai trò này.",
+    "updateStatusError": "Không thể cập nhật trạng thái vai trò"
+  }
+}

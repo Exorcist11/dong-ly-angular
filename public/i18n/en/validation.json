@@ -6,5 +6,14 @@
   "passwordMinLength": "Password must be at least {{min}} characters.",
   "invalidEmail": "Invalid email address format.",
   "invalidPhone": "Invalid phone number (must be 10 digits).",
-  "dateInPast": "Departure date cannot be in the past."
+  "dateInPast": "Departure date cannot be in the past.",
+  "fieldRequired": "{{field}} cannot be left blank.",
+  "fieldMinLength": "{{field}} must be at least {{min}} characters.",
+  "fieldMaxLength": "{{field}} cannot exceed {{max}} characters.",
+  "fieldInvalid": "{{field}} is invalid.",
+  "fieldPattern": "{{field}} format is invalid.",
+  "thisField": "This field",
+  "usernamePattern": "Username can only contain letters, numbers, and . _ -",
+  "phonePattern": "Phone number must be a valid 10-digit Vietnamese format.",
+  "roleCodePattern": "Can only contain uppercase letters, numbers, and underscores (_)."
 }

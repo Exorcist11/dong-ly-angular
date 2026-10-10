@@ -6,5 +6,14 @@
   "passwordMinLength": "Mật khẩu phải có ít nhất {{min}} ký tự.",
   "invalidEmail": "Địa chỉ email không đúng định dạng.",
   "invalidPhone": "Số điện thoại không hợp lệ (10 chữ số).",
-  "dateInPast": "Ngày khởi hành không được trong quá khứ."
+  "dateInPast": "Ngày khởi hành không được trong quá khứ.",
+  "fieldRequired": "{{field}} không được để trống.",
+  "fieldMinLength": "{{field}} phải có ít nhất {{min}} ký tự.",
+  "fieldMaxLength": "{{field}} không được vượt quá {{max}} ký tự.",
+  "fieldInvalid": "{{field}} không hợp lệ.",
+  "fieldPattern": "{{field}} không đúng định dạng quy định.",
+  "thisField": "Trường này",
+  "usernamePattern": "Tên đăng nhập chỉ chứa chữ cái, số và ký tự . _ -",
+  "phonePattern": "Số điện thoại không đúng định dạng Việt Nam (10 số).",
+  "roleCodePattern": "Chỉ được chứa chữ cái, số và dấu gạch dưới (_)."
 }

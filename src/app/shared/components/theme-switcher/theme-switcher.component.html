@@ -1,4 +1,4 @@
-<div class="theme-switcher-wrapper" role="radiogroup" aria-label="Lựa chọn giao diện">
+<div class="theme-switcher-wrapper" role="radiogroup" [attr.aria-label]="'common.theme.selectTheme' | translate">
   <button
     type="button"
     role="radio"
@@ -7,7 +7,7 @@
     [attr.aria-checked]="themeService.theme() === 'light'"
     [attr.aria-label]="'common.theme.light' | translate"
     (click)="setTheme('light')"
-    title="Giao diện sáng (Light)"
+    [title]="'common.theme.light' | translate"
   >
     <!-- Sun Icon -->
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon">
@@ -31,7 +31,7 @@
     [attr.aria-checked]="themeService.theme() === 'dark'"
     [attr.aria-label]="'common.theme.dark' | translate"
     (click)="setTheme('dark')"
-    title="Giao diện tối (Dark)"
+    [title]="'common.theme.dark' | translate"
   >
     <!-- Moon Icon -->
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon">
@@ -47,7 +47,7 @@
     [attr.aria-checked]="themeService.theme() === 'system'"
     [attr.aria-label]="'common.theme.system' | translate"
     (click)="setTheme('system')"
-    title="Theo hệ điều hành (System)"
+    [title]="'common.theme.system' | translate"
   >
     <!-- Monitor/System Icon -->
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon">

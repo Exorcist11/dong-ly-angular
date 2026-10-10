@@ -7,7 +7,7 @@
       [rounded]="true"
       icon="pi pi-bars"
       styleClass="topbar-icon-btn"
-      aria-label="Thu gọn hoặc mở rộng thanh điều hướng"
+      [attr.aria-label]="'navigation.topbar.toggleSidebar' | translate"
       (onClick)="onToggleSidebar()"
     />
 
@@ -24,7 +24,7 @@
           pInputText
           type="text"
           readonly
-          placeholder="Tìm chuyến xe, vé, khách hàng..."
+          [placeholder]="'navigation.topbar.searchPlaceholder' | translate"
           class="topbar-search-input"
         />
       </p-iconfield>
@@ -44,7 +44,7 @@
         optionValue="code"
         styleClass="compact-lang-select"
         panelStyleClass="lang-select-panel"
-        aria-label="Lựa chọn ngôn ngữ"
+        [attr.aria-label]="'navigation.topbar.selectLanguageAria' | translate"
       >
         <ng-template #selectedItem>
           <div class="selected-lang-box">
@@ -77,10 +77,10 @@
     <p-button
       [text]="true"
       [rounded]="true"
-      pTooltip="Thông báo hệ thống (1 thông báo mới)"
+      [pTooltip]="'navigation.topbar.notificationsTooltip' | translate"
       tooltipPosition="bottom"
       styleClass="topbar-icon-btn"
-      aria-label="Thông báo"
+      [attr.aria-label]="'navigation.topbar.notificationsAria' | translate"
     >
       <ng-template #icon>
         <p-overlaybadge severity="danger" styleClass="badge-dot">
@@ -94,7 +94,7 @@
       label="ĐL"
       shape="circle"
       styleClass="topbar-avatar"
-      pTooltip="Nhà xe Đông Lý Admin"
+      [pTooltip]="'navigation.topbar.avatarTooltip' | translate"
       tooltipPosition="bottom"
     />
   </div>
@@ -105,7 +105,7 @@
   [(visible)]="commandPaletteVisible"
   [modal]="true"
   [dismissableMask]="true"
-  [header]="'Tìm kiếm nhanh (Command Palette)'"
+  [header]="'navigation.topbar.commandPaletteTitle' | translate"
   styleClass="command-palette-dialog"
   [style]="{ width: '540px' }"
 >
@@ -115,14 +115,14 @@
       <input
         pInputText
         [(ngModel)]="searchQuery"
-        placeholder="Gõ từ khóa tìm kiếm (bàn làm việc, chuyến xe, vé...)"
+        [placeholder]="'navigation.topbar.commandPalettePlaceholder' | translate"
         autofocus
         class="w-full"
       />
     </p-iconfield>
 
     <div class="quick-results-list">
-      <div class="palette-group-title">LỐI TẮT HỆ THỐNG</div>
+      <div class="palette-group-title">{{ 'navigation.topbar.commandPaletteShortcuts' | translate }}</div>
       @for (item of filteredResults(); track item.label) {
         <div class="quick-result-item" (click)="onSelectQuickItem(item)">
           <i [class]="item.icon + ' item-icon'"></i>
@@ -136,7 +136,7 @@
       @if (filteredResults().length === 0) {
         <div class="empty-search-state">
           <i class="pi pi-search text-xl text-muted"></i>
-          <p>Không tìm thấy kết quả phù hợp cho "{{ searchQuery }}"</p>
+          <p>{{ 'navigation.topbar.commandPaletteNoResults' | translate: { query: searchQuery } }}</p>
         </div>
       }
     </div>

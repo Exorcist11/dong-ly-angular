@@ -19,6 +19,8 @@ import { Tag } from 'primeng/tag';
 import { Tooltip } from 'primeng/tooltip';
 import { RoleService } from '../../services/role.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { TranslationService } from '../../../../core/i18n/translation.service';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { Permission, PermissionCatalog, PermissionGroup } from '../../models/user.model';
 import { forkJoin, finalize } from 'rxjs';
 
@@ -42,6 +44,7 @@ export const CORE_ADMIN_PERMISSIONS = [
   imports: [
     CommonModule,
     FormsModule,
+    TranslatePipe,
     Dialog,
     Button,
     Checkbox,
@@ -56,6 +59,7 @@ export const CORE_ADMIN_PERMISSIONS = [
 export class RolePermissionMatrixComponent implements OnChanges {
   private readonly roleService = inject(RoleService);
   private readonly notification = inject(NotificationService);
+  private readonly translationService = inject(TranslationService);
 
   @Input() visible = false;
   @Input() roleId: string | null = null;
@@ -320,7 +324,10 @@ export class RolePermissionMatrixComponent implements OnChanges {
         next: (res) => {
           if (res.success) {
             this.notification.success(
-              `Đã cập nhật ${codes.length} quyền hạn cho vai trò "${this.roleName}"`
+              this.translationService.translate('roles.matrix.saveSuccess', {
+                count: codes.length,
+                name: this.roleName,
+              })
             );
             this.permissionsSaved.emit();
             this.onClose();
@@ -328,7 +335,7 @@ export class RolePermissionMatrixComponent implements OnChanges {
         },
         error: (err) => {
           this.notification.error(
-            err.error?.message || 'Không thể lưu ma trận quyền hạn cho vai trò'
+            err.error?.message || this.translationService.translate('roles.matrix.saveError')
           );
         },
       });

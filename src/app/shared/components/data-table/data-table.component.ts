@@ -4,6 +4,7 @@ import {
   TemplateRef,
   computed,
   contentChildren,
+  inject,
   input,
   output,
 } from '@angular/core';
@@ -29,6 +30,9 @@ import {
   TableHeaderDirective,
 } from './table-cell.directive';
 
+import { TranslationService } from '../../../core/i18n/translation.service';
+import { TranslatePipe } from '../../../core/i18n/translate.pipe';
+
 /**
  * Component Bảng dữ liệu tái sử dụng cao (Generic Data Table) Đông Lý Admin.
  * Hỗ trợ Server-side / Client-side pagination, sorting, row selection, custom cell templates,
@@ -46,12 +50,14 @@ import {
     Tooltip,
     EmptyStateComponent,
     SearchInputComponent,
+    TranslatePipe,
   ],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataTableComponent<T extends Record<string, any> = Record<string, any>> {
+  private readonly i18n = inject(TranslationService);
   /** Danh sách dữ liệu bảng */
   readonly data = input.required<T[]>();
 
@@ -83,9 +89,7 @@ export class DataTableComponent<T extends Record<string, any> = Record<string, a
   readonly showCurrentPageReport = input<boolean>(true);
 
   /** Mẫu chuỗi hiển thị vị trí trang */
-  readonly currentPageReportTemplate = input<string>(
-    'Hiển thị {first} - {last} trong tổng số {totalRecords} bản ghi',
-  );
+  readonly currentPageReportTemplate = input<string | undefined>(undefined);
 
   /** Bật cuộn nội dung bảng */
   readonly scrollable = input<boolean>(false);
@@ -112,12 +116,10 @@ export class DataTableComponent<T extends Record<string, any> = Record<string, a
   readonly stripedRows = input<boolean>(false);
 
   /** Tiêu đề hiển thị khi không có dữ liệu */
-  readonly emptyTitle = input<string>('Không có dữ liệu');
+  readonly emptyTitle = input<string | undefined>(undefined);
 
   /** Thông điệp hiển thị khi không có dữ liệu */
-  readonly emptyMessage = input<string>(
-    'Hiện tại chưa có bản ghi nào phù hợp để hiển thị.',
-  );
+  readonly emptyMessage = input<string | undefined>(undefined);
 
   /** Icon hiển thị ở trạng thái empty */
   readonly emptyIcon = input<string>('pi pi-inbox');
@@ -145,7 +147,7 @@ export class DataTableComponent<T extends Record<string, any> = Record<string, a
   readonly searchValue = input<string>('');
 
   /** Placeholder cho ô tìm kiếm */
-  readonly searchPlaceholder = input<string>('Tìm kiếm...');
+  readonly searchPlaceholder = input<string | undefined>(undefined);
 
   /** Thời gian trễ debounce (ms) cho tìm kiếm */
   readonly searchDebounce = input<number>(300);
@@ -157,16 +159,46 @@ export class DataTableComponent<T extends Record<string, any> = Record<string, a
   readonly showResetFilters = input<boolean>(false);
 
   /** Nhãn nút đặt lại bộ lọc */
-  readonly resetFiltersLabel = input<string>('Đặt lại');
+  readonly resetFiltersLabel = input<string | undefined>(undefined);
 
   /** Hiển thị nút làm mới dữ liệu */
   readonly showRefresh = input<boolean>(false);
 
   /** Tooltip cho nút làm mới */
-  readonly refreshTooltip = input<string>('Tải lại danh sách');
+  readonly refreshTooltip = input<string | undefined>(undefined);
 
   /** Cưỡng chế ẩn/hiện thanh toolbar (nếu null sẽ tự tính) */
   readonly showToolbar = input<boolean | null>(null);
+
+  readonly effectivePageReportTemplate = computed(() => {
+    this.i18n.currentLang();
+    return this.currentPageReportTemplate() ?? this.i18n.translate('common.table.pageReport');
+  });
+
+  readonly effectiveEmptyTitle = computed(() => {
+    this.i18n.currentLang();
+    return this.emptyTitle() ?? this.i18n.translate('common.table.emptyTitle');
+  });
+
+  readonly effectiveEmptyMessage = computed(() => {
+    this.i18n.currentLang();
+    return this.emptyMessage() ?? this.i18n.translate('common.table.emptyMessage');
+  });
+
+  readonly effectiveSearchPlaceholder = computed(() => {
+    this.i18n.currentLang();
+    return this.searchPlaceholder() ?? (this.i18n.translate('common.actions.search') + '...');
+  });
+
+  readonly effectiveResetFiltersLabel = computed(() => {
+    this.i18n.currentLang();
+    return this.resetFiltersLabel() ?? this.i18n.translate('common.actions.reset');
+  });
+
+  readonly effectiveRefreshTooltip = computed(() => {
+    this.i18n.currentLang();
+    return this.refreshTooltip() ?? this.i18n.translate('common.actions.reloadList');
+  });
 
   // OUTPUTS
   /** Phát sự kiện khi giá trị tìm kiếm thay đổi */

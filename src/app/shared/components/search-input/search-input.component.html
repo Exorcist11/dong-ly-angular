@@ -6,9 +6,9 @@
     [ngModel]="internalValue()"
     (ngModelChange)="onInputChange($event)"
     (keydown.escape)="onClear()"
-    [placeholder]="placeholder()"
+    [placeholder]="effectivePlaceholder()"
     [disabled]="disabled()"
-    [attr.aria-label]="ariaLabel()"
+    [attr.aria-label]="effectiveAriaLabel()"
     class="search-input-field"
   />
   @if (hasValue() && !disabled()) {
@@ -16,7 +16,7 @@
       type="button"
       class="clear-button"
       (click)="onClear()"
-      [attr.aria-label]="clearAriaLabel()"
+      [attr.aria-label]="effectiveClearAriaLabel()"
     >
       <i class="pi pi-times" aria-hidden="true"></i>
     </button>

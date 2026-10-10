@@ -1,0 +1,81 @@
+{
+  "title": "Quản lý Người dùng",
+  "subtitle": "Danh sách tài khoản nhân viên, điều hành và khách hàng trong hệ thống Đông Lý",
+  "breadcrumbs": {
+    "users": "Người dùng"
+  },
+  "actions": {
+    "create": "Thêm người dùng",
+    "edit": "Chỉnh sửa thông tin",
+    "assignRole": "Phân vai trò (RBAC)",
+    "lock": "Khóa tài khoản",
+    "unlock": "Kích hoạt lại tài khoản"
+  },
+  "columns": {
+    "accountAndName": "Tài khoản & Họ tên",
+    "contact": "Email & Số điện thoại",
+    "status": "Trạng thái",
+    "roles": "Vai trò",
+    "createdAt": "Ngày tạo",
+    "actions": "Thao tác"
+  },
+  "statusFilter": "Trạng thái:",
+  "allStatuses": "Tất cả trạng thái",
+  "searchPlaceholder": "Tìm theo tên, username, email, SĐT...",
+  "pageReport": "Hiển thị {first} - {last} trong tổng số {totalRecords} người dùng",
+  "youBadge": "(Bạn)",
+  "unassigned": "Chưa gán",
+  "dialog": {
+    "createTitle": "Thêm mới người dùng",
+    "editTitle": "Cập nhật thông tin người dùng",
+    "usernameLabel": "Tên đăng nhập",
+    "usernamePlaceholder": "vd: nguyen_van_a",
+    "usernamePatternError": "Tên đăng nhập chỉ chứa chữ cái, số và ký tự . _ -",
+    "fullNameLabel": "Họ và tên",
+    "fullNamePlaceholder": "vd: Nguyễn Văn A",
+    "emailLabel": "Email liên hệ",
+    "emailPlaceholder": "vd: nguyen.a@dongly.vn",
+    "passwordLabel": "Mật khẩu khởi tạo",
+    "passwordPlaceholder": "Tối thiểu 8 ký tự",
+    "passwordPrompt": "Nhập mật khẩu an toàn",
+    "passwordWeak": "Yếu",
+    "passwordMedium": "Trung bình",
+    "passwordStrong": "Mạnh",
+    "phoneLabel": "Số điện thoại",
+    "phonePlaceholder": "vd: 0987654321",
+    "phonePatternError": "Số điện thoại không đúng định dạng Việt Nam (10 số).",
+    "rolesLabel": "Vai trò trong hệ thống",
+    "rolesHint": "Người dùng sẽ nhận tập hợp quyền tương ứng từ các vai trò này.",
+    "rolesPlaceholder": "Chọn vai trò (mặc định: Khách hàng)",
+    "rolesEmpty": "Không có vai trò nào",
+    "createSubmit": "Tạo tài khoản",
+    "editSubmit": "Lưu thay đổi"
+  },
+  "roleDialog": {
+    "title": "Phân quyền & Gán vai trò người dùng",
+    "selectRolesTitle": "Chọn các vai trò áp dụng:",
+    "diffTitle": "Xem trước thay đổi:",
+    "addedRoles": "Vai trò được thêm mới:",
+    "removedRoles": "Vai trò sẽ bị thu hồi:",
+    "noChange": "Không có",
+    "tokenWarning": "Lưu ý: Thay đổi vai trò sẽ tự động thu hồi toàn bộ phiên đăng nhập (Refresh Token) của tài khoản này nhằm đảm bảo an toàn phân quyền.",
+    "submit": "Xác nhận & Cập nhật"
+  },
+  "statusModal": {
+    "lockTitle": "Khóa tài khoản người dùng",
+    "lockMessage": "Bạn có chắc chắn muốn khóa tài khoản \"{{name}}\" (@{{username}})? Người dùng này sẽ bị thu hồi phiên làm việc và không thể đăng nhập.",
+    "lockConfirm": "Khóa tài khoản",
+    "unlockTitle": "Kích hoạt lại tài khoản",
+    "unlockMessage": "Kích hoạt lại tài khoản \"{{name}}\" (@{{username}})? Người dùng có thể đăng nhập bình thường sau khi kích hoạt.",
+    "unlockConfirm": "Kích hoạt"
+  },
+  "notifications": {
+    "createSuccess": "Tạo mới tài khoản người dùng thành công.",
+    "updateSuccess": "Cập nhật thông tin người dùng thành công.",
+    "updateRolesSuccess": "Cập nhật vai trò người dùng thành công.",
+    "cannotLockSelf": "Không thể tự khóa tài khoản của chính mình.",
+    "activateSuccess": "Kích hoạt tài khoản thành công.",
+    "lockSuccess": "Đã khóa tài khoản người dùng.",
+    "loadError": "Không thể kết nối hoặc tải danh sách người dùng."
+  }
+}

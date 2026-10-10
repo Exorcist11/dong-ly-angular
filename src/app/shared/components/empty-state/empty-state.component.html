@@ -8,10 +8,8 @@
       </svg>
     }
   </div>
-  <h3 class="empty-title">{{ title }}</h3>
-  @if (description) {
-    <p class="empty-desc">{{ description }}</p>
-  }
+  <h3 class="empty-title">{{ title || ('common.table.emptyTitle' | translate) }}</h3>
+  <p class="empty-desc">{{ description !== undefined ? description : ('common.table.emptyMessage' | translate) }}</p>
   <div class="empty-action">
     <ng-content select="[action]"></ng-content>
   </div>

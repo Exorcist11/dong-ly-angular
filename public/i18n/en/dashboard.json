@@ -8,5 +8,64 @@
   "statsCustomers": "New Passengers",
   "recentTrips": "Recent Schedules",
   "quickActions": "Quick Actions",
-  "systemStatus": "System Health"
+  "systemStatus": "System Health",
+  "subtitle": "Overview of transport operations and ticket sales for Dong Ly",
+  "systemHealthGood": "System Operating Normally",
+  "systemHealthTooltip": "All server services and ticket synchronization are running smoothly",
+  "updatedAt": "Updated at {{time}}",
+  "addTrip": "Add Trip",
+  "errorRealtime": "Unable to load some real-time statistics.",
+  "kpiAriaLabel": "Key Performance Indicators",
+  "vsYesterday": "vs yesterday",
+  "vsLastWeek": "vs last week",
+  "onSchedule100": "100% on schedule",
+  "revenueAndBookings": "Revenue & Bookings",
+  "revenueAndBookingsSubtitle": "Reconciliation chart of operating revenue and total ticket sales",
+  "revenueLabel": "Revenue (million VND)",
+  "bookingsLabel": "Tickets Booked",
+  "occupancy": "Occupancy Rate",
+  "occupancySubtitle": "Seat utilization across the entire network",
+  "limousineFleet": "9-11 Seater Limousine",
+  "vipSleeper": "VIP Sleeper",
+  "emptySeats": "Empty Seats",
+  "occupiedCenter": "Occupied",
+  "timeRange": {
+    "today": "Today",
+    "sevenDays": "7 Days",
+    "thirtyDays": "30 Days"
+  },
+  "chartFilter": {
+    "day": "Day",
+    "week": "Week",
+    "month": "Month"
+  },
+  "weekdays": {
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat",
+    "sun": "Sun"
+  },
+  "recentSchedules": "Recent Schedules",
+  "recentSchedulesSubtitle": "Track status of bus departures today",
+  "viewAll": "View All",
+  "noTripsTitle": "No Trips Found",
+  "noTripsMessage": "There are currently no trips matching this filter.",
+  "columns": {
+    "departureTime": "Departure Time",
+    "route": "Route",
+    "plateNumber": "Plate No.",
+    "vehicleType": "Vehicle Type",
+    "occupied": "Seats",
+    "status": "Status"
+  },
+  "tripStatus": {
+    "departingSoon": "Departing Soon",
+    "onRoute": "On Route",
+    "delayed": "Delayed"
+  },
+  "activities": "Recent Activities",
+  "activitiesSubtitle": "Operations and booking event log"
 }

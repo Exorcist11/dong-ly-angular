@@ -1,18 +1,14 @@
 <div class="user-management-page">
   <!-- PAGE HEADER & ACTIONS -->
   <app-page-header
-    title="Quản lý Người dùng"
-    subtitle="Danh sách tài khoản nhân viên, điều hành và khách hàng trong hệ thống Đông Lý"
-    [breadcrumbs]="[
-      { label: 'Trang chủ', url: '/dashboard' },
-      { label: 'Hệ thống' },
-      { label: 'Người dùng' }
-    ]"
+    [title]="'users.title' | translate"
+    [subtitle]="'users.subtitle' | translate"
+    [breadcrumbs]="breadcrumbs()"
   >
     <div actions class="header-action-buttons">
       <p-button
         *appHasPermission="'USER_CREATE'"
-        label="Thêm người dùng"
+        [label]="'users.actions.create' | translate"
         icon="pi pi-plus"
         severity="danger"
         (onClick)="openCreateDialog()"
@@ -24,7 +20,7 @@
   <div class="saas-card table-card">
     <app-data-table
       [data]="displayedUsers()"
-      [columns]="columns"
+      [columns]="columns()"
       [loading]="isLoading()"
       [lazy]="true"
       (lazyLoad)="onLazyLoad($event)"
@@ -33,14 +29,14 @@
       [pageSize]="pageSize()"
       [totalRecords]="totalRecords()"
       [rowsPerPageOptions]="[10, 20, 50]"
-      [errorMessage]="hasError() ? 'Không thể kết nối hoặc tải danh sách người dùng.' : null"
+      [errorMessage]="hasError() ? ('users.notifications.loadError' | translate) : null"
       (retry)="loadUsers()"
-      currentPageReportTemplate="Hiển thị {first} - {last} trong tổng số {totalRecords} người dùng"
+      [currentPageReportTemplate]="'users.pageReport' | translate"
       minWidth="960px"
       [rowClass]="rowClass"
       [searchable]="true"
       [searchValue]="searchTerm()"
-      searchPlaceholder="Tìm theo tên, username, email, SĐT..."
+      [searchPlaceholder]="'users.searchPlaceholder' | translate"
       (searchChange)="onSearchChange($event)"
       [filters]="tableFilters()"
       (filterChange)="onFilterChange($event)"
@@ -58,7 +54,7 @@
             <div class="username-wrap">
               <span class="user-handle">&#64;{{ u.username }}</span>
               @if (isCurrentUser(u)) {
-                <span class="you-badge">(Bạn)</span>
+                <span class="you-badge">{{ 'users.youBadge' | translate }}</span>
               }
             </div>
           </div>
@@ -100,7 +96,7 @@
               </span>
             }
           } @else {
-            <span class="role-empty">Chưa gán</span>
+            <span class="role-empty">{{ 'users.unassigned' | translate }}</span>
           }
         </div>
       </ng-template>
@@ -120,7 +116,7 @@
             [text]="true"
             size="small"
             styleClass="action-btn edit-btn"
-            pTooltip="Chỉnh sửa thông tin"
+            [pTooltip]="'users.actions.edit' | translate"
             tooltipPosition="top"
             (onClick)="openEditDialog(u)"
             [disabled]="isActionDisabled(u)"
@@ -133,7 +129,7 @@
             [text]="true"
             size="small"
             styleClass="action-btn role-btn"
-            pTooltip="Phân vai trò (RBAC)"
+            [pTooltip]="'users.actions.assignRole' | translate"
             tooltipPosition="top"
             (onClick)="openRoleDialog(u)"
             [disabled]="isCurrentUser(u)"
@@ -147,7 +143,7 @@
               [text]="true"
               size="small"
               styleClass="action-btn lock-btn"
-              pTooltip="Khóa tài khoản"
+              [pTooltip]="'users.actions.lock' | translate"
               tooltipPosition="top"
               (onClick)="confirmToggleStatus(u)"
               [disabled]="isCurrentUser(u)"
@@ -159,7 +155,7 @@
               [text]="true"
               size="small"
               styleClass="action-btn unlock-btn"
-              pTooltip="Kích hoạt lại tài khoản"
+              [pTooltip]="'users.actions.unlock' | translate"
               tooltipPosition="top"
               (onClick)="confirmToggleStatus(u)"
             />

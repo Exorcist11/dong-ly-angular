@@ -8,7 +8,7 @@
     (click)="menu.toggle($event)"
     aria-haspopup="true"
     aria-expanded="false"
-    aria-label="Menu tài khoản người dùng"
+    [attr.aria-label]="'navigation.userMenu.ariaLabel' | translate"
   >
     <p-avatar
       [label]="userInitial()"

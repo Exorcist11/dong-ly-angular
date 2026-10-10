@@ -1,26 +1,27 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { Tag } from 'primeng/tag';
+import { TranslationService } from '../../../core/i18n/translation.service';
 
 export type StatusTagSeverity = 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast';
 
 interface StatusConfig {
-  label: string;
+  key: string;
   severity: StatusTagSeverity;
   icon?: string;
 }
 
 const DEFAULT_STATUS_MAP: Record<string, StatusConfig> = {
-  ACTIVE: { label: 'Hoạt động', severity: 'success' },
-  INACTIVE: { label: 'Tạm khóa', severity: 'danger' },
-  LOCKED: { label: 'Đã khóa', severity: 'danger' },
-  PENDING: { label: 'Chờ xử lý', severity: 'warn' },
-  PROCESSING: { label: 'Đang xử lý', severity: 'info' },
-  COMPLETED: { label: 'Hoàn thành', severity: 'success' },
-  CANCELLED: { label: 'Đã hủy', severity: 'secondary' },
-  SYSTEM: { label: 'Hệ thống', severity: 'contrast' },
-  CUSTOM: { label: 'Tùy chỉnh', severity: 'secondary' },
-  DRAFT: { label: 'Bản nháp', severity: 'secondary' },
-  EXPIRED: { label: 'Hết hạn', severity: 'warn' },
+  ACTIVE: { key: 'common.status.active', severity: 'success' },
+  INACTIVE: { key: 'common.status.inactive', severity: 'danger' },
+  LOCKED: { key: 'common.status.locked', severity: 'danger' },
+  PENDING: { key: 'common.status.pending', severity: 'warn' },
+  PROCESSING: { key: 'common.status.processing', severity: 'info' },
+  COMPLETED: { key: 'common.status.completed', severity: 'success' },
+  CANCELLED: { key: 'common.status.cancelled', severity: 'secondary' },
+  SYSTEM: { key: 'common.status.system', severity: 'contrast' },
+  CUSTOM: { key: 'common.status.custom', severity: 'secondary' },
+  DRAFT: { key: 'common.status.draft', severity: 'secondary' },
+  EXPIRED: { key: 'common.status.expired', severity: 'warn' },
 };
 
 @Component({
@@ -32,6 +33,8 @@ const DEFAULT_STATUS_MAP: Record<string, StatusConfig> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatusBadgeComponent {
+  private readonly i18n = inject(TranslationService);
+
   /** Giá trị trạng thái thô (VD: 'ACTIVE', 'INACTIVE', 'LOCKED'...) */
   readonly status = input<string | null | undefined>();
 
@@ -52,24 +55,32 @@ export class StatusBadgeComponent {
     return val ? val.trim().toUpperCase() : '';
   });
 
-  private readonly config = computed<StatusConfig>(() => {
+  private readonly config = computed<StatusConfig | null>(() => {
     const norm = this.normalizedStatus();
-    return DEFAULT_STATUS_MAP[norm] ?? {
-      label: this.status() || 'Chưa xác định',
-      severity: 'secondary',
-    };
+    return DEFAULT_STATUS_MAP[norm] ?? null;
   });
 
   readonly displayLabel = computed(() => {
-    return this.label() ?? this.config().label;
+    this.i18n.currentLang();
+    if (this.label() !== undefined) {
+      return this.label();
+    }
+    const conf = this.config();
+    if (conf) {
+      return this.i18n.translate(conf.key);
+    }
+    return this.status() || this.i18n.translate('common.status.unknown');
   });
 
   readonly displaySeverity = computed<StatusTagSeverity>(() => {
-    return this.severity() ?? this.config().severity;
+    if (this.severity() !== undefined) {
+      return this.severity()!;
+    }
+    return this.config()?.severity ?? 'secondary';
   });
 
   readonly displayIcon = computed(() => {
-    return this.icon() ?? this.config().icon;
+    return this.icon() ?? this.config()?.icon;
   });
 
   readonly badgeStyleClass = computed(() => {

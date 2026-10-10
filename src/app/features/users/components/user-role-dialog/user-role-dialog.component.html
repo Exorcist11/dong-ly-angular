@@ -1,7 +1,7 @@
 <p-dialog
   [visible]="visible"
   (visibleChange)="onVisibleChange($event)"
-  header="Phân quyền & Gán vai trò người dùng"
+  [header]="'users.roleDialog.title' | translate"
   [modal]="true"
   [style]="{ width: '600px', maxWidth: '95vw' }"
   [draggable]="false"
@@ -25,7 +25,7 @@
     </div>
 
     <div class="role-selection-section">
-      <h5 class="section-title">Chọn các vai trò áp dụng:</h5>
+      <h5 class="section-title">{{ 'users.roleDialog.selectRolesTitle' | translate }}</h5>
       <div class="role-list">
         @for (role of availableRoles; track role.id) {
           <div
@@ -44,7 +44,7 @@
                 <span class="role-name">{{ role.name }}</span>
                 <span class="role-code-badge">{{ role.code }}</span>
                 @if (role.isSystem) {
-                  <p-tag value="Hệ thống" severity="warn" styleClass="system-tag" />
+                  <p-tag [value]="'common.status.system' | translate" severity="warn" styleClass="system-tag" />
                 }
               </div>
               @if (role.description) {
@@ -58,30 +58,30 @@
 
     <!-- PREVIEW DIFF TRƯỚC KHI LƯU -->
     <div class="diff-preview-card">
-      <h5 class="diff-title">Xem trước thay đổi:</h5>
+      <h5 class="diff-title">{{ 'users.roleDialog.diffTitle' | translate }}</h5>
       <div class="diff-rows">
         <div class="diff-item">
-          <span class="diff-label">Vai trò được thêm mới:</span>
+          <span class="diff-label">{{ 'users.roleDialog.addedRoles' | translate }}</span>
           <div class="diff-tags">
             @if (addedRoles.length > 0) {
               @for (code of addedRoles; track code) {
                 <p-tag [value]="'+ ' + code" severity="success" />
               }
             } @else {
-              <span class="no-change-text">Không có</span>
+              <span class="no-change-text">{{ 'users.roleDialog.noChange' | translate }}</span>
             }
           </div>
         </div>
 
         <div class="diff-item">
-          <span class="diff-label">Vai trò sẽ bị thu hồi:</span>
+          <span class="diff-label">{{ 'users.roleDialog.removedRoles' | translate }}</span>
           <div class="diff-tags">
             @if (removedRoles.length > 0) {
               @for (code of removedRoles; track code) {
                 <p-tag [value]="'- ' + code" severity="danger" />
               }
             } @else {
-              <span class="no-change-text">Không có</span>
+              <span class="no-change-text">{{ 'users.roleDialog.noChange' | translate }}</span>
             }
           </div>
         </div>
@@ -91,8 +91,7 @@
         <div class="token-warning-box">
           <i class="pi pi-exclamation-triangle warning-icon"></i>
           <span>
-            Lưu ý: Thay đổi vai trò sẽ tự động thu hồi toàn bộ phiên đăng nhập (Refresh Token)
-            của tài khoản này nhằm đảm bảo an toàn phân quyền.
+            {{ 'users.roleDialog.tokenWarning' | translate }}
           </span>
         </div>
       }
@@ -101,7 +100,7 @@
     <div class="dialog-actions">
       <p-button
         type="button"
-        label="Hủy bỏ"
+        [label]="'common.actions.cancel' | translate"
         severity="secondary"
         [outlined]="true"
         (onClick)="onCancel()"
@@ -109,7 +108,7 @@
       />
       <p-button
         type="button"
-        label="Xác nhận & Cập nhật"
+        [label]="'users.roleDialog.submit' | translate"
         icon="pi pi-check"
         severity="danger"
         (onClick)="onSave()"

@@ -1,16 +1,13 @@
 <div class="role-list-page">
   <!-- PAGE HEADER -->
   <app-page-header
-    title="Quản lý Vai trò & Phân quyền"
-    [breadcrumbs]="[
-      { label: 'Hệ thống' },
-      { label: 'Vai trò & Phân quyền' }
-    ]"
+    [title]="'roles.title' | translate"
+    [breadcrumbs]="breadcrumbs()"
   >
     <div actions class="header-actions">
       <p-button
         *appHasPermission="'ROLE_CREATE'"
-        label="Thêm vai trò mới"
+        [label]="'roles.actions.create' | translate"
         icon="pi pi-plus"
         severity="primary"
         (onClick)="openCreateDialog()"
@@ -22,7 +19,7 @@
   <div class="table-card">
     <app-data-table
       [data]="roles()"
-      [columns]="columns"
+      [columns]="columns()"
       [loading]="loading()"
       [lazy]="true"
       (lazyLoad)="onLazyLoad($event)"
@@ -31,15 +28,15 @@
       [pageSize]="pageSize()"
       [totalRecords]="totalRecords()"
       [rowsPerPageOptions]="[10, 20, 50]"
-      currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} vai trò"
+      [currentPageReportTemplate]="'roles.pageReport' | translate"
       [tableStyleClass]="'p-datatable-striped dl-table'"
       minWidth="960px"
-      [emptyTitle]="isFiltered() ? 'Không tìm thấy vai trò phù hợp' : 'Chưa có vai trò nào trong hệ thống'"
-      [emptyMessage]="isFiltered() ? 'Vui lòng thử lại với từ khóa hoặc bộ lọc khác.' : 'Hệ thống chưa ghi nhận vai trò nào.'"
+      [emptyTitle]="(isFiltered() ? 'roles.emptyFilteredTitle' : 'roles.emptySystemTitle') | translate"
+      [emptyMessage]="(isFiltered() ? 'roles.emptyFilteredMessage' : 'roles.emptySystemMessage') | translate"
       emptyIcon="pi pi-shield"
       [searchable]="true"
       [searchValue]="searchTerm()"
-      searchPlaceholder="Tìm theo mã hoặc tên vai trò..."
+      [searchPlaceholder]="'roles.searchPlaceholder' | translate"
       (searchChange)="onSearch($event)"
       [filters]="tableFilters()"
       (filterChange)="onFilterChange($event)"
@@ -64,9 +61,9 @@
       <ng-template appTableCell="isSystem" let-role>
         <app-status-badge
           [status]="role.isSystem ? 'SYSTEM' : 'CUSTOM'"
-          [label]="role.isSystem ? 'Hệ thống' : 'Tùy chỉnh'"
+          [label]="(role.isSystem ? 'common.status.system' : 'common.status.custom') | translate"
           [styleClass]="role.isSystem ? 'system-tag' : 'custom-tag'"
-          [pTooltip]="role.isSystem ? 'Vai trò nền tảng được bảo vệ toàn vẹn' : undefined"
+          [pTooltip]="role.isSystem ? ('roles.systemProtectedTooltip' | translate) : undefined"
           tooltipPosition="top"
         />
       </ng-template>
@@ -74,7 +71,7 @@
       <!-- CỘT 4: MÔ TẢ -->
       <ng-template appTableCell="description" let-role>
         <span class="role-desc">
-          {{ role.description || 'Chưa có mô tả' }}
+          {{ role.description || ('roles.noDescription' | translate) }}
         </span>
       </ng-template>
 
@@ -83,12 +80,12 @@
         <button
           type="button"
           class="permission-count-pill"
-          [pTooltip]="'Nhấn để xem ma trận phân quyền'"
+          [pTooltip]="'roles.matrixCountTooltip' | translate"
           tooltipPosition="top"
           (click)="openMatrixDialog(role)"
         >
           <i class="pi pi-key key-icon"></i>
-          <span>{{ role.permissionCount ?? 0 }} quyền</span>
+          <span>{{ 'roles.permissionCountLabel' | translate:{ count: role.permissionCount ?? 0 } }}</span>
         </button>
       </ng-template>
 
@@ -112,7 +109,7 @@
             severity="primary"
             [text]="true"
             size="small"
-            pTooltip="Phân quyền vai trò"
+            [pTooltip]="'roles.actions.matrix' | translate"
             tooltipPosition="top"
             (onClick)="openMatrixDialog(role)"
           />
@@ -124,7 +121,7 @@
             severity="secondary"
             [text]="true"
             size="small"
-            pTooltip="Sửa thông tin"
+            [pTooltip]="'roles.actions.edit' | translate"
             tooltipPosition="top"
             (onClick)="openEditDialog(role)"
           />
@@ -137,13 +134,13 @@
               [severity]="role.status === 'ACTIVE' ? 'warn' : 'success'"
               [text]="true"
               size="small"
-              [pTooltip]="role.status === 'ACTIVE' ? 'Tạm khóa vai trò' : 'Kích hoạt vai trò'"
+              [pTooltip]="(role.status === 'ACTIVE' ? 'roles.actions.lock' : 'roles.actions.unlock') | translate"
               tooltipPosition="top"
               (onClick)="confirmStatusChange(role)"
             />
           } @else {
             <span
-              pTooltip="Vai trò hệ thống luôn ở trạng thái hoạt động"
+              [pTooltip]="'roles.systemActiveTooltip' | translate"
               tooltipPosition="top"
               class="disabled-action-placeholder"
             >
@@ -159,7 +156,7 @@
               severity="danger"
               [text]="true"
               size="small"
-              pTooltip="Xóa vai trò"
+              [pTooltip]="'roles.actions.delete' | translate"
               tooltipPosition="top"
               (onClick)="confirmDeleteRole(role)"
             />
@@ -194,15 +191,12 @@
   <!-- MODAL XÁC NHẬN ĐỔI TRẠNG THÁI -->
   <app-confirm-modal
     [isOpen]="statusConfirmVisible()"
-    [title]="pendingStatus() === 'ACTIVE' ? 'Kích hoạt vai trò' : 'Tạm khóa vai trò'"
-    [message]="
-      'Bạn có chắc chắn muốn ' +
-      (pendingStatus() === 'ACTIVE' ? 'kích hoạt' : 'tạm khóa') +
-      ' vai trò ' +
-      (roleForStatusChange()?.name || '') +
-      '?'
-    "
-    [confirmText]="pendingStatus() === 'ACTIVE' ? 'Kích hoạt' : 'Tạm khóa'"
+    [title]="(pendingStatus() === 'ACTIVE' ? 'roles.statusModal.activateTitle' : 'roles.statusModal.lockTitle') | translate"
+    [message]="'roles.statusModal.message' | translate:{
+      action: (pendingStatus() === 'ACTIVE' ? 'roles.statusModal.actionActivate' : 'roles.statusModal.actionLock') | translate,
+      name: (roleForStatusChange()?.name || '')
+    }"
+    [confirmText]="(pendingStatus() === 'ACTIVE' ? 'roles.statusModal.confirmActivate' : 'roles.statusModal.confirmLock') | translate"
     [danger]="pendingStatus() === 'INACTIVE'"
     (confirm)="onExecuteStatusChange()"
     (cancel)="statusConfirmVisible.set(false)"
@@ -211,13 +205,9 @@
   <!-- MODAL XÁC NHẬN XÓA VAI TRÒ -->
   <app-confirm-modal
     [isOpen]="deleteConfirmVisible()"
-    title="Xóa vai trò tùy chỉnh"
-    [message]="
-      'Hành động này sẽ xóa vĩnh viễn vai trò &quot;' +
-      (roleForDelete()?.name || '') +
-      '&quot;. Nếu có người dùng đang giữ vai trò này, hệ thống sẽ từ chối thao tác. Bạn có chắc chắn muốn xóa?'
-    "
-    confirmText="Xóa vai trò"
+    [title]="'roles.deleteModal.title' | translate"
+    [message]="'roles.deleteModal.message' | translate:{ name: (roleForDelete()?.name || '') }"
+    [confirmText]="'roles.deleteModal.confirm' | translate"
     [danger]="true"
     (confirm)="onExecuteDeleteRole()"
     (cancel)="deleteConfirmVisible.set(false)"

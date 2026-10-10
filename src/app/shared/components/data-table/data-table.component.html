@@ -7,7 +7,7 @@
           <div class="table-search-box">
             <app-search-input
               [value]="searchValue()"
-              [placeholder]="searchPlaceholder()"
+              [placeholder]="effectiveSearchPlaceholder()"
               [debounceMs]="searchDebounce()"
               (searchChange)="onSearchChange($event)"
               (clear)="onSearchChange('')"
@@ -25,7 +25,7 @@
                   [options]="filter.options"
                   [ngModel]="filter.value"
                   (selectionChange)="onFilterSelectChange(filter.key, $event)"
-                  [placeholder]="filter.placeholder ?? 'Tất cả'"
+                  [placeholder]="filter.placeholder ?? ('common.actions.all' | translate)"
                   [width]="filter.width"
                   styleClass="table-filter-select"
                 />
@@ -39,7 +39,7 @@
 
         @if (showResetFilters()) {
           <p-button
-            [label]="resetFiltersLabel()"
+            [label]="effectiveResetFiltersLabel()"
             icon="pi pi-filter-slash"
             severity="secondary"
             [outlined]="true"
@@ -61,7 +61,7 @@
             severity="secondary"
             size="small"
             [loading]="loading()"
-            [pTooltip]="refreshTooltip()"
+            [pTooltip]="effectiveRefreshTooltip()"
             tooltipPosition="top"
             (onClick)="onRefreshClick()"
             styleClass="refresh-btn"
@@ -77,7 +77,7 @@
       <i class="pi pi-exclamation-triangle error-icon" aria-hidden="true"></i>
       <p class="error-message">{{ errorMessage() }}</p>
       <p-button
-        label="Thử lại"
+        [label]="'common.actions.retry' | translate"
         icon="pi pi-refresh"
         severity="danger"
         [outlined]="true"
@@ -98,7 +98,7 @@
       [loading]="loading()"
       [rowsPerPageOptions]="rowsPerPageOptions()"
       [showCurrentPageReport]="showCurrentPageReport()"
-      [currentPageReportTemplate]="currentPageReportTemplate()"
+      [currentPageReportTemplate]="effectivePageReportTemplate()"
       [scrollable]="scrollable()"
       [scrollHeight]="scrollHeight() ?? ''"
       [rowHover]="rowHover()"
@@ -186,8 +186,8 @@
           <tr>
             <td [attr.colspan]="totalColspan()" class="p-0">
               <app-empty-state
-                [title]="emptyTitle()"
-                [description]="emptyMessage()"
+                [title]="effectiveEmptyTitle()"
+                [description]="effectiveEmptyMessage()"
                 [icon]="emptyIcon()"
               />
             </td>

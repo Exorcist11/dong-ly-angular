@@ -10,7 +10,15 @@
     "back": "Back",
     "confirm": "Confirm",
     "retry": "Retry",
-    "viewDetails": "View details"
+    "viewDetails": "View details",
+    "add": "Add New",
+    "refresh": "Refresh",
+    "reset": "Reset",
+    "resetFilters": "Reset filters",
+    "reloadList": "Reload list",
+    "clearSearch": "Clear search content",
+    "select": "Select...",
+    "all": "All"
   },
   "states": {
     "loading": "Loading data...",
@@ -20,6 +28,40 @@
     "pending": "Processing",
     "active": "Active",
     "inactive": "Inactive"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "locked": "Locked",
+    "pending": "Pending",
+    "processing": "Processing",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "system": "System",
+    "custom": "Custom",
+    "draft": "Draft",
+    "expired": "Expired",
+    "unknown": "Unknown",
+    "all": "All statuses"
+  },
+  "table": {
+    "pageReport": "Showing {first} to {last} of {totalRecords} records",
+    "emptyTitle": "No data available",
+    "emptyMessage": "There are no records matching your criteria."
+  },
+  "dialogs": {
+    "confirmTitle": "Confirm Action",
+    "confirmMessage": "Are you sure you want to perform this action?"
+  },
+  "errors": {
+    "networkError": "Cannot connect to server. Please check your network connection.",
+    "serverError": "Server encountered an issue. Please try again later.",
+    "unexpected": "An unexpected error occurred."
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "message": "The page you requested does not exist or has been moved within the Dong Ly portal.",
+    "backHome": "Back to Dashboard"
   },
   "language": {
     "vi": "Tiếng Việt",

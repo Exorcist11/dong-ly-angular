@@ -4,6 +4,7 @@ import {
   Provider,
   computed,
   forwardRef,
+  inject,
   input,
   output,
   signal,
@@ -12,6 +13,8 @@ import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Select } from 'primeng/select';
 import { SelectOption } from '../../models/select-option.model';
+
+import { TranslationService } from '../../../core/i18n/translation.service';
 
 export const SELECT_VALUE_ACCESSOR: Provider = {
   provide: NG_VALUE_ACCESSOR,
@@ -34,6 +37,8 @@ export const SELECT_VALUE_ACCESSOR: Provider = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectComponent<T = unknown> implements ControlValueAccessor {
+  private readonly i18n = inject(TranslationService);
+
   /** Danh sách tùy chọn */
   readonly options = input.required<SelectOption<T>[]>();
 
@@ -47,7 +52,7 @@ export class SelectComponent<T = unknown> implements ControlValueAccessor {
   readonly required = input<boolean>(false);
 
   /** Văn bản gợi ý khi chưa chọn */
-  readonly placeholder = input<string>('Chọn...');
+  readonly placeholder = input<string | undefined>(undefined);
 
   /** Trạng thái vô hiệu hóa từ input component cha */
   readonly disabled = input<boolean>(false);
@@ -59,7 +64,7 @@ export class SelectComponent<T = unknown> implements ControlValueAccessor {
   readonly filter = input<boolean>(false);
 
   /** Placeholder cho ô tìm kiếm bên trong dropdown */
-  readonly filterPlaceholder = input<string>('Tìm kiếm...');
+  readonly filterPlaceholder = input<string | undefined>(undefined);
 
   /** Chiều rộng ô select (vd: '180px', '100%') */
   readonly width = input<string | undefined>(undefined);
@@ -68,7 +73,22 @@ export class SelectComponent<T = unknown> implements ControlValueAccessor {
   readonly styleClass = input<string>('');
 
   /** Nhãn accessibility aria-label */
-  readonly ariaLabel = input<string>('Lựa chọn');
+  readonly ariaLabel = input<string | undefined>(undefined);
+
+  readonly effectivePlaceholder = computed(() => {
+    this.i18n.currentLang();
+    return this.placeholder() ?? this.i18n.translate('common.actions.select');
+  });
+
+  readonly effectiveFilterPlaceholder = computed(() => {
+    this.i18n.currentLang();
+    return this.filterPlaceholder() ?? (this.i18n.translate('common.actions.search') + '...');
+  });
+
+  readonly effectiveAriaLabel = computed(() => {
+    this.i18n.currentLang();
+    return this.ariaLabel() ?? (this.label() || this.i18n.translate('common.actions.select'));
+  });
 
   /** Phát sự kiện khi giá trị được chọn thay đổi */
   readonly selectionChange = output<T | null>();

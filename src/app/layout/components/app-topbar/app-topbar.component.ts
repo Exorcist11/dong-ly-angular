@@ -22,9 +22,18 @@ import { Avatar } from 'primeng/avatar';
 import { Tooltip } from 'primeng/tooltip';
 import { Router } from '@angular/router';
 
+import { TranslatePipe } from '../../../core/i18n/translate.pipe';
+
 interface SearchItem {
   label: string;
   category: string;
+  icon: string;
+  route: string;
+}
+
+interface RawSearchItem {
+  labelKey: string;
+  categoryKey: string;
   icon: string;
   route: string;
 }
@@ -44,6 +53,7 @@ interface SearchItem {
     Dialog,
     Avatar,
     Tooltip,
+    TranslatePipe,
   ],
   templateUrl: './app-topbar.component.html',
   styleUrl: './app-topbar.component.scss',
@@ -68,28 +78,28 @@ export class AppTopbarComponent {
     return (this.selectedLanguage || this.i18n.currentLang() || 'vi').toUpperCase();
   }
 
-  readonly quickCommands: SearchItem[] = [
+  readonly rawQuickCommands: RawSearchItem[] = [
     {
-      label: 'Bàn làm việc tổng quan',
-      category: 'Điều hướng',
+      labelKey: 'navigation.topbar.quickOverview',
+      categoryKey: 'navigation.topbar.quickNavigation',
       icon: 'pi pi-objects-column',
       route: '/dashboard',
     },
     {
-      label: 'Quản lý chuyến xe (Thanh Hóa → Hà Nội)',
-      category: 'Vận hành',
+      labelKey: 'navigation.topbar.quickTrips',
+      categoryKey: 'navigation.topbar.quickOperations',
       icon: 'pi pi-car',
       route: '/dashboard',
     },
     {
-      label: 'Quản lý vé & giữ chỗ hành khách',
-      category: 'Bán vé',
+      labelKey: 'navigation.topbar.quickBookings',
+      categoryKey: 'navigation.topbar.quickTicketing',
       icon: 'pi pi-ticket',
       route: '/dashboard',
     },
     {
-      label: 'Tra cứu thông tin khách hàng',
-      category: 'Khách hàng',
+      labelKey: 'navigation.topbar.quickCustomers',
+      categoryKey: 'navigation.topbar.quickCustomerCategory',
       icon: 'pi pi-users',
       route: '/dashboard',
     },
@@ -130,20 +140,28 @@ export class AppTopbarComponent {
 
   themeAriaLabel(): string {
     const t = this.layoutService.theme();
-    return `Đổi giao diện (Hiện tại: ${t})`;
+    return this.i18n.translate('navigation.topbar.themeCurrent', { theme: t });
   }
 
   themeTooltip(): string {
     const t = this.layoutService.theme();
-    if (t === 'light') return 'Giao diện: Sáng';
-    if (t === 'dark') return 'Giao diện: Tối';
-    return 'Giao diện: Theo hệ điều hành';
+    if (t === 'light') return this.i18n.translate('navigation.topbar.themeLight');
+    if (t === 'dark') return this.i18n.translate('navigation.topbar.themeDark');
+    return this.i18n.translate('navigation.topbar.themeSystem');
   }
 
   filteredResults(): SearchItem[] {
+    this.i18n.currentLang();
+    const translatedCommands: SearchItem[] = this.rawQuickCommands.map((item) => ({
+      label: this.i18n.translate(item.labelKey),
+      category: this.i18n.translate(item.categoryKey),
+      icon: item.icon,
+      route: item.route,
+    }));
+
     const q = this.searchQuery.trim().toLowerCase();
-    if (!q) return this.quickCommands;
-    return this.quickCommands.filter(
+    if (!q) return translatedCommands;
+    return translatedCommands.filter(
       (item) =>
         item.label.toLowerCase().includes(q) ||
         item.category.toLowerCase().includes(q)

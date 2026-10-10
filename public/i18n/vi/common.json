@@ -10,7 +10,15 @@
     "back": "Quay lại",
     "confirm": "Xác nhận",
     "retry": "Thử lại",
-    "viewDetails": "Xem chi tiết"
+    "viewDetails": "Xem chi tiết",
+    "add": "Thêm mới",
+    "refresh": "Làm mới",
+    "reset": "Đặt lại",
+    "resetFilters": "Đặt lại bộ lọc",
+    "reloadList": "Tải lại danh sách",
+    "clearSearch": "Xóa nội dung tìm kiếm",
+    "select": "Chọn...",
+    "all": "Tất cả"
   },
   "states": {
     "loading": "Đang tải dữ liệu...",
@@ -20,6 +28,40 @@
     "pending": "Đang xử lý",
     "active": "Hoạt động",
     "inactive": "Ngưng hoạt động"
+  },
+  "status": {
+    "active": "Hoạt động",
+    "inactive": "Tạm khóa",
+    "locked": "Đã khóa",
+    "pending": "Chờ xử lý",
+    "processing": "Đang xử lý",
+    "completed": "Hoàn thành",
+    "cancelled": "Đã hủy",
+    "system": "Hệ thống",
+    "custom": "Tùy chỉnh",
+    "draft": "Bản nháp",
+    "expired": "Hết hạn",
+    "unknown": "Chưa xác định",
+    "all": "Tất cả trạng thái"
+  },
+  "table": {
+    "pageReport": "Hiển thị {first} - {last} trong tổng số {totalRecords} bản ghi",
+    "emptyTitle": "Không có dữ liệu",
+    "emptyMessage": "Hiện tại chưa có bản ghi nào phù hợp để hiển thị."
+  },
+  "dialogs": {
+    "confirmTitle": "Xác nhận hành động",
+    "confirmMessage": "Bạn có chắc chắn muốn thực hiện hành động này?"
+  },
+  "errors": {
+    "networkError": "Không thể kết nối đến máy chủ. Vui lòng kiểm tra đường truyền mạng.",
+    "serverError": "Máy chủ đang gặp sự cố. Vui lòng thử lại sau.",
+    "unexpected": "Đã xảy ra lỗi không xác định."
+  },
+  "notFound": {
+    "title": "Trang không tồn tại",
+    "message": "Đường dẫn bạn yêu cầu không tồn tại hoặc đã được di chuyển trên hệ thống quản trị Đông Lý.",
+    "backHome": "Trở về Bàn làm việc"
   },
   "language": {
     "vi": "Tiếng Việt",
