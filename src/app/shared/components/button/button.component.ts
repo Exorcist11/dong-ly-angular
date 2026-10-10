@@ -161,6 +161,7 @@ export class ButtonComponent {
   readonly isOutlined = computed<boolean>(() => {
     const override = this.outlined();
     if (override !== undefined) return override;
+    if (this.isText()) return false;
     return this.variant() === 'secondary' || this.variant() === 'outlined';
   });
 

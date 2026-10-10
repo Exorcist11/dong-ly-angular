@@ -71,4 +71,13 @@ describe('SearchInputComponent', () => {
     expect(component.internalValue()).toBe('Hà Nội');
     expect(component.hasValue()).toBe(true);
   });
+
+  it('nên hiển thị nhãn label khi được truyền vào', () => {
+    fixture.componentRef.setInput('label', 'Tìm kiếm người dùng');
+    fixture.detectChanges();
+
+    const labelEl = fixture.nativeElement.querySelector('.dl-search-label');
+    expect(labelEl).toBeTruthy();
+    expect(labelEl.textContent.trim()).toBe('Tìm kiếm người dùng');
+  });
 });

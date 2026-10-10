@@ -6,6 +6,7 @@
         @if (searchable()) {
           <div class="table-search-box">
             <app-search-input
+              [label]="effectiveSearchLabel()"
               [value]="searchValue()"
               [placeholder]="effectiveSearchPlaceholder()"
               [debounceMs]="searchDebounce()"
@@ -21,7 +22,7 @@
               <div class="table-filter-item">
                 <app-select
                   [label]="filter.label"
-                  labelPosition="left"
+                  labelPosition="top"
                   [options]="filter.options"
                   [ngModel]="filter.value"
                   (selectionChange)="onFilterSelectChange(filter.key, $event)"

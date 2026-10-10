@@ -1,24 +1,29 @@
-<div class="dl-search-box" [class.is-disabled]="disabled()" [class]="styleClass()">
-  <i class="pi pi-search search-icon" aria-hidden="true"></i>
-  <input
-    pInputText
-    type="text"
-    [ngModel]="internalValue()"
-    (ngModelChange)="onInputChange($event)"
-    (keydown.escape)="onClear()"
-    [placeholder]="effectivePlaceholder()"
-    [disabled]="disabled()"
-    [attr.aria-label]="effectiveAriaLabel()"
-    class="search-input-field"
-  />
-  @if (hasValue() && !disabled()) {
-    <button
-      type="button"
-      class="clear-button"
-      (click)="onClear()"
-      [attr.aria-label]="effectiveClearAriaLabel()"
-    >
-      <i class="pi pi-times" aria-hidden="true"></i>
-    </button>
+<div class="dl-search-wrapper" [class.has-label]="!!resolvedLabel()" [class]="styleClass()">
+  @if (resolvedLabel()) {
+    <label class="dl-search-label">{{ resolvedLabel() }}</label>
   }
+  <div class="dl-search-box" [class.is-disabled]="disabled()">
+    <i class="pi pi-search search-icon" aria-hidden="true"></i>
+    <input
+      pInputText
+      type="text"
+      [ngModel]="internalValue()"
+      (ngModelChange)="onInputChange($event)"
+      (keydown.escape)="onClear()"
+      [placeholder]="effectivePlaceholder()"
+      [disabled]="disabled()"
+      [attr.aria-label]="effectiveAriaLabel()"
+      class="search-input-field"
+    />
+    @if (hasValue() && !disabled()) {
+      <button
+        type="button"
+        class="clear-button"
+        (click)="onClear()"
+        [attr.aria-label]="effectiveClearAriaLabel()"
+      >
+        <i class="pi pi-times" aria-hidden="true"></i>
+      </button>
+    }
+  </div>
 </div>

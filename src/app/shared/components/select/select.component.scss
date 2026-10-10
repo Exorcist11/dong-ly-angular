@@ -25,6 +25,7 @@
     color: var(--color-text-secondary, #3a3733);
     white-space: nowrap;
     user-select: none;
+    line-height: 1.25;
   }
 
   .dl-select-required {
@@ -53,9 +54,32 @@
 
 :host ::ng-deep {
   .p-select {
-    border-radius: 8px;
+    height: 38px !important;
+    border-radius: var(--radius-input, 10px) !important;
     border-color: var(--color-border, #d9d4cc);
+    box-sizing: border-box !important;
+    display: inline-flex;
+    align-items: center;
     transition: border-color var(--ease, 150ms ease), box-shadow var(--ease, 150ms ease);
+
+    .p-select-label {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      padding-left: 0.75rem !important;
+      padding-right: 0.5rem !important;
+      font-size: 0.875rem;
+      line-height: normal;
+    }
+
+    .p-select-dropdown {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
 
     &:not(.p-disabled):hover {
       border-color: var(--color-border-hover, #8a857d);

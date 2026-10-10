@@ -29,6 +29,9 @@ export class SearchInputComponent {
   private readonly i18n = inject(TranslationService);
   private readonly searchSubject$ = new Subject<string>();
 
+  /** Nhãn hiển thị phía trên ô tìm kiếm */
+  readonly label = input<string | undefined>(undefined);
+
   /** Placeholder cho input */
   readonly placeholder = input<string | undefined>(undefined);
 
@@ -49,6 +52,16 @@ export class SearchInputComponent {
 
   /** Nhãn accessibility cho nút xóa */
   readonly clearAriaLabel = input<string | undefined>(undefined);
+
+  readonly resolvedLabel = computed(() => {
+    const raw = this.label();
+    if (!raw) return undefined;
+    if (raw.includes('.')) {
+      this.i18n.currentLang();
+      return this.i18n.translate(raw);
+    }
+    return raw;
+  });
 
   readonly effectivePlaceholder = computed(() => {
     this.i18n.currentLang();

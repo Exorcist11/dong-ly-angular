@@ -132,6 +132,7 @@ export class RoleListPageComponent implements OnInit {
   readonly tableFilters = computed<TableFilterConfig<RoleStatus | 'ALL'>[]>(() => [
     {
       key: 'status',
+      label: this.translationService.translate('roles.statusFilter'),
       placeholder: this.translationService.translate('roles.statusFilterPlaceholder'),
       options: this.statusFilterOptions(),
       value: this.selectedStatus(),

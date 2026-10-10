@@ -147,6 +147,9 @@ export class DataTableComponent<T extends Record<string, any> = Record<string, a
   /** Placeholder cho ô tìm kiếm */
   readonly searchPlaceholder = input<string | undefined>(undefined);
 
+  /** Nhãn hiển thị phía trên ô tìm kiếm (mặc định 'Tìm kiếm' nếu không truyền) */
+  readonly searchLabel = input<string | undefined>(undefined);
+
   /** Thời gian trễ debounce (ms) cho tìm kiếm */
   readonly searchDebounce = input<number>(300);
 
@@ -186,6 +189,16 @@ export class DataTableComponent<T extends Record<string, any> = Record<string, a
   readonly effectiveSearchPlaceholder = computed(() => {
     this.i18n.currentLang();
     return this.searchPlaceholder() ?? (this.i18n.translate('common.actions.search') + '...');
+  });
+
+  readonly effectiveSearchLabel = computed(() => {
+    this.i18n.currentLang();
+    const custom = this.searchLabel();
+    if (custom !== undefined) {
+      if (!custom) return undefined;
+      return custom.includes('.') ? this.i18n.translate(custom) : custom;
+    }
+    return this.i18n.translate('common.actions.search');
   });
 
   readonly effectiveResetFiltersLabel = computed(() => {

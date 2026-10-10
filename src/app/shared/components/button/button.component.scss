@@ -20,7 +20,7 @@
     }
 
     /* Chuẩn hóa nút Secondary theo Design Tokens Đông Lý */
-    &.variant-secondary {
+    &.variant-secondary:not(.p-button-text) {
       border-color: var(--color-border, #D9D4CC);
       color: var(--color-text-primary, #16161A);
       background-color: var(--color-surface, #FFFFFF);
@@ -28,6 +28,17 @@
       &:hover:not(:disabled) {
         background-color: var(--color-surface-hover, #F8F5F0);
         border-color: var(--color-border, #D9D4CC);
+        color: var(--color-text-primary, #16161A);
+      }
+    }
+
+    &.variant-secondary.p-button-text {
+      color: var(--color-text-secondary, #3A3733);
+      background-color: transparent;
+      border-color: transparent;
+
+      &:hover:not(:disabled) {
+        background-color: var(--color-surface-hover, #F8F5F0);
         color: var(--color-text-primary, #16161A);
       }
     }
