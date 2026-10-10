@@ -1,0 +1,241 @@
+<p-dialog
+  [visible]="visible"
+  [modal]="true"
+  [closable]="!saving()"
+  [dismissableMask]="!saving()"
+  styleClass="dl-matrix-dialog"
+  [style]="{ width: '860px', maxWidth: '96vw', height: '88vh' }"
+  (visibleChange)="visibleChange.emit($event)"
+>
+  <ng-template #header>
+    <div class="matrix-dialog-header">
+      <div class="header-title-block">
+        <i class="pi pi-shield title-icon"></i>
+        <div class="title-details">
+          <div class="main-title">
+            <span>Phân quyền vai trò:</span>
+            <strong class="role-title-name">{{ roleName }}</strong>
+            <span class="role-code-badge">{{ roleCode }}</span>
+            @if (isSystemRole) {
+              <p-tag value="Hệ thống" severity="contrast" styleClass="role-tag" />
+            } @else {
+              <p-tag value="Tùy chỉnh" severity="secondary" styleClass="role-tag" />
+            }
+          </div>
+          <span class="sub-title">
+            Thiết lập danh mục các chức năng và quyền hạn được phép thực thi trong hệ thống
+          </span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="matrix-dialog-body">
+    @if (isAdminRole()) {
+      <div class="admin-safety-notice">
+        <i class="pi pi-lock-open lock-icon"></i>
+        <div class="notice-desc">
+          <strong>Cơ chế bảo vệ quản trị tối cao (ADMIN):</strong>
+          <span>
+            Hệ thống tự động bảo vệ và duy trì 5 quyền cốt lõi (ROLE_READ, ROLE_CREATE, ROLE_UPDATE, ROLE_ASSIGN, PERMISSION_READ) nhằm ngăn chặn việc tự thu hồi quyền quản trị.
+          </span>
+        </div>
+      </div>
+    }
+
+    <!-- Toolbar điều khiển ma trận -->
+    <div class="matrix-toolbar">
+      <div class="search-box">
+        <i class="pi pi-search search-icon"></i>
+        <input
+          pInputText
+          type="text"
+          placeholder="Tìm quyền theo tên, mã (VD: USER_READ)..."
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+          class="search-input"
+        />
+        @if (searchQuery()) {
+          <button
+            type="button"
+            class="clear-search-btn"
+            (click)="searchQuery.set('')"
+            title="Xóa tìm kiếm"
+          >
+            <i class="pi pi-times"></i>
+          </button>
+        }
+      </div>
+
+      <div class="quick-actions">
+        <p-button
+          label="Chọn tất cả"
+          icon="pi pi-check-square"
+          severity="secondary"
+          [outlined]="true"
+          size="small"
+          (onClick)="selectAll()"
+          [disabled]="loading() || saving()"
+        />
+
+        <p-button
+          label="Bỏ chọn tất cả"
+          icon="pi pi-stop"
+          severity="secondary"
+          [outlined]="true"
+          size="small"
+          (onClick)="deselectAll()"
+          [disabled]="loading() || saving()"
+        />
+
+        @if (hasChanges()) {
+          <p-button
+            label="Hoàn tác"
+            icon="pi pi-refresh"
+            severity="warn"
+            [text]="true"
+            size="small"
+            (onClick)="resetChanges()"
+            [disabled]="loading() || saving()"
+          />
+        }
+      </div>
+    </div>
+
+    <!-- Thanh thống kê & Diff counter -->
+    <div class="matrix-stats-bar">
+      <div class="stats-counts">
+        <span class="stat-item total">
+          Đã chọn: <strong>{{ selectedCount() }}</strong> / {{ totalSystemPermissions() }} quyền hạn
+        </span>
+      </div>
+
+      <div class="diff-badges">
+        @if (addedCount() > 0) {
+          <span class="diff-badge added">
+            <i class="pi pi-plus"></i> Thêm {{ addedCount() }} quyền mới
+          </span>
+        }
+        @if (removedCount() > 0) {
+          <span class="diff-badge removed">
+            <i class="pi pi-minus"></i> Thu hồi {{ removedCount() }} quyền
+          </span>
+        }
+        @if (!hasChanges()) {
+          <span class="diff-badge unchanged">Chưa có thay đổi</span>
+        }
+      </div>
+    </div>
+
+    <!-- Nội dung danh sách module & permissions -->
+    @if (loading()) {
+      <div class="matrix-loading-state">
+        <i class="pi pi-spin pi-spinner loading-spinner"></i>
+        <span>Đang tải ma trận phân quyền...</span>
+      </div>
+    } @else {
+      <div class="matrix-modules-container">
+        @for (group of filteredModules(); track group.module) {
+          <div class="module-card">
+            <!-- Header của module -->
+            <div class="module-header" (click)="toggleModule(group)">
+              <div class="module-title-left">
+                <p-checkbox
+                  [binary]="true"
+                  [ngModel]="isModuleAllSelected(group)"
+                  (click)="$event.stopPropagation()"
+                  (onChange)="toggleModule(group)"
+                />
+                <span class="module-name">{{ group.module }}</span>
+              </div>
+
+              <div class="module-summary">
+                <span class="module-count-badge">
+                  {{ group.permissions.length }} quyền hạn
+                </span>
+              </div>
+            </div>
+
+            <!-- Danh sách từng quyền trong module -->
+            <div class="permissions-grid">
+              @for (perm of group.permissions; track perm.code) {
+                <div
+                  class="permission-item"
+                  [class.selected]="isPermissionSelected(perm.code)"
+                  [class.locked]="isCoreAdminPermission(perm.code)"
+                  (click)="togglePermission(perm.code)"
+                >
+                  <div class="perm-checkbox-col">
+                    <p-checkbox
+                      [binary]="true"
+                      [ngModel]="isPermissionSelected(perm.code)"
+                      [disabled]="isCoreAdminPermission(perm.code)"
+                      (click)="$event.stopPropagation()"
+                      (onChange)="togglePermission(perm.code)"
+                    />
+                  </div>
+
+                  <div class="perm-info-col">
+                    <div class="perm-title-row">
+                      <strong class="perm-code">{{ perm.code }}</strong>
+                      @if (isCoreAdminPermission(perm.code)) {
+                        <span
+                          class="core-perm-badge"
+                          pTooltip="Quyền cốt lõi bắt buộc đối với ADMIN, không thể thu hồi"
+                          tooltipPosition="top"
+                        >
+                          <i class="pi pi-lock"></i> Cốt lõi
+                        </span>
+                      }
+                    </div>
+                    <div class="perm-name">{{ perm.name }}</div>
+                    @if (perm.description) {
+                      <div class="perm-desc">{{ perm.description }}</div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        } @empty {
+          <div class="matrix-empty-search">
+            <i class="pi pi-search"></i>
+            <p>Không tìm thấy quyền hạn nào khớp với từ khóa "{{ searchQuery() }}"</p>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <ng-template #footer>
+    <div class="matrix-dialog-footer">
+      <div class="footer-left">
+        @if (hasChanges()) {
+          <span class="unsaved-hint">
+            <i class="pi pi-info-circle"></i> Bạn có các thay đổi chưa lưu
+          </span>
+        }
+      </div>
+
+      <div class="footer-actions">
+        <p-button
+          label="Hủy bỏ"
+          icon="pi pi-times"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="onClose()"
+          [disabled]="saving()"
+        />
+
+        <p-button
+          label="Lưu ma trận quyền"
+          icon="pi pi-check"
+          severity="primary"
+          (onClick)="savePermissions()"
+          [loading]="saving()"
+          [disabled]="loading() || saving() || !hasChanges()"
+        />
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>

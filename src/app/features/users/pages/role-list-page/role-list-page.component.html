@@ -1,0 +1,310 @@
+<div class="role-list-page">
+  <!-- PAGE HEADER -->
+  <app-page-header
+    title="Quản lý Vai trò & Phân quyền"
+    [breadcrumbs]="[
+      { label: 'Hệ thống' },
+      { label: 'Vai trò & Phân quyền' }
+    ]"
+  >
+    <div actions class="header-actions">
+      <p-button
+        *appHasPermission="'ROLE_CREATE'"
+        label="Thêm vai trò mới"
+        icon="pi pi-plus"
+        severity="primary"
+        (onClick)="openCreateDialog()"
+      />
+    </div>
+  </app-page-header>
+
+  <!-- FILTER & SEARCH BAR -->
+  <div class="filter-card">
+    <div class="search-box">
+      <i class="pi pi-search search-icon"></i>
+      <input
+        pInputText
+        type="text"
+        placeholder="Tìm theo mã hoặc tên vai trò..."
+        [ngModel]="searchTerm()"
+        (ngModelChange)="onSearch($event)"
+        class="search-input"
+      />
+      @if (searchTerm()) {
+        <button
+          type="button"
+          class="clear-btn"
+          (click)="onSearch('')"
+          title="Xóa tìm kiếm"
+        >
+          <i class="pi pi-times"></i>
+        </button>
+      }
+    </div>
+
+    <div class="filter-controls">
+      <p-select
+        [options]="statusFilterOptions"
+        [ngModel]="selectedStatus()"
+        (ngModelChange)="onStatusFilterChange($event)"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Lọc trạng thái"
+        class="status-select"
+      />
+
+      @if (isFiltered()) {
+        <p-button
+          label="Đặt lại"
+          icon="pi pi-filter-slash"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="onResetFilters()"
+          styleClass="reset-btn"
+        />
+      }
+    </div>
+  </div>
+
+  <!-- DATA TABLE -->
+  <div class="table-card">
+    <p-table
+      [value]="roles()"
+      [lazy]="true"
+      (onLazyLoad)="onLazyLoad($event)"
+      [paginator]="true"
+      [rows]="pageSize()"
+      [totalRecords]="totalRecords()"
+      [loading]="loading()"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} vai trò"
+      styleClass="p-datatable-striped dl-table"
+      responsiveLayout="scroll"
+    >
+      <ng-template #header>
+        <tr>
+          <th style="width: 160px">Mã vai trò</th>
+          <th style="min-width: 180px">Tên vai trò</th>
+          <th style="width: 130px">Loại vai trò</th>
+          <th style="min-width: 220px">Mô tả</th>
+          <th style="width: 130px; text-align: center">Quyền hạn</th>
+          <th style="width: 130px; text-align: center">Trạng thái</th>
+          <th style="width: 140px">Ngày tạo</th>
+          <th style="width: 160px; text-align: right">Thao tác</th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-role>
+        <tr>
+          <!-- Mã vai trò -->
+          <td>
+            <span class="role-code-badge">{{ role.code }}</span>
+          </td>
+
+          <!-- Tên vai trò -->
+          <td>
+            <div class="role-name-cell">
+              <span class="role-name">{{ role.name }}</span>
+            </div>
+          </td>
+
+          <!-- Loại vai trò: Hệ thống vs Tùy chỉnh -->
+          <td>
+            @if (role.isSystem) {
+              <p-tag
+                value="Hệ thống"
+                severity="contrast"
+                styleClass="system-tag"
+                pTooltip="Vai trò nền tảng được bảo vệ toàn vẹn"
+                tooltipPosition="top"
+              />
+            } @else {
+              <p-tag
+                value="Tùy chỉnh"
+                severity="secondary"
+                styleClass="custom-tag"
+              />
+            }
+          </td>
+
+          <!-- Mô tả -->
+          <td>
+            <span class="role-desc">
+              {{ role.description || 'Chưa có mô tả' }}
+            </span>
+          </td>
+
+          <!-- Số quyền hạn -->
+          <td style="text-align: center">
+            <button
+              type="button"
+              class="permission-count-pill"
+              [pTooltip]="'Nhấn để xem ma trận phân quyền'"
+              tooltipPosition="top"
+              (click)="openMatrixDialog(role)"
+            >
+              <i class="pi pi-key key-icon"></i>
+              <span>{{ role.permissionCount ?? 0 }} quyền</span>
+            </button>
+          </td>
+
+          <!-- Trạng thái -->
+          <td style="text-align: center">
+            @if (role.status === 'ACTIVE') {
+              <p-tag value="Hoạt động" severity="success" styleClass="status-tag" />
+            } @else {
+              <p-tag value="Tạm khóa" severity="danger" styleClass="status-tag" />
+            }
+          </td>
+
+          <!-- Ngày tạo -->
+          <td>
+            <span class="date-text">{{ role.createdAt | dateVi }}</span>
+          </td>
+
+          <!-- Thao tác -->
+          <td style="text-align: right">
+            <div class="action-buttons">
+              <!-- Nút Ma trận phân quyền -->
+              <p-button
+                *appHasPermission="'ROLE_ASSIGN'"
+                icon="pi pi-shield"
+                severity="primary"
+                [text]="true"
+                size="small"
+                pTooltip="Phân quyền vai trò"
+                tooltipPosition="top"
+                (onClick)="openMatrixDialog(role)"
+              />
+
+              <!-- Nút Sửa vai trò -->
+              <p-button
+                *appHasPermission="'ROLE_UPDATE'"
+                icon="pi pi-pencil"
+                severity="secondary"
+                [text]="true"
+                size="small"
+                pTooltip="Sửa thông tin"
+                tooltipPosition="top"
+                (onClick)="openEditDialog(role)"
+              />
+
+              <!-- Nút Khóa / Mở khóa -->
+              @if (!role.isSystem) {
+                <p-button
+                  *appHasPermission="'ROLE_UPDATE'"
+                  [icon]="role.status === 'ACTIVE' ? 'pi pi-lock' : 'pi pi-lock-open'"
+                  [severity]="role.status === 'ACTIVE' ? 'warn' : 'success'"
+                  [text]="true"
+                  size="small"
+                  [pTooltip]="role.status === 'ACTIVE' ? 'Tạm khóa vai trò' : 'Kích hoạt vai trò'"
+                  tooltipPosition="top"
+                  (onClick)="confirmStatusChange(role)"
+                />
+              } @else {
+                <span
+                  pTooltip="Vai trò hệ thống luôn ở trạng thái hoạt động"
+                  tooltipPosition="top"
+                  class="disabled-action-placeholder"
+                >
+                  <i class="pi pi-lock system-lock-icon"></i>
+                </span>
+              }
+
+              <!-- Nút Xóa (Chỉ cho vai trò tùy chỉnh) -->
+              @if (!role.isSystem) {
+                <p-button
+                  *appHasPermission="'ROLE_DELETE'"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [text]="true"
+                  size="small"
+                  pTooltip="Xóa vai trò"
+                  tooltipPosition="top"
+                  (onClick)="confirmDeleteRole(role)"
+                />
+              }
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="8">
+            <app-empty-state
+              icon="pi pi-shield"
+              [title]="isFiltered() ? 'Không tìm thấy vai trò phù hợp' : 'Chưa có vai trò nào trong hệ thống'"
+              [description]="isFiltered() ? 'Vui lòng thử lại với từ khóa hoặc bộ lọc khác.' : 'Hệ thống chưa ghi nhận vai trò nào.'"
+            >
+              @if (isFiltered()) {
+                <p-button
+                  label="Xóa bộ lọc"
+                  icon="pi pi-filter-slash"
+                  severity="secondary"
+                  [outlined]="true"
+                  (onClick)="onResetFilters()"
+                />
+              }
+            </app-empty-state>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- DIALOG FORM VAI TRÒ -->
+  <app-role-form-dialog
+    [visible]="roleFormVisible()"
+    [role]="selectedRoleForEdit()"
+    [submitting]="submittingForm()"
+    (visibleChange)="roleFormVisible.set($event)"
+    (save)="onSaveRole($event)"
+  />
+
+  <!-- DIALOG MA TRẬN PHÂN QUYỀN -->
+  @if (selectedRoleForMatrix()) {
+    <app-role-permission-matrix
+      [visible]="matrixVisible()"
+      [roleId]="selectedRoleForMatrix()!.id"
+      [roleName]="selectedRoleForMatrix()!.name"
+      [roleCode]="selectedRoleForMatrix()!.code"
+      [isSystemRole]="selectedRoleForMatrix()!.isSystem"
+      (visibleChange)="matrixVisible.set($event)"
+      (permissionsSaved)="onPermissionsSaved()"
+    />
+  }
+
+  <!-- MODAL XÁC NHẬN ĐỔI TRẠNG THÁI -->
+  <app-confirm-modal
+    [isOpen]="statusConfirmVisible()"
+    [title]="pendingStatus() === 'ACTIVE' ? 'Kích hoạt vai trò' : 'Tạm khóa vai trò'"
+    [message]="
+      'Bạn có chắc chắn muốn ' +
+      (pendingStatus() === 'ACTIVE' ? 'kích hoạt' : 'tạm khóa') +
+      ' vai trò ' +
+      (roleForStatusChange()?.name || '') +
+      '?'
+    "
+    [confirmText]="pendingStatus() === 'ACTIVE' ? 'Kích hoạt' : 'Tạm khóa'"
+    [danger]="pendingStatus() === 'INACTIVE'"
+    (confirm)="onExecuteStatusChange()"
+    (cancel)="statusConfirmVisible.set(false)"
+  />
+
+  <!-- MODAL XÁC NHẬN XÓA VAI TRÒ -->
+  <app-confirm-modal
+    [isOpen]="deleteConfirmVisible()"
+    title="Xóa vai trò tùy chỉnh"
+    [message]="
+      'Hành động này sẽ xóa vĩnh viễn vai trò &quot;' +
+      (roleForDelete()?.name || '') +
+      '&quot;. Nếu có người dùng đang giữ vai trò này, hệ thống sẽ từ chối thao tác. Bạn có chắc chắn muốn xóa?'
+    "
+    confirmText="Xóa vai trò"
+    [danger]="true"
+    (confirm)="onExecuteDeleteRole()"
+    (cancel)="deleteConfirmVisible.set(false)"
+  />
+</div>

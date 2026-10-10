@@ -129,7 +129,17 @@ Vì backend API login không trả trực tiếp thông tin người dùng trong
 
 ---
 
-## 6. NHỮNG ĐIỂM CẦN PHỐI HỢP VỚI BACKEND
+## 6. ĐỐI CHIẾU VỚI BACKEND SPRING-BE & DANH MỤC QUYỀN HẠN RBAC
 
-1. **Thời gian sống của Token**: Cần thống nhất `expiresIn` giữa môi trường Dev, Staging và Production.
-2. **Mã phân quyền chi tiết (Permissions Code List)**: Thống nhất bảng mã quyền (`USER_READ`, `USER_WRITE`, `TRIP_CREATE`, `BOOKING_CANCEL`...) để áp dụng cho `permissionGuard` và directive `*appHasPermission` trong các tính năng tiếp theo.
+Chi tiết khảo sát và đối chiếu toàn diện với source code `E:\du-an-ma\Spring-BE` được ghi nhận tại [backend-rbac-alignment.md](file:///E:/du-an-ma/Angular-FE/docs/backend-rbac-alignment.md).
+
+Các thông số đã được xác minh trực tiếp từ backend:
+1. **Thời gian sống của Token**:
+   - Access Token: `1800` giây (30 phút).
+   - Refresh Token: `604800` giây (7 ngày) hoặc cấu hình trong `application.yml`, áp dụng cơ chế Token Rotation và Replay Attack Detection.
+2. **Danh mục mã quyền hạn chuẩn (RBAC Permission Catalog)**:
+   - Module `USER`: `USER_READ`, `USER_CREATE`, `USER_UPDATE`, `USER_DELETE`.
+   - Module `ROLE`: `ROLE_READ`, `ROLE_CREATE`, `ROLE_UPDATE`, `ROLE_DELETE`, `ROLE_ASSIGN`.
+   - Module `PERMISSION`: `PERMISSION_READ`.
+   - Module Vận tải & Bán vé: `ROUTE_READ`, `ROUTE_MANAGE`, `FLEET_READ`, `FLEET_MANAGE`, `TRIP_READ`, `TRIP_MANAGE`, `BOOKING_READ`, `BOOKING_MANAGE`, `TICKET_READ`.
+

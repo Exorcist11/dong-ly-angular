@@ -1,0 +1,121 @@
+<p-dialog
+  [visible]="visible"
+  (visibleChange)="onVisibleChange($event)"
+  header="Phân quyền & Gán vai trò người dùng"
+  [modal]="true"
+  [style]="{ width: '600px', maxWidth: '95vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="dl-user-role-dialog"
+  [dismissableMask]="true"
+>
+  @if (user) {
+    <div class="user-info-card">
+      <div class="avatar-circle">
+        {{ user.fullName ? user.fullName[0].toUpperCase() : 'U' }}
+      </div>
+      <div class="info-content">
+        <h4 class="user-fullname">{{ user.fullName }}</h4>
+        <div class="user-meta">
+          <span class="user-username">&#64;{{ user.username }}</span>
+          <span class="meta-dot">•</span>
+          <span class="user-email">{{ user.email }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="role-selection-section">
+      <h5 class="section-title">Chọn các vai trò áp dụng:</h5>
+      <div class="role-list">
+        @for (role of availableRoles; track role.id) {
+          <div
+            class="role-item"
+            [class.selected]="isRoleSelected(role.code)"
+            (click)="toggleRole(role.code)"
+          >
+            <p-checkbox
+              [binary]="true"
+              [ngModel]="isRoleSelected(role.code)"
+              (ngModelChange)="toggleRole(role.code)"
+              (click)="$event.stopPropagation()"
+            />
+            <div class="role-details">
+              <div class="role-header">
+                <span class="role-name">{{ role.name }}</span>
+                <span class="role-code-badge">{{ role.code }}</span>
+                @if (role.isSystem) {
+                  <p-tag value="Hệ thống" severity="warn" styleClass="system-tag" />
+                }
+              </div>
+              @if (role.description) {
+                <p class="role-desc">{{ role.description }}</p>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- PREVIEW DIFF TRƯỚC KHI LƯU -->
+    <div class="diff-preview-card">
+      <h5 class="diff-title">Xem trước thay đổi:</h5>
+      <div class="diff-rows">
+        <div class="diff-item">
+          <span class="diff-label">Vai trò được thêm mới:</span>
+          <div class="diff-tags">
+            @if (addedRoles.length > 0) {
+              @for (code of addedRoles; track code) {
+                <p-tag [value]="'+ ' + code" severity="success" />
+              }
+            } @else {
+              <span class="no-change-text">Không có</span>
+            }
+          </div>
+        </div>
+
+        <div class="diff-item">
+          <span class="diff-label">Vai trò sẽ bị thu hồi:</span>
+          <div class="diff-tags">
+            @if (removedRoles.length > 0) {
+              @for (code of removedRoles; track code) {
+                <p-tag [value]="'- ' + code" severity="danger" />
+              }
+            } @else {
+              <span class="no-change-text">Không có</span>
+            }
+          </div>
+        </div>
+      </div>
+
+      @if (hasChanges) {
+        <div class="token-warning-box">
+          <i class="pi pi-exclamation-triangle warning-icon"></i>
+          <span>
+            Lưu ý: Thay đổi vai trò sẽ tự động thu hồi toàn bộ phiên đăng nhập (Refresh Token)
+            của tài khoản này nhằm đảm bảo an toàn phân quyền.
+          </span>
+        </div>
+      }
+    </div>
+
+    <div class="dialog-actions">
+      <p-button
+        type="button"
+        label="Hủy bỏ"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="onCancel()"
+        [disabled]="submitting"
+      />
+      <p-button
+        type="button"
+        label="Xác nhận & Cập nhật"
+        icon="pi pi-check"
+        severity="danger"
+        (onClick)="onSave()"
+        [disabled]="submitting || !hasChanges"
+        [loading]="submitting"
+      />
+    </div>
+  }
+</p-dialog>

@@ -1,0 +1,237 @@
+.user-management-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toolbar-card {
+  padding: 14px 18px;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #d9d4cc);
+  border-radius: 12px;
+}
+
+.toolbar-content {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.search-box {
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted, #8a857d);
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding-left: 36px;
+    padding-right: 32px;
+    height: 38px;
+    border-radius: 8px;
+    font-size: 13.5px;
+  }
+
+  .clear-search-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--color-text-muted, #8a857d);
+    cursor: pointer;
+    padding: 4px;
+  }
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .filter-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-secondary, #3a3733);
+  }
+
+  :host ::ng-deep .status-select {
+    min-width: 160px;
+    height: 38px;
+    border-radius: 8px;
+  }
+}
+
+.table-card {
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #d9d4cc);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .user-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--color-surface-sunken, #f4f1ec);
+    color: var(--color-text-primary, #16161a);
+    font-size: 12.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    &.avatar-admin {
+      background: linear-gradient(135deg, var(--color-primary, #d71920), var(--primary-dark, #a50f16));
+      color: #fff;
+    }
+  }
+
+  .user-cell-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--color-text-primary, #16161a);
+  }
+
+  .username-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--color-text-muted, #8a857d);
+  }
+
+  .you-badge {
+    color: var(--color-primary, #d71920);
+    font-weight: 600;
+  }
+}
+
+.contact-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12.5px;
+
+  .phone-text {
+    color: var(--color-text-muted, #8a857d);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .phone-icon {
+      font-size: 10px;
+    }
+  }
+
+  .phone-empty {
+    color: var(--color-text-muted, #8a857d);
+  }
+}
+
+:host ::ng-deep .status-badge {
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  border-radius: 999px !important;
+}
+
+.roles-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+
+  .role-pill {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+    background: var(--color-surface-sunken, #f4f1ec);
+    border-radius: 4px;
+    color: var(--color-text-secondary, #3a3733);
+
+    &.role-admin {
+      background: rgba(215, 25, 32, 0.12);
+      color: var(--color-primary, #d71920);
+    }
+    &.role-operator {
+      background: rgba(62, 157, 160, 0.14);
+      color: var(--dl-info, #3e9da0);
+    }
+    &.role-staff {
+      background: rgba(242, 182, 50, 0.16);
+      color: var(--dl-gold-text, #8a6100);
+    }
+  }
+
+  .role-empty {
+    font-size: 12px;
+    font-style: italic;
+    color: var(--color-text-muted, #8a857d);
+  }
+}
+
+.date-text {
+  font-size: 12px;
+  color: var(--color-text-muted, #8a857d);
+}
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.self-row {
+  background-color: rgba(215, 25, 32, 0.02) !important;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  gap: 12px;
+
+  .error-icon {
+    font-size: 32px;
+    color: var(--color-danger, #d71920);
+  }
+
+  .error-text {
+    margin: 0;
+    font-size: 14px;
+    color: var(--color-text-secondary, #3a3733);
+  }
+}
+
+.p-0 {
+  padding: 0 !important;
+}

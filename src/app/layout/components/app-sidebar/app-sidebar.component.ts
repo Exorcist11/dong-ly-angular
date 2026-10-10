@@ -6,12 +6,14 @@ import { AppUserMenuComponent } from '../app-user-menu/app-user-menu.component';
 import { Tag } from 'primeng/tag';
 import { Tooltip } from 'primeng/tooltip';
 import { Drawer } from 'primeng/drawer';
+import { AuthService } from '../../../core/auth/auth.service';
 
 export interface NavItem {
   label: string;
   route?: string;
   icon: string;
   isUpcoming?: boolean;
+  permission?: string;
 }
 
 export interface NavGroup {
@@ -35,8 +37,9 @@ export const MENU_CONFIG: NavGroup[] = [
     items: [
       {
         label: 'Quản lý người dùng',
+        route: '/users',
         icon: 'pi pi-users',
-        isUpcoming: true,
+        permission: 'USER_READ',
       },
       {
         label: 'Chuyến xe & Tuyến',
@@ -53,6 +56,12 @@ export const MENU_CONFIG: NavGroup[] = [
   {
     title: 'HỆ THỐNG',
     items: [
+      {
+        label: 'Vai trò & Phân quyền',
+        route: '/roles',
+        icon: 'pi pi-shield',
+        permission: 'ROLE_READ',
+      },
       {
         label: 'Cài đặt hệ thống',
         icon: 'pi pi-cog',
@@ -122,38 +131,40 @@ export const MENU_CONFIG: NavGroup[] = [
 
               <div class="group-items">
                 @for (item of group.items; track item.label) {
-                  @if (item.isUpcoming) {
-                    <!-- Upcoming Item -->
-                    <div
-                      class="nav-item upcoming-item"
-                      [pTooltip]="layoutService.sidebarCollapsed() ? (item.label + ' (Tính năng đang phát triển)') : 'Tính năng đang phát triển'"
-                      tooltipPosition="right"
-                    >
-                      <i [class]="item.icon + ' item-icon'"></i>
-                      @if (!layoutService.sidebarCollapsed() || layoutService.mobileMenuOpen()) {
-                        <span class="item-label">{{ item.label }}</span>
-                        <p-tag
-                          value="Sắp ra mắt"
-                          styleClass="upcoming-tag"
-                        />
-                      }
-                    </div>
-                  } @else {
-                    <!-- Active Link Item -->
-                    <a
-                      [routerLink]="item.route"
-                      routerLinkActive="active-link"
-                      [routerLinkActiveOptions]="{ exact: false }"
-                      class="nav-item link-item"
-                      [pTooltip]="layoutService.sidebarCollapsed() ? item.label : ''"
-                      tooltipPosition="right"
-                      (click)="onNavigate()"
-                    >
-                      <i [class]="item.icon + ' item-icon'"></i>
-                      @if (!layoutService.sidebarCollapsed() || layoutService.mobileMenuOpen()) {
-                        <span class="item-label">{{ item.label }}</span>
-                      }
-                    </a>
+                  @if (hasItemAccess(item)) {
+                    @if (item.isUpcoming) {
+                      <!-- Upcoming Item -->
+                      <div
+                        class="nav-item upcoming-item"
+                        [pTooltip]="layoutService.sidebarCollapsed() ? (item.label + ' (Tính năng đang phát triển)') : 'Tính năng đang phát triển'"
+                        tooltipPosition="right"
+                      >
+                        <i [class]="item.icon + ' item-icon'"></i>
+                        @if (!layoutService.sidebarCollapsed() || layoutService.mobileMenuOpen()) {
+                          <span class="item-label">{{ item.label }}</span>
+                          <p-tag
+                            value="Sắp ra mắt"
+                            styleClass="upcoming-tag"
+                          />
+                        }
+                      </div>
+                    } @else {
+                      <!-- Active Link Item -->
+                      <a
+                        [routerLink]="item.route"
+                        routerLinkActive="active-link"
+                        [routerLinkActiveOptions]="{ exact: false }"
+                        class="nav-item link-item"
+                        [pTooltip]="layoutService.sidebarCollapsed() ? item.label : ''"
+                        tooltipPosition="right"
+                        (click)="onNavigate()"
+                      >
+                        <i [class]="item.icon + ' item-icon'"></i>
+                        @if (!layoutService.sidebarCollapsed() || layoutService.mobileMenuOpen()) {
+                          <span class="item-label">{{ item.label }}</span>
+                        }
+                      </a>
+                    }
                   }
                 }
               </div>
@@ -395,8 +406,16 @@ export const MENU_CONFIG: NavGroup[] = [
 })
 export class AppSidebarComponent {
   readonly layoutService = inject(LayoutService);
+  readonly authService = inject(AuthService);
 
   readonly menuGroups = MENU_CONFIG;
+
+  hasItemAccess(item: NavItem): boolean {
+    if (!item.permission) {
+      return true;
+    }
+    return this.authService.hasPermission(item.permission);
+  }
 
   onMobileDrawerChange(visible: boolean): void {
     if (!visible) {

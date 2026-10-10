@@ -1,0 +1,135 @@
+<p-dialog
+  [visible]="visible"
+  [modal]="true"
+  [closable]="!submitting"
+  [dismissableMask]="!submitting"
+  [header]="isEditMode ? 'Chỉnh sửa thông tin vai trò' : 'Thêm mới vai trò'"
+  styleClass="dl-role-dialog"
+  [style]="{ width: '480px', maxWidth: '95vw' }"
+  (visibleChange)="visibleChange.emit($event)"
+>
+  <form [formGroup]="roleForm" (ngSubmit)="onSubmit()" class="role-form-content">
+    @if (isSystemRole) {
+      <div class="system-role-notice">
+        <i class="pi pi-shield"></i>
+        <div class="notice-text">
+          <strong>Vai trò hệ thống được bảo vệ:</strong>
+          <span>Mã định danh và trạng thái được hệ thống khóa cố định. Bạn chỉ có thể cập nhật tên hiển thị và mô tả.</span>
+        </div>
+      </div>
+    }
+
+    <!-- Mã vai trò -->
+    <div class="form-field">
+      <div class="field-label-row">
+        <label for="roleCode" class="field-label">
+          Mã vai trò
+          @if (!isEditMode) {
+            <span class="required-mark">*</span>
+          }
+        </label>
+        @if (isEditMode) {
+          <span class="readonly-badge">Không thể sửa</span>
+        }
+      </div>
+
+      <input
+        pInputText
+        id="roleCode"
+        formControlName="code"
+        placeholder="Ví dụ: TICKET_INSPECTOR, MODERATOR"
+        class="dl-input"
+        [class.ng-invalid]="roleForm.get('code')?.invalid && roleForm.get('code')?.touched"
+        (input)="onCodeInput($event)"
+      />
+
+      <span class="field-hint">
+        Mã định danh duy nhất (chữ in hoa, số và gạch dưới). Ví dụ: DISPATCHER, AGENT.
+      </span>
+
+      @if (roleForm.get('code')?.touched && roleForm.get('code')?.errors; as errors) {
+        <div class="error-message">
+          @if (errors['required']) {
+            Mã vai trò là bắt buộc.
+          } @else if (errors['pattern']) {
+            Chỉ được chứa chữ cái, số và dấu gạch dưới (_).
+          } @else if (errors['minlength']) {
+            Mã vai trò phải từ 2 ký tự trở lên.
+          } @else if (errors['maxlength']) {
+            Mã vai trò không vượt quá 50 ký tự.
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Tên vai trò hiển thị -->
+    <div class="form-field">
+      <label for="roleName" class="field-label">
+        Tên vai trò <span class="required-mark">*</span>
+      </label>
+
+      <input
+        pInputText
+        id="roleName"
+        formControlName="name"
+        placeholder="Ví dụ: Soát vé & Điều độ"
+        class="dl-input"
+        [class.ng-invalid]="roleForm.get('name')?.invalid && roleForm.get('name')?.touched"
+      />
+
+      @if (roleForm.get('name')?.touched && roleForm.get('name')?.errors; as errors) {
+        <div class="error-message">
+          @if (errors['required']) {
+            Tên vai trò không được để trống.
+          } @else if (errors['maxlength']) {
+            Tên vai trò không vượt quá 100 ký tự.
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Mô tả vai trò -->
+    <div class="form-field">
+      <label for="roleDescription" class="field-label">Mô tả chức năng</label>
+
+      <textarea
+        pTextarea
+        id="roleDescription"
+        formControlName="description"
+        rows="3"
+        placeholder="Mô tả phạm vi quyền hạn và trách nhiệm của vai trò này..."
+        class="dl-textarea"
+        [class.ng-invalid]="roleForm.get('description')?.invalid && roleForm.get('description')?.touched"
+      ></textarea>
+
+      @if (roleForm.get('description')?.touched && roleForm.get('description')?.errors; as errors) {
+        <div class="error-message">
+          @if (errors['maxlength']) {
+            Mô tả không được vượt quá 255 ký tự.
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Actions -->
+    <div class="dialog-actions">
+      <p-button
+        label="Hủy bỏ"
+        icon="pi pi-times"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="onClose()"
+        [disabled]="submitting"
+      />
+
+      <p-button
+        type="submit"
+        [label]="isEditMode ? 'Lưu thay đổi' : 'Tạo vai trò'"
+        icon="pi pi-check"
+        severity="primary"
+        [loading]="submitting"
+        [disabled]="submitting"
+      />
+    </div>
+  </form>
+</p-dialog>

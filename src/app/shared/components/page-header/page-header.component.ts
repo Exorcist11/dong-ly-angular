@@ -20,9 +20,11 @@ export interface BreadcrumbItem {
                 <li [class.active]="last">
                   @if (item.url && !last) {
                     <a [routerLink]="item.url">{{ item.label }}</a>
-                    <span class="separator">/</span>
                   } @else {
                     <span>{{ item.label }}</span>
+                  }
+                  @if (!last) {
+                    <span class="separator">/</span>
                   }
                 </li>
               }
