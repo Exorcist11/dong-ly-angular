@@ -41,7 +41,7 @@
 
     <ng-template #selectedItem let-selectedOption>
       @if (selectedOption) {
-        <div class="dl-select-selected-item">
+        <div class="dl-select-selected-item" [title]="selectedOption.label">
           @if (selectedOption.icon) {
             <i [class]="selectedOption.icon + ' dl-select-option-icon'" aria-hidden="true"></i>
           }

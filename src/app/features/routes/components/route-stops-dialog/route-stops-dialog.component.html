@@ -1,0 +1,149 @@
+<app-dialog
+  [visible]="visible"
+  [header]="'routes.stopsConfig.title' | translate:{ name: route?.name ?? '' }"
+  size="xl"
+  styleClass="dl-stops-dialog"
+  [submitLoading]="submitting"
+  [submitDisabled]="submitting"
+  [submitLabel]="'routes.buttons.saveStops' | translate"
+  [cancelLabel]="'common.actions.cancel' | translate"
+  submitIcon="pi pi-check"
+  (visibleChange)="onVisibleChange($event)"
+  (submitted)="onSubmit()"
+  (cancelled)="onCancel()"
+>
+  <div class="stops-config-container">
+    <p class="guide-text">{{ 'routes.stopsConfig.subtitle' | translate }}</p>
+
+    <!-- DIRECTION TABS -->
+    <div class="direction-tabs">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab() === 'OUTBOUND'"
+        (click)="setTab('OUTBOUND')"
+      >
+        <i class="pi pi-arrow-right"></i>
+        {{ 'routes.stopsConfig.outboundTab' | translate }}
+      </button>
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="activeTab() === 'RETURN'"
+        (click)="setTab('RETURN')"
+      >
+        <i class="pi pi-arrow-left"></i>
+        {{ 'routes.stopsConfig.returnTab' | translate }}
+      </button>
+    </div>
+
+    <!-- ADD STOP TOOLBAR -->
+    <div class="add-stop-toolbar">
+      <div class="select-wrapper">
+        <app-select
+          [ngModel]="selectedPointToAdd()"
+          (ngModelChange)="selectedPointToAdd.set($event)"
+          [options]="stopPointSelectOptions"
+          [placeholder]="'routes.stopsConfig.selectStopPlaceholder' | translate"
+          width="100%"
+        />
+      </div>
+      <app-button
+        variant="primary"
+        icon="pi pi-plus"
+        [label]="'routes.stopsConfig.addStopBtn' | translate"
+        [disabled]="!selectedPointToAdd()"
+        (clicked)="addStop()"
+      />
+    </div>
+
+    <!-- STOPS TABLE LIST -->
+    <div class="stops-table-card">
+      <table class="stops-table">
+        <thead>
+          <tr>
+            <th style="width: 70px;">{{ 'routes.stopsConfig.seqCol' | translate }}</th>
+            <th>{{ 'routes.stopsConfig.stopNameCol' | translate }}</th>
+            <th style="width: 150px;">{{ 'routes.stopsConfig.typeCol' | translate }}</th>
+            <th style="width: 150px;">{{ 'routes.stopsConfig.priceCol' | translate }}</th>
+            <th style="width: 140px; text-align: center;">{{ 'routes.columns.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (currentDirectionStops.length === 0) {
+            <tr>
+              <td colspan="5" class="empty-cell">
+                <i class="pi pi-map-marker"></i>
+                <span>{{ 'routes.stopsConfig.emptyStops' | translate }}</span>
+              </td>
+            </tr>
+          } @else {
+            @for (stop of currentDirectionStops; track stop.stopPointId; let idx = $index; let isFirst = $first; let isLast = $last) {
+              <tr class="stop-row">
+                <td class="seq-badge">
+                  <span class="seq-number">{{ stop.sequence }}</span>
+                </td>
+                <td class="stop-info">
+                  <div class="name-title">{{ stop.stopPointName }}</div>
+                  <div class="address-desc">{{ stop.address }}</div>
+                </td>
+                <td>
+                  <select
+                    class="type-select"
+                    [ngModel]="stop.stopType"
+                    (ngModelChange)="updateStopType(stop, $event)"
+                  >
+                    @for (opt of stopTypeOptions; track opt.value) {
+                      <option [value]="opt.value">{{ opt.label }}</option>
+                    }
+                  </select>
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    class="price-input"
+                    [ngModel]="stop.extraPrice"
+                    (ngModelChange)="updateExtraPrice(stop, $event)"
+                    min="0"
+                    step="5000"
+                  />
+                </td>
+                <td class="action-cell">
+                  <app-button
+                    icon="pi pi-arrow-up"
+                    variant="text"
+                    size="small"
+                    styleClass="action-btn"
+                    [disabled]="isFirst"
+                    [tooltip]="'routes.stopsConfig.moveUp' | translate"
+                    tooltipPosition="top"
+                    (clicked)="moveUp(stop)"
+                  />
+                  <app-button
+                    icon="pi pi-arrow-down"
+                    variant="text"
+                    size="small"
+                    styleClass="action-btn"
+                    [disabled]="isLast"
+                    [tooltip]="'routes.stopsConfig.moveDown' | translate"
+                    tooltipPosition="top"
+                    (clicked)="moveDown(stop)"
+                  />
+                  <app-button
+                    icon="pi pi-trash"
+                    variant="text"
+                    size="small"
+                    styleClass="action-btn delete-btn"
+                    [tooltip]="'routes.stopsConfig.remove' | translate"
+                    tooltipPosition="top"
+                    (clicked)="removeStop(stop)"
+                  />
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</app-dialog>

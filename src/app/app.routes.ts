@@ -41,6 +41,15 @@ export const routes: Routes = [
             (m) => m.RoleListPageComponent
           ),
       },
+      {
+        path: 'routes',
+        canActivate: [permissionGuard],
+        data: { permission: 'ROUTE_READ' },
+        loadComponent: () =>
+          import('./features/routes/pages/route-list-page/route-list-page.component').then(
+            (m) => m.RouteListPageComponent
+          ),
+      },
     ],
   },
   {

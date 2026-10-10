@@ -1,0 +1,91 @@
+<app-dialog
+  [visible]="visible"
+  [header]="(isEditMode ? 'routes.stopPointForm.editTitle' : 'routes.stopPointForm.createTitle') | translate"
+  size="lg"
+  styleClass="dl-stop-point-dialog"
+  [submitLoading]="submitting"
+  [submitDisabled]="submitting"
+  [submitLabel]="'common.actions.save' | translate"
+  [cancelLabel]="'common.actions.cancel' | translate"
+  submitIcon="pi pi-check"
+  (visibleChange)="onVisibleChange($event)"
+  (submitted)="onSubmit()"
+  (cancelled)="onCancel()"
+>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="dialog-form-body">
+    <div class="form-grid">
+      <!-- MÃ ĐIỂM -->
+      <app-input
+        id="code"
+        formControlName="code"
+        [label]="'routes.stopPointForm.codeLabel' | translate"
+        type="text"
+        [required]="true"
+        [placeholder]="'routes.stopPointForm.codePlaceholder' | translate"
+      />
+
+      <!-- TÊN ĐIỂM ĐÓN/TRẢ -->
+      <app-input
+        id="name"
+        formControlName="name"
+        [label]="'routes.stopPointForm.nameLabel' | translate"
+        type="text"
+        [required]="true"
+        [placeholder]="'routes.stopPointForm.namePlaceholder' | translate"
+      />
+    </div>
+
+    <!-- TỈNH / KHU VỰC -->
+    <app-form-field
+      [label]="'routes.stopPointForm.locationLabel' | translate"
+      [required]="true"
+      [control]="form.get('locationId')"
+    >
+      <app-select
+        formControlName="locationId"
+        [options]="locationOptions"
+        [placeholder]="'common.actions.select' | translate"
+        width="100%"
+      />
+    </app-form-field>
+
+    <!-- ĐỊA CHỈ -->
+    <app-input
+      id="address"
+      formControlName="address"
+      [label]="'routes.stopPointForm.addressLabel' | translate"
+      type="text"
+      [required]="true"
+      [placeholder]="'routes.stopPointForm.addressPlaceholder' | translate"
+    />
+
+    <div class="form-grid">
+      <!-- SỐ ĐIỆN THOẠI -->
+      <app-input
+        id="contactPhone"
+        formControlName="contactPhone"
+        [label]="'routes.stopPointForm.phoneLabel' | translate"
+        type="text"
+        [placeholder]="'routes.stopPointForm.phonePlaceholder' | translate"
+      />
+
+      <!-- VĨ ĐỘ (LAT) -->
+      <app-input
+        id="latitude"
+        formControlName="latitude"
+        [label]="'routes.stopPointForm.latLabel' | translate"
+        type="number"
+        placeholder="VD: 20.9765"
+      />
+
+      <!-- KINH ĐỘ (LNG) -->
+      <app-input
+        id="longitude"
+        formControlName="longitude"
+        [label]="'routes.stopPointForm.lngLabel' | translate"
+        type="number"
+        placeholder="VD: 105.8456"
+      />
+    </div>
+  </form>
+</app-dialog>

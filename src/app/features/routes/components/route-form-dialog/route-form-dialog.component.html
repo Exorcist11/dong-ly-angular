@@ -1,0 +1,98 @@
+<app-dialog
+  [visible]="visible"
+  [header]="(isEditMode ? 'routes.form.editTitle' : 'routes.form.createTitle') | translate"
+  size="lg"
+  styleClass="dl-route-dialog"
+  [submitLoading]="submitting"
+  [submitDisabled]="submitting"
+  [submitLabel]="'common.actions.save' | translate"
+  [cancelLabel]="'common.actions.cancel' | translate"
+  submitIcon="pi pi-check"
+  (visibleChange)="onVisibleChange($event)"
+  (submitted)="onSubmit()"
+  (cancelled)="onCancel()"
+>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="dialog-form-body">
+    <div class="form-grid">
+      <!-- MÃ TUYẾN -->
+      <app-input
+        id="code"
+        formControlName="code"
+        [label]="'routes.form.codeLabel' | translate"
+        type="text"
+        [required]="true"
+        [placeholder]="'routes.form.codePlaceholder' | translate"
+      />
+
+      <!-- TÊN TUYẾN -->
+      <app-input
+        id="name"
+        formControlName="name"
+        [label]="'routes.form.nameLabel' | translate"
+        type="text"
+        [required]="true"
+        [placeholder]="'routes.form.namePlaceholder' | translate"
+      />
+    </div>
+
+    <div class="form-grid">
+      <!-- ĐIỂM KHỞI HÀNH -->
+      <app-form-field
+        [label]="'routes.form.originLabel' | translate"
+        [required]="true"
+        [control]="form.get('originLocationId')"
+      >
+        <app-select
+          formControlName="originLocationId"
+          [options]="locationOptions"
+          [placeholder]="'common.actions.select' | translate"
+          width="100%"
+        />
+      </app-form-field>
+
+      <!-- ĐIỂM ĐẾN -->
+      <app-form-field
+        [label]="'routes.form.destinationLabel' | translate"
+        [required]="true"
+        [control]="form.get('destinationLocationId')"
+        [errorMessage]="form.get('destinationLocationId')?.hasError('sameAsOrigin') ? 'Điểm đến không được trùng điểm khởi hành' : undefined"
+      >
+        <app-select
+          formControlName="destinationLocationId"
+          [options]="locationOptions"
+          [placeholder]="'common.actions.select' | translate"
+          width="100%"
+        />
+      </app-form-field>
+    </div>
+
+    <div class="form-grid">
+      <!-- CỰ LY (KM) -->
+      <app-input
+        id="distanceKm"
+        formControlName="distanceKm"
+        [label]="'routes.form.distanceLabel' | translate"
+        type="number"
+        [placeholder]="'routes.form.distancePlaceholder' | translate"
+      />
+
+      <!-- THỜI GIAN (PHÚT) -->
+      <app-input
+        id="estimatedDurationMinutes"
+        formControlName="estimatedDurationMinutes"
+        [label]="'routes.form.durationLabel' | translate"
+        type="number"
+        [placeholder]="'routes.form.durationPlaceholder' | translate"
+      />
+    </div>
+
+    <!-- MÔ TẢ -->
+    <app-input
+      id="description"
+      formControlName="description"
+      [label]="'routes.form.descLabel' | translate"
+      type="text"
+      [placeholder]="'routes.form.descPlaceholder' | translate"
+    />
+  </form>
+</app-dialog>

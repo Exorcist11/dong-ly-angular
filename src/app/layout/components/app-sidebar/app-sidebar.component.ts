@@ -45,8 +45,9 @@ export const MENU_CONFIG: NavGroup[] = [
       },
       {
         labelKey: 'navigation.items.tripsAndRoutes',
-        icon: 'pi pi-car',
-        isUpcoming: true,
+        route: '/routes',
+        icon: 'pi pi-map',
+        permission: 'ROUTE_READ',
       },
       {
         labelKey: 'navigation.items.bookings',

@@ -1,10 +1,12 @@
 :host {
   display: inline-flex;
   vertical-align: middle;
+  flex-shrink: 0;
 
   &.dl-button-full-width {
     display: flex;
     width: 100%;
+    flex-shrink: 1;
   }
 }
 

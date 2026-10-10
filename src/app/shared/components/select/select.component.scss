@@ -1,11 +1,16 @@
 :host {
   display: inline-block;
   vertical-align: middle;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .dl-select-wrapper {
   display: inline-flex;
   vertical-align: middle;
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
 
   &.label-top {
     flex-direction: column;
@@ -26,6 +31,7 @@
     white-space: nowrap;
     user-select: none;
     line-height: 1.25;
+    flex-shrink: 0;
   }
 
   .dl-select-required {
@@ -34,22 +40,40 @@
   }
 }
 
-.dl-select-option,
+.dl-select-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  max-width: 100%;
+}
+
 .dl-select-selected-item {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .dl-select-option-icon {
   font-size: 0.875rem;
   color: var(--color-text-secondary, #3a3733);
+  flex-shrink: 0;
 }
 
-.dl-select-option-label,
+.dl-select-option-label {
+  color: var(--color-text-primary, #16161a);
+}
+
 .dl-select-selected-label {
   color: var(--color-text-primary, #16161a);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 :host ::ng-deep {
@@ -60,6 +84,8 @@
     box-sizing: border-box !important;
     display: inline-flex;
     align-items: center;
+    max-width: 100%;
+    min-width: 0;
     transition: border-color var(--ease, 150ms ease), box-shadow var(--ease, 150ms ease);
 
     .p-select-label {
@@ -72,6 +98,11 @@
       padding-right: 0.5rem !important;
       font-size: 0.875rem;
       line-height: normal;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+      flex: 1 1 0;
     }
 
     .p-select-dropdown {
@@ -79,6 +110,7 @@
       align-items: center;
       justify-content: center;
       height: 100%;
+      flex-shrink: 0;
     }
 
     &:not(.p-disabled):hover {

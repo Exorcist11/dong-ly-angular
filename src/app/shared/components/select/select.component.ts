@@ -35,6 +35,12 @@ export const SELECT_VALUE_ACCESSOR: Provider = {
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[style.width]': 'width() || null',
+    '[style.max-width]': "'100%'",
+    '[style.min-width]': "'0'",
+    '[style.display]': "width() === '100%' ? 'block' : 'inline-block'",
+  },
 })
 export class SelectComponent<T = unknown> implements ControlValueAccessor {
   private readonly i18n = inject(TranslationService);
