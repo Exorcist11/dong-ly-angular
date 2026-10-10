@@ -1,0 +1,37 @@
+<p-select
+  [options]="options()"
+  [ngModel]="internalValue()"
+  (ngModelChange)="onModelChange($event)"
+  (onBlur)="onBlur()"
+  [placeholder]="placeholder()"
+  [disabled]="effectiveDisabled()"
+  [showClear]="clearable()"
+  [filter]="filter()"
+  [filterPlaceholder]="filterPlaceholder()"
+  [ariaLabel]="ariaLabel()"
+  optionLabel="label"
+  optionValue="value"
+  optionDisabled="disabled"
+  [style]="width() ? { width: width() } : null"
+  [styleClass]="'dl-select ' + styleClass()"
+>
+  <ng-template #item let-option>
+    <div class="dl-select-option">
+      @if (option.icon) {
+        <i [class]="option.icon + ' dl-select-option-icon'" aria-hidden="true"></i>
+      }
+      <span class="dl-select-option-label">{{ option.label }}</span>
+    </div>
+  </ng-template>
+
+  <ng-template #selectedItem let-selectedOption>
+    @if (selectedOption) {
+      <div class="dl-select-selected-item">
+        @if (selectedOption.icon) {
+          <i [class]="selectedOption.icon + ' dl-select-option-icon'" aria-hidden="true"></i>
+        }
+        <span class="dl-select-selected-label">{{ selectedOption.label }}</span>
+      </div>
+    }
+  </ng-template>
+</p-select>

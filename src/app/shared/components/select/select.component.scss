@@ -1,0 +1,39 @@
+:host {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.dl-select-option,
+.dl-select-selected-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.dl-select-option-icon {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #3a3733);
+}
+
+.dl-select-option-label,
+.dl-select-selected-label {
+  color: var(--color-text-primary, #16161a);
+}
+
+:host ::ng-deep {
+  .p-select {
+    border-radius: 8px;
+    border-color: var(--color-border, #d9d4cc);
+    transition: border-color var(--ease, 150ms ease), box-shadow var(--ease, 150ms ease);
+
+    &:not(.p-disabled):hover {
+      border-color: var(--color-border-hover, #8a857d);
+    }
+
+    &.p-focus {
+      border-color: var(--color-primary-main, #d71920);
+      box-shadow: var(--shadow-focus, 0 0 0 3px rgba(215, 25, 32, 0.15));
+    }
+  }
+}

@@ -14,7 +14,6 @@ import {
   TableModule,
 } from 'primeng/table';
 import { Button } from 'primeng/button';
-import { Select } from 'primeng/select';
 import { Tooltip } from 'primeng/tooltip';
 import {
   TableColumn,
@@ -24,6 +23,7 @@ import {
 } from '../../models/table.model';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
 import { SearchInputComponent } from '../search-input/search-input.component';
+import { SelectComponent } from '../select/select.component';
 import {
   TableCellDirective,
   TableHeaderDirective,
@@ -42,7 +42,7 @@ import {
     FormsModule,
     TableModule,
     Button,
-    Select,
+    SelectComponent,
     Tooltip,
     EmptyStateComponent,
     SearchInputComponent,

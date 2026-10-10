@@ -206,7 +206,7 @@ describe('DataTableComponent', () => {
     ]);
     fixture.detectChanges();
 
-    const filterSelect = fixture.debugElement.query(By.css('p-select'));
+    const filterSelect = fixture.debugElement.query(By.css('app-select'));
     expect(filterSelect).toBeTruthy();
 
     const dataTable = fixture.debugElement.query(By.directive(DataTableComponent)).componentInstance;

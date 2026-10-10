@@ -22,14 +22,12 @@
                 @if (filter.label) {
                   <span class="table-filter-label">{{ filter.label }}</span>
                 }
-                <p-select
+                <app-select
                   [options]="filter.options"
                   [ngModel]="filter.value"
-                  (ngModelChange)="onFilterSelectChange(filter.key, $event)"
+                  (selectionChange)="onFilterSelectChange(filter.key, $event)"
                   [placeholder]="filter.placeholder ?? 'Tất cả'"
-                  optionLabel="label"
-                  optionValue="value"
-                  [style]="filter.width ? { width: filter.width } : null"
+                  [width]="filter.width"
                   styleClass="table-filter-select"
                 />
               </div>

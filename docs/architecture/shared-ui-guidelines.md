@@ -55,7 +55,7 @@ Dự án sử dụng **PrimeNG 21.x** kết hợp `@primeng/themes` (`DongLyThem
 | **`SearchInputComponent`** | Ô tìm kiếm kèm icon kính lúp, nút xóa nhanh (clear), và cơ chế debounce emission để tránh spam API. | Component dùng chung (`shared/components/search-input`). Nhận `[placeholder]`, phát `(searchChange)`. |
 | **`Button`** | Nút bấm thao tác, hỗ trợ trạng thái loading, icon, severity. | Dùng trực tiếp `<p-button>` của PrimeNG theo Design Tokens. |
 | **`Input / Textarea`** | Nhập văn bản một hoặc nhiều dòng. | Dùng trực tiếp `input[pInputText]` / `textarea[pTextarea]`. |
-| **`Select / Dropdown`** | Chọn giá trị từ danh sách tùy chọn. | Dùng trực tiếp `<p-select>` với model type-safe `SelectOption<T>`. |
+| **`SelectComponent`** | Chọn giá trị từ danh sách tùy chọn, triển khai `ControlValueAccessor` tương thích hoàn hảo Reactive Forms / ngModel, hỗ trợ icon tùy chọn, xóa nhanh và tìm kiếm lọc. | Component dùng chung (`shared/components/select`). Nhận `[options]`, `[placeholder]`, `[width]`, `[clearable]`, `[filter]`. |
 | **`Checkbox / Radio`** | Chọn một hoặc nhiều tùy chọn logic. | Dùng trực tiếp `<p-checkbox>` / `<p-radiobutton>`. |
 | **`DatePicker`** | Chọn ngày tháng / khoảng thời gian. | Dùng trực tiếp `<p-datepicker>` với format Việt Nam `dd/mm/yy`. |
 | **`SeatMapSelector`** | Sơ đồ chọn ghế xe khách giường nằm / ghế ngồi 2 tầng đặc thù Đông Lý. | Shared Component triển khai `ControlValueAccessor` (`shared/components/seat-map-selector`). |
