@@ -21,25 +21,12 @@
   <!-- FILTER & SEARCH BAR -->
   <div class="filter-card">
     <div class="search-box">
-      <i class="pi pi-search search-icon"></i>
-      <input
-        pInputText
-        type="text"
+      <app-search-input
+        [value]="searchTerm()"
+        (searchChange)="onSearch($event)"
+        (clear)="onSearch('')"
         placeholder="Tìm theo mã hoặc tên vai trò..."
-        [ngModel]="searchTerm()"
-        (ngModelChange)="onSearch($event)"
-        class="search-input"
       />
-      @if (searchTerm()) {
-        <button
-          type="button"
-          class="clear-btn"
-          (click)="onSearch('')"
-          title="Xóa tìm kiếm"
-        >
-          <i class="pi pi-times"></i>
-        </button>
-      }
     </div>
 
     <div class="filter-controls">
@@ -111,21 +98,13 @@
 
           <!-- Loại vai trò: Hệ thống vs Tùy chỉnh -->
           <td>
-            @if (role.isSystem) {
-              <p-tag
-                value="Hệ thống"
-                severity="contrast"
-                styleClass="system-tag"
-                pTooltip="Vai trò nền tảng được bảo vệ toàn vẹn"
-                tooltipPosition="top"
-              />
-            } @else {
-              <p-tag
-                value="Tùy chỉnh"
-                severity="secondary"
-                styleClass="custom-tag"
-              />
-            }
+            <app-status-badge
+              [status]="role.isSystem ? 'SYSTEM' : 'CUSTOM'"
+              [label]="role.isSystem ? 'Hệ thống' : 'Tùy chỉnh'"
+              [styleClass]="role.isSystem ? 'system-tag' : 'custom-tag'"
+              [pTooltip]="role.isSystem ? 'Vai trò nền tảng được bảo vệ toàn vẹn' : undefined"
+              tooltipPosition="top"
+            />
           </td>
 
           <!-- Mô tả -->
@@ -151,11 +130,7 @@
 
           <!-- Trạng thái -->
           <td style="text-align: center">
-            @if (role.status === 'ACTIVE') {
-              <p-tag value="Hoạt động" severity="success" styleClass="status-tag" />
-            } @else {
-              <p-tag value="Tạm khóa" severity="danger" styleClass="status-tag" />
-            }
+            <app-status-badge [status]="role.status" />
           </td>
 
           <!-- Ngày tạo -->

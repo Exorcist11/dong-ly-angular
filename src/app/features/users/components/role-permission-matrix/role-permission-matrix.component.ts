@@ -14,7 +14,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Dialog } from 'primeng/dialog';
 import { Button } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
 import { Checkbox } from 'primeng/checkbox';
 import { Tag } from 'primeng/tag';
 import { Tooltip } from 'primeng/tooltip';
@@ -22,6 +21,8 @@ import { RoleService } from '../../services/role.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { Permission, PermissionCatalog, PermissionGroup } from '../../models/user.model';
 import { forkJoin, finalize } from 'rxjs';
+
+import { SearchInputComponent } from '../../../../shared/components/search-input/search-input.component';
 
 /**
  * 5 quyền hạn cốt lõi bảo vệ của ADMIN được quy định tại Backend RBAC:
@@ -43,10 +44,10 @@ export const CORE_ADMIN_PERMISSIONS = [
     FormsModule,
     Dialog,
     Button,
-    InputText,
     Checkbox,
     Tag,
     Tooltip,
+    SearchInputComponent,
   ],
   templateUrl: './role-permission-matrix.component.html',
   styleUrl: './role-permission-matrix.component.scss',

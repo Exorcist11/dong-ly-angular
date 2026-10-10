@@ -10,15 +10,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { Button } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { Tag } from 'primeng/tag';
 import { Tooltip } from 'primeng/tooltip';
 
 import { NotificationService } from '../../../../core/services/notification.service';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ConfirmModalComponent } from '../../../../shared/components/confirm-modal/confirm-modal.component';
+import { SearchInputComponent } from '../../../../shared/components/search-input/search-input.component';
+import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
 import { HasPermissionDirective } from '../../../../shared/directives/has-permission.directive';
 import { DateViPipe } from '../../../../shared/pipes/date-vi.pipe';
 
@@ -42,13 +42,13 @@ import { finalize } from 'rxjs';
     FormsModule,
     TableModule,
     Button,
-    InputText,
     Select,
-    Tag,
     Tooltip,
     PageHeaderComponent,
     EmptyStateComponent,
     ConfirmModalComponent,
+    SearchInputComponent,
+    StatusBadgeComponent,
     HasPermissionDirective,
     DateViPipe,
     RoleFormDialogComponent,

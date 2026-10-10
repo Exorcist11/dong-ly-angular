@@ -20,6 +20,7 @@ import { Button } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { Textarea } from 'primeng/textarea';
 import { Tag } from 'primeng/tag';
+import { FormFieldComponent } from '../../../../shared/components/form-field/form-field.component';
 import {
   CreateRoleRequest,
   Role,
@@ -37,6 +38,7 @@ import {
     Button,
     InputText,
     Textarea,
+    FormFieldComponent,
   ],
   templateUrl: './role-form-dialog.component.html',
   styleUrl: './role-form-dialog.component.scss',

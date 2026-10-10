@@ -20,19 +20,19 @@
     }
 
     <!-- Mã vai trò -->
-    <div class="form-field">
-      <div class="field-label-row">
-        <label for="roleCode" class="field-label">
-          Mã vai trò
-          @if (!isEditMode) {
-            <span class="required-mark">*</span>
-          }
-        </label>
-        @if (isEditMode) {
-          <span class="readonly-badge">Không thể sửa</span>
-        }
-      </div>
-
+    <app-form-field
+      label="Mã vai trò"
+      forId="roleCode"
+      [required]="!isEditMode"
+      [control]="roleForm.get('code')"
+      hint="Mã định danh duy nhất (chữ in hoa, số và gạch dưới). Ví dụ: DISPATCHER, AGENT."
+      [errorMessages]="{
+        pattern: 'Chỉ được chứa chữ cái, số và dấu gạch dưới (_).'
+      }"
+    >
+      @if (isEditMode) {
+        <span labelSuffix class="readonly-badge">Không thể sửa</span>
+      }
       <input
         pInputText
         id="roleCode"
@@ -42,32 +42,15 @@
         [class.ng-invalid]="roleForm.get('code')?.invalid && roleForm.get('code')?.touched"
         (input)="onCodeInput($event)"
       />
-
-      <span class="field-hint">
-        Mã định danh duy nhất (chữ in hoa, số và gạch dưới). Ví dụ: DISPATCHER, AGENT.
-      </span>
-
-      @if (roleForm.get('code')?.touched && roleForm.get('code')?.errors; as errors) {
-        <div class="error-message">
-          @if (errors['required']) {
-            Mã vai trò là bắt buộc.
-          } @else if (errors['pattern']) {
-            Chỉ được chứa chữ cái, số và dấu gạch dưới (_).
-          } @else if (errors['minlength']) {
-            Mã vai trò phải từ 2 ký tự trở lên.
-          } @else if (errors['maxlength']) {
-            Mã vai trò không vượt quá 50 ký tự.
-          }
-        </div>
-      }
-    </div>
+    </app-form-field>
 
     <!-- Tên vai trò hiển thị -->
-    <div class="form-field">
-      <label for="roleName" class="field-label">
-        Tên vai trò <span class="required-mark">*</span>
-      </label>
-
+    <app-form-field
+      label="Tên vai trò"
+      forId="roleName"
+      [required]="true"
+      [control]="roleForm.get('name')"
+    >
       <input
         pInputText
         id="roleName"
@@ -76,22 +59,14 @@
         class="dl-input"
         [class.ng-invalid]="roleForm.get('name')?.invalid && roleForm.get('name')?.touched"
       />
-
-      @if (roleForm.get('name')?.touched && roleForm.get('name')?.errors; as errors) {
-        <div class="error-message">
-          @if (errors['required']) {
-            Tên vai trò không được để trống.
-          } @else if (errors['maxlength']) {
-            Tên vai trò không vượt quá 100 ký tự.
-          }
-        </div>
-      }
-    </div>
+    </app-form-field>
 
     <!-- Mô tả vai trò -->
-    <div class="form-field">
-      <label for="roleDescription" class="field-label">Mô tả chức năng</label>
-
+    <app-form-field
+      label="Mô tả chức năng"
+      forId="roleDescription"
+      [control]="roleForm.get('description')"
+    >
       <textarea
         pTextarea
         id="roleDescription"
@@ -101,15 +76,7 @@
         class="dl-textarea"
         [class.ng-invalid]="roleForm.get('description')?.invalid && roleForm.get('description')?.touched"
       ></textarea>
-
-      @if (roleForm.get('description')?.touched && roleForm.get('description')?.errors; as errors) {
-        <div class="error-message">
-          @if (errors['maxlength']) {
-            Mô tả không được vượt quá 255 ký tự.
-          }
-        </div>
-      }
-    </div>
+    </app-form-field>
 
     <!-- Actions -->
     <div class="dialog-actions">

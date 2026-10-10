@@ -20,6 +20,7 @@ import { Button } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { Password } from 'primeng/password';
 import { MultiSelect } from 'primeng/multiselect';
+import { FormFieldComponent } from '../../../../shared/components/form-field/form-field.component';
 import { CreateUserRequest, Role, UpdateUserRequest, User } from '../../models/user.model';
 
 @Component({
@@ -33,6 +34,7 @@ import { CreateUserRequest, Role, UpdateUserRequest, User } from '../../models/u
     InputText,
     Password,
     MultiSelect,
+    FormFieldComponent,
   ],
   templateUrl: './user-form-dialog.component.html',
   styleUrl: './user-form-dialog.component.scss',

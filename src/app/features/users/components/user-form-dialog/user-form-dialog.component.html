@@ -11,10 +11,15 @@
 >
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form-content">
     <!-- USERNAME (Chỉ cho phép nhập khi tạo mới) -->
-    <div class="form-field">
-      <label for="username" class="field-label">
-        Tên đăng nhập <span class="required-mark">*</span>
-      </label>
+    <app-form-field
+      label="Tên đăng nhập"
+      forId="username"
+      [required]="true"
+      [control]="userForm.get('username')"
+      [errorMessages]="{
+        pattern: 'Tên đăng nhập chỉ chứa chữ cái, số và ký tự . _ -'
+      }"
+    >
       <input
         id="username"
         type="text"
@@ -23,28 +28,16 @@
         placeholder="vd: nguyen_van_a"
         class="dl-input"
         [class.ng-invalid]="isFieldInvalid('username')"
-        [class.ng-dirty]="isFieldInvalid('username')"
       />
-      @if (isFieldInvalid('username')) {
-        <small class="error-message">
-          @if (userForm.get('username')?.hasError('required')) {
-            Tên đăng nhập không được để trống.
-          } @else if (userForm.get('username')?.hasError('minlength')) {
-            Tên đăng nhập phải có ít nhất 3 ký tự.
-          } @else if (userForm.get('username')?.hasError('maxlength')) {
-            Tên đăng nhập không vượt quá 50 ký tự.
-          } @else if (userForm.get('username')?.hasError('pattern')) {
-            Tên đăng nhập chỉ chứa chữ cái, số và ký tự . _ -
-          }
-        </small>
-      }
-    </div>
+    </app-form-field>
 
     <!-- HỌ VÀ TÊN -->
-    <div class="form-field">
-      <label for="fullName" class="field-label">
-        Họ và tên <span class="required-mark">*</span>
-      </label>
+    <app-form-field
+      label="Họ và tên"
+      forId="fullName"
+      [required]="true"
+      [control]="userForm.get('fullName')"
+    >
       <input
         id="fullName"
         type="text"
@@ -54,16 +47,15 @@
         class="dl-input"
         [class.ng-invalid]="isFieldInvalid('fullName')"
       />
-      @if (isFieldInvalid('fullName')) {
-        <small class="error-message">Họ và tên không được để trống (tối đa 100 ký tự).</small>
-      }
-    </div>
+    </app-form-field>
 
     <!-- EMAIL -->
-    <div class="form-field">
-      <label for="email" class="field-label">
-        Email liên hệ <span class="required-mark">*</span>
-      </label>
+    <app-form-field
+      label="Email liên hệ"
+      forId="email"
+      [required]="true"
+      [control]="userForm.get('email')"
+    >
       <input
         id="email"
         type="email"
@@ -73,23 +65,16 @@
         class="dl-input"
         [class.ng-invalid]="isFieldInvalid('email')"
       />
-      @if (isFieldInvalid('email')) {
-        <small class="error-message">
-          @if (userForm.get('email')?.hasError('required')) {
-            Email không được để trống.
-          } @else if (userForm.get('email')?.hasError('email')) {
-            Email không đúng định dạng.
-          }
-        </small>
-      }
-    </div>
+    </app-form-field>
 
     <!-- MẬT KHẨU (Chỉ bắt buộc khi tạo mới) -->
     @if (!isEditMode) {
-      <div class="form-field">
-        <label for="password" class="field-label">
-          Mật khẩu khởi tạo <span class="required-mark">*</span>
-        </label>
+      <app-form-field
+        label="Mật khẩu khởi tạo"
+        forId="password"
+        [required]="true"
+        [control]="userForm.get('password')"
+      >
         <p-password
           id="password"
           formControlName="password"
@@ -103,21 +88,18 @@
           inputStyleClass="w-full dl-input"
           placeholder="Tối thiểu 8 ký tự"
         />
-        @if (isFieldInvalid('password')) {
-          <small class="error-message">
-            @if (userForm.get('password')?.hasError('required')) {
-              Mật khẩu khởi tạo không được để trống.
-            } @else if (userForm.get('password')?.hasError('minlength')) {
-              Mật khẩu phải từ 8 ký tự trở lên.
-            }
-          </small>
-        }
-      </div>
+      </app-form-field>
     }
 
     <!-- SỐ ĐIỆN THOẠI -->
-    <div class="form-field">
-      <label for="phone" class="field-label">Số điện thoại</label>
+    <app-form-field
+      label="Số điện thoại"
+      forId="phone"
+      [control]="userForm.get('phone')"
+      [errorMessages]="{
+        pattern: 'Số điện thoại không đúng định dạng Việt Nam (10 số).'
+      }"
+    >
       <input
         id="phone"
         type="tel"
@@ -127,14 +109,14 @@
         class="dl-input"
         [class.ng-invalid]="isFieldInvalid('phone')"
       />
-      @if (isFieldInvalid('phone')) {
-        <small class="error-message">Số điện thoại không đúng định dạng Việt Nam (10 số).</small>
-      }
-    </div>
+    </app-form-field>
 
     <!-- VAI TRÒ GÁN (ROLES) -->
-    <div class="form-field">
-      <label for="roleCodes" class="field-label">Vai trò trong hệ thống</label>
+    <app-form-field
+      label="Vai trò trong hệ thống"
+      forId="roleCodes"
+      hint="Người dùng sẽ nhận tập hợp quyền tương ứng từ các vai trò này."
+    >
       <p-multiselect
         id="roleCodes"
         formControlName="roleCodes"
@@ -146,8 +128,7 @@
         display="chip"
         emptyMessage="Không có vai trò nào"
       />
-      <small class="field-hint">Người dùng sẽ nhận tập hợp quyền tương ứng từ các vai trò này.</small>
-    </div>
+    </app-form-field>
 
     <!-- DIALOG FOOTER -->
     <div class="dialog-actions">

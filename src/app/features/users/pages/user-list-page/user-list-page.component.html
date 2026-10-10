@@ -25,25 +25,12 @@
     <div class="toolbar-content">
       <!-- TÌM KIẾM THEO TÊN / USERNAME / EMAIL / PHONE -->
       <div class="search-box">
-        <i class="pi pi-search search-icon"></i>
-        <input
-          type="text"
-          pInputText
-          [ngModel]="searchTerm()"
-          (ngModelChange)="onSearchChange($event)"
+        <app-search-input
+          [value]="searchTerm()"
+          (searchChange)="onSearchChange($event)"
+          (clear)="onSearchChange('')"
           placeholder="Tìm theo tên, username, email, SĐT..."
-          class="search-input"
         />
-        @if (searchTerm()) {
-          <button
-            type="button"
-            class="clear-search-btn"
-            (click)="onSearchChange('')"
-            aria-label="Xóa tìm kiếm"
-          >
-            <i class="pi pi-times"></i>
-          </button>
-        }
       </div>
 
       <!-- LỌC TRẠNG THÁI TÀI KHOẢN -->
@@ -153,11 +140,7 @@
 
             <!-- CỘT 3: TRẠNG THÁI -->
             <td>
-              <p-tag
-                [value]="getStatusLabel(u.status)"
-                [severity]="getStatusSeverity(u.status)"
-                styleClass="status-badge"
-              />
+              <app-status-badge [status]="u.status" />
             </td>
 
             <!-- CỘT 4: VAI TRÒ -->

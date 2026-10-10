@@ -46,25 +46,12 @@
     <!-- Toolbar điều khiển ma trận -->
     <div class="matrix-toolbar">
       <div class="search-box">
-        <i class="pi pi-search search-icon"></i>
-        <input
-          pInputText
-          type="text"
+        <app-search-input
+          [value]="searchQuery()"
+          (searchChange)="searchQuery.set($event)"
+          (clear)="searchQuery.set('')"
           placeholder="Tìm quyền theo tên, mã (VD: USER_READ)..."
-          [ngModel]="searchQuery()"
-          (ngModelChange)="searchQuery.set($event)"
-          class="search-input"
         />
-        @if (searchQuery()) {
-          <button
-            type="button"
-            class="clear-search-btn"
-            (click)="searchQuery.set('')"
-            title="Xóa tìm kiếm"
-          >
-            <i class="pi pi-times"></i>
-          </button>
-        }
       </div>
 
       <div class="quick-actions">
