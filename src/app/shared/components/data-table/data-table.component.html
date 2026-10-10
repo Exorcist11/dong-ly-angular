@@ -19,10 +19,9 @@
           <div class="table-filters-group">
             @for (filter of filterList; track filter.key) {
               <div class="table-filter-item">
-                @if (filter.label) {
-                  <span class="table-filter-label">{{ filter.label }}</span>
-                }
                 <app-select
+                  [label]="filter.label"
+                  labelPosition="left"
                   [options]="filter.options"
                   [ngModel]="filter.value"
                   (selectionChange)="onFilterSelectChange(filter.key, $event)"

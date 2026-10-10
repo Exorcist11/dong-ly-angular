@@ -10,6 +10,8 @@ import { SelectOption } from '../../models/select-option.model';
   imports: [SelectComponent, ReactiveFormsModule],
   template: `
     <app-select
+      [label]="label()"
+      [required]="required()"
       [options]="options"
       [formControl]="control"
       [placeholder]="placeholder()"
@@ -27,6 +29,8 @@ class TestHostComponent {
     { label: 'Tạm khóa', value: 'LOCKED', disabled: true },
   ];
 
+  readonly label = signal<string | undefined>('Trạng thái');
+  readonly required = signal<boolean>(true);
   readonly control = new FormControl<string>('ALL');
   readonly placeholder = signal<string>('Chọn trạng thái...');
   readonly disabled = signal<boolean>(false);
@@ -105,5 +109,15 @@ describe('SelectComponent', () => {
     fixture.detectChanges();
 
     expect(selectInstance.effectiveDisabled()).toBe(true);
+  });
+
+  it('nên hiển thị nhãn label và dấu required khi được cấu hình', () => {
+    const labelEl = fixture.debugElement.query(By.css('.dl-select-label'));
+    expect(labelEl).toBeTruthy();
+    expect(labelEl.nativeElement.textContent).toContain('Trạng thái');
+
+    const requiredEl = fixture.debugElement.query(By.css('.dl-select-required'));
+    expect(requiredEl).toBeTruthy();
+    expect(requiredEl.nativeElement.textContent).toContain('*');
   });
 });

@@ -37,6 +37,15 @@ export class SelectComponent<T = unknown> implements ControlValueAccessor {
   /** Danh sách tùy chọn */
   readonly options = input.required<SelectOption<T>[]>();
 
+  /** Nhãn hiển thị của dropdown */
+  readonly label = input<string | undefined>(undefined);
+
+  /** Vị trí nhãn ('left' hoặc 'top'), mặc định là 'left' */
+  readonly labelPosition = input<'top' | 'left'>('left');
+
+  /** Đánh dấu trường bắt buộc (hiển thị dấu *) */
+  readonly required = input<boolean>(false);
+
   /** Văn bản gợi ý khi chưa chọn */
   readonly placeholder = input<string>('Chọn...');
 
