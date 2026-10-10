@@ -116,6 +116,18 @@
         [options]="driverOptions"
         [placeholder]="'trips.tripRunForm.defaultAssistantDriverPlaceholder' | translate"
       />
+
+      <!-- Cảnh báo nếu chọn trùng tài xế chính và phụ xe -->
+      @if (
+        form.get('defaultDriverId')?.value &&
+        form.get('defaultAssistantDriverId')?.value &&
+        form.get('defaultDriverId')?.value === form.get('defaultAssistantDriverId')?.value
+      ) {
+        <div class="same-driver-warning">
+          <i class="pi pi-exclamation-triangle"></i>
+          <span>{{ 'trips.tripRunForm.sameDriverWarning' | translate }}</span>
+        </div>
+      }
     </div>
 
     <!-- Ghi chú -->

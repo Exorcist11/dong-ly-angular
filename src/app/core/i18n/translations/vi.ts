@@ -1049,6 +1049,7 @@ export const VI_TRANSLATIONS: Record<string, any> = {
       notePlaceholder: 'Ghi chú lịch vận hành, điểm tập kết...',
       saveCreate: 'Tạo lịch vòng chạy',
       saveUpdate: 'Lưu thay đổi',
+      sameDriverWarning: 'Cảnh báo: Tài xế chính và phụ xe mặc định không được là cùng một người!',
     },
     generate: {
       title: 'Sinh chuyến xe tự động hàng loạt',

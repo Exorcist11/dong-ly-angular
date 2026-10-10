@@ -1,4 +1,6 @@
 import {
+  HttpContext,
+  HttpContextToken,
   HttpErrorResponse,
   HttpEvent,
   HttpHandlerFn,
@@ -11,7 +13,17 @@ import { ApiErrorResponse } from '../models/api-response.model';
 import { NotificationService } from '../services/notification.service';
 
 /**
- * Functional HTTP Interceptor chuẩn hóa xử lý lỗi từ Spring-BE.
+ * HttpContextToken cho phép request bỏ qua toast thông báo lỗi toàn cục
+ * (dành cho các form hoặc component cần xử lý lỗi cục bộ riêng biệt).
+ */
+export const SKIP_ERROR_NOTIFICATION = new HttpContextToken<boolean>(() => false);
+
+export function skipErrorNotification(): HttpContext {
+  return new HttpContext().set(SKIP_ERROR_NOTIFICATION, true);
+}
+
+/**
+ * Functional HTTP Interceptor chuẩn hóa xử lý lỗi từ Spring-BE / Go REST API.
  * Bắt cấu trúc ApiErrorResponse và hiển thị thông báo thân thiện.
  */
 export const errorInterceptor: HttpInterceptorFn = (
@@ -45,7 +57,16 @@ export const errorInterceptor: HttpInterceptorFn = (
           userMessage = 'Lỗi hệ thống máy chủ (500). Vui lòng liên hệ quản trị viên.';
         }
 
-        notificationService.error(userMessage);
+        const shouldNotify = !req.context.get(SKIP_ERROR_NOTIFICATION);
+        if (shouldNotify) {
+          notificationService.error(userMessage);
+        }
+
+        // Gắn cờ lên đối tượng error để caller có thể kiểm tra nếu cần
+        Object.assign(error, {
+          handledByInterceptor: shouldNotify,
+          userFriendlyMessage: userMessage,
+        });
       }
 
       return throwError(() => error);

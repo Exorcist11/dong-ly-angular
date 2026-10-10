@@ -23,9 +23,34 @@ export class NotificationService {
   private readonly _notifications = signal<AppNotification[]>([]);
   readonly notifications = this._notifications.asReadonly();
 
+  // Bộ đệm lưu trữ thông báo gần nhất để chống spam trùng lặp (deduplication)
+  private lastNotification: {
+    type: NotificationType;
+    message: string;
+    timestamp: number;
+  } | null = null;
+
   show(type: NotificationType, message: string, durationMs = 4000): void {
+    if (!message || !message.trim()) {
+      return;
+    }
+
+    const trimmedMsg = message.trim();
+    const now = Date.now();
+
+    // Ngăn chặn thông báo trùng lặp (cùng type và message) xuất hiện liên tiếp trong 1000ms
+    if (
+      this.lastNotification &&
+      this.lastNotification.type === type &&
+      this.lastNotification.message === trimmedMsg &&
+      now - this.lastNotification.timestamp < 1000
+    ) {
+      return;
+    }
+    this.lastNotification = { type, message: trimmedMsg, timestamp: now };
+
     const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-    const notification: AppNotification = { id, type, message, durationMs };
+    const notification: AppNotification = { id, type, message: trimmedMsg, durationMs };
 
     this._notifications.update((list) => [...list, notification]);
 
@@ -33,7 +58,7 @@ export class NotificationService {
     this.messageService?.add({
       severity: type,
       summary: this.getSummary(type),
-      detail: message,
+      detail: trimmedMsg,
       life: durationMs > 0 ? durationMs : undefined,
     });
 

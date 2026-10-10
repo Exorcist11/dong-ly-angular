@@ -21,6 +21,7 @@ import { InputComponent } from '../../../../shared/components/input/input.compon
 import { SelectComponent } from '../../../../shared/components/select/select.component';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { TranslationService } from '../../../../core/i18n/translation.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { SelectOption } from '../../../../shared/models/select-option.model';
 import {
   CreateTripRunRequest,
@@ -46,6 +47,7 @@ import {
 export class TripRunFormDialogComponent implements OnChanges {
   private readonly fb = inject(FormBuilder);
   private readonly i18n = inject(TranslationService);
+  private readonly notification = inject(NotificationService);
 
   @Input() visible = false;
   @Input() tripRun: TripRun | null = null;
@@ -139,6 +141,16 @@ export class TripRunFormDialogComponent implements OnChanges {
     }
 
     const val = this.form.getRawValue();
+
+    if (
+      val.defaultDriverId &&
+      val.defaultAssistantDriverId &&
+      val.defaultDriverId === val.defaultAssistantDriverId
+    ) {
+      this.notification.error(this.i18n.translate('trips.tripRunForm.sameDriverWarning'));
+      return;
+    }
+
     const daysCsv = this.selectedDays.join(',');
     const depTimeFormatted = val.departureTime.length === 5 ? val.departureTime + ':00' : val.departureTime;
 

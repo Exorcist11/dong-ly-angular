@@ -267,9 +267,8 @@ export class TripRunListPageComponent implements OnInit {
           this.showTripRunDialog.set(false);
           this.loadTripRuns();
         },
-        error: (err) => {
+        error: () => {
           this.tripRunSubmitting.set(false);
-          this.notification.error(err.error?.message || this.i18n.translate('trips.notifications.updateTripRunFailed'));
         },
       });
     } else {
@@ -280,9 +279,8 @@ export class TripRunListPageComponent implements OnInit {
           this.showTripRunDialog.set(false);
           this.loadTripRuns();
         },
-        error: (err) => {
+        error: () => {
           this.tripRunSubmitting.set(false);
-          this.notification.error(err.error?.message || this.i18n.translate('trips.notifications.createTripRunFailed'));
         },
       });
     }
@@ -299,9 +297,7 @@ export class TripRunListPageComponent implements OnInit {
         );
         this.loadTripRuns();
       },
-      error: (err) => {
-        this.notification.error(err.error?.message || this.i18n.translate('trips.notifications.updateStatusFailed'));
-      },
+      error: () => {},
     });
   }
 
@@ -320,9 +316,7 @@ export class TripRunListPageComponent implements OnInit {
         this.showDeleteModal.set(false);
         this.loadTripRuns();
       },
-      error: (err) => {
-        this.notification.error(err.error?.message || this.i18n.translate('trips.notifications.deleteTripRunFailed'));
-      },
+      error: () => {},
     });
   }
 
