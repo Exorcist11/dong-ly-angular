@@ -181,71 +181,59 @@
           </a>
         </div>
 
-        <!-- PRIMENG DATATABLE (56px rows, sticky header, hover highlight) -->
+        <!-- DATA TABLE COMPONENT (56px rows, sticky header, hover highlight) -->
         <div class="table-container">
-          <p-table
-            [value]="recentTrips()"
+          <app-data-table
+            [data]="recentTrips()"
+            [columns]="tripColumns"
+            [lazy]="false"
+            [paginator]="false"
             [scrollable]="true"
             scrollHeight="360px"
-            styleClass="saas-data-table"
+            rowClass="trip-row"
+            tableStyleClass="saas-data-table"
+            emptyTitle="Không có chuyến xe"
+            emptyMessage="Hiện không có chuyến xe nào theo bộ lọc này."
           >
-            <ng-template #header>
-              <tr>
-                <th style="width: 90px">Giờ chạy</th>
-                <th>Tuyến xe</th>
-                <th>Biển số</th>
-                <th>Loại xe</th>
-                <th style="width: 140px; text-align: right">Ghế ngồi</th>
-                <th style="width: 110px; text-align: center">Trạng thái</th>
-              </tr>
+            <ng-template appTableCell="departureTime" let-trip>
+              <span class="cell-time">
+                <strong>{{ trip.departureTime }}</strong>
+              </span>
             </ng-template>
 
-            <ng-template #body let-trip>
-              <tr class="trip-row">
-                <td class="cell-time">
-                  <strong>{{ trip.departureTime }}</strong>
-                </td>
-                <td class="cell-route">
-                  <span>{{ trip.route }}</span>
-                </td>
-                <td class="cell-plate">
-                  <code>{{ trip.plateNumber }}</code>
-                </td>
-                <td class="cell-vehicle">
-                  <p-tag [value]="trip.vehicleType" severity="secondary" styleClass="pill-tag-secondary" />
-                </td>
-                <td class="cell-seats" style="text-align: right">
-                  <div class="seat-progress-box">
-                    <span class="seat-count">{{ trip.occupied }}/{{ trip.total }}</span>
-                    <p-progressbar
-                      [value]="trip.occupiedPercent"
-                      [showValue]="false"
-                      styleClass="seat-progressbar"
-                    />
-                  </div>
-                </td>
-                <td class="cell-status" style="text-align: center">
-                  <p-tag
-                    [value]="trip.statusLabel"
-                    [severity]="trip.statusSeverity"
-                    styleClass="status-pill-tag"
-                  />
-                </td>
-              </tr>
+            <ng-template appTableCell="route" let-trip>
+              <span class="cell-route">{{ trip.route }}</span>
             </ng-template>
 
-            <ng-template #emptymessage>
-              <tr>
-                <td colspan="6">
-                  <div class="table-empty-box">
-                    <i class="pi pi-inbox text-3xl text-muted"></i>
-                    <p>Hiện không có chuyến xe nào theo bộ lọc này.</p>
-                    <p-button label="Thêm chuyến mới" icon="pi pi-plus" size="small" (onClick)="onAddTrip()" />
-                  </div>
-                </td>
-              </tr>
+            <ng-template appTableCell="plateNumber" let-trip>
+              <span class="cell-plate">
+                <code>{{ trip.plateNumber }}</code>
+              </span>
             </ng-template>
-          </p-table>
+
+            <ng-template appTableCell="vehicleType" let-trip>
+              <p-tag [value]="trip.vehicleType" severity="secondary" styleClass="pill-tag-secondary" />
+            </ng-template>
+
+            <ng-template appTableCell="occupied" let-trip>
+              <div class="seat-progress-box">
+                <span class="seat-count">{{ trip.occupied }}/{{ trip.total }}</span>
+                <p-progressbar
+                  [value]="trip.occupiedPercent"
+                  [showValue]="false"
+                  styleClass="seat-progressbar"
+                />
+              </div>
+            </ng-template>
+
+            <ng-template appTableCell="status" let-trip>
+              <p-tag
+                [value]="trip.statusLabel"
+                [severity]="trip.statusSeverity"
+                styleClass="status-pill-tag"
+              />
+            </ng-template>
+          </app-data-table>
         </div>
       </p-card>
     </div>

@@ -1,0 +1,127 @@
+<div class="dl-data-table-wrapper">
+  @if (errorMessage()) {
+    <!-- ERROR STATE -->
+    <div class="table-error-container" role="alert">
+      <i class="pi pi-exclamation-triangle error-icon" aria-hidden="true"></i>
+      <p class="error-message">{{ errorMessage() }}</p>
+      <p-button
+        label="Thử lại"
+        icon="pi pi-refresh"
+        severity="danger"
+        [outlined]="true"
+        size="small"
+        (onClick)="handleRetry()"
+      />
+    </div>
+  } @else {
+    <!-- DATA TABLE STATE -->
+    <p-table
+      [value]="data()"
+      [lazy]="lazy()"
+      (onLazyLoad)="handleLazyLoad($event)"
+      [paginator]="paginator()"
+      [first]="first()"
+      [rows]="pageSize()"
+      [totalRecords]="totalRecords()"
+      [loading]="loading()"
+      [rowsPerPageOptions]="rowsPerPageOptions()"
+      [showCurrentPageReport]="showCurrentPageReport()"
+      [currentPageReportTemplate]="currentPageReportTemplate()"
+      [scrollable]="scrollable()"
+      [scrollHeight]="scrollHeight() ?? ''"
+      [rowHover]="rowHover()"
+      [stripedRows]="stripedRows()"
+      [styleClass]="tableStyleClass()"
+      [dataKey]="dataKey()"
+      [selectionMode]="selectionMode()"
+      [selection]="selection()"
+      (selectionChange)="handleSelectionChange($event)"
+      [tableStyle]="{ 'min-width': minWidth() }"
+    >
+      <!-- HEADER TEMPLATE -->
+      <ng-template #header>
+        <tr>
+          @if (selectionMode() === 'multiple') {
+            <th style="width: 48px; text-align: center">
+              <p-tableHeaderCheckbox />
+            </th>
+          } @else if (selectionMode() === 'single') {
+            <th style="width: 48px"></th>
+          }
+
+          @for (col of visibleColumns(); track col.field) {
+            <th
+              [pSortableColumn]="col.sortable ? getFieldString(col) : undefined"
+              [style.width]="col.width"
+              [style.min-width]="col.minWidth"
+              [style.text-align]="col.align ?? 'left'"
+              [class]="col.headerClass ?? ''"
+            >
+              @if (getHeaderTemplate(col); as headerTpl) {
+                <ng-container
+                  *ngTemplateOutlet="headerTpl; context: { col: col }"
+                />
+              } @else {
+                <span class="header-title">{{ col.header }}</span>
+              }
+
+              @if (col.sortable) {
+                <p-sortIcon [field]="getFieldString(col)" />
+              }
+            </th>
+          }
+        </tr>
+      </ng-template>
+
+      <!-- BODY TEMPLATE -->
+      <ng-template #body let-row>
+        <tr
+          [ngClass]="getRowClasses(row) ?? ''"
+          (click)="handleRowClick(row)"
+        >
+          @if (selectionMode() === 'multiple') {
+            <td style="text-align: center" (click)="$event.stopPropagation()">
+              <p-tableCheckbox [value]="row" />
+            </td>
+          } @else if (selectionMode() === 'single') {
+            <td style="text-align: center" (click)="$event.stopPropagation()">
+              <p-tableRadioButton [value]="row" />
+            </td>
+          }
+
+          @for (col of visibleColumns(); track col.field) {
+            <td
+              [style.width]="col.width"
+              [style.min-width]="col.minWidth"
+              [style.text-align]="col.align ?? 'left'"
+              [class]="col.cellClass ?? ''"
+            >
+              @if (getCellTemplate(col); as cellTpl) {
+                <ng-container
+                  *ngTemplateOutlet="cellTpl; context: { $implicit: row, row: row, col: col }"
+                />
+              } @else {
+                <span class="default-cell-text">{{ getCellValue(row, col) }}</span>
+              }
+            </td>
+          }
+        </tr>
+      </ng-template>
+
+      <!-- EMPTY STATE TEMPLATE -->
+      <ng-template #emptymessage>
+        @if (!loading()) {
+          <tr>
+            <td [attr.colspan]="totalColspan()" class="p-0">
+              <app-empty-state
+                [title]="emptyTitle()"
+                [description]="emptyMessage()"
+                [icon]="emptyIcon()"
+              />
+            </td>
+          </tr>
+        }
+      </ng-template>
+    </p-table>
+  }
+</div>

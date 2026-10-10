@@ -153,38 +153,34 @@ Trong ứng dụng quản trị Đông Lý, mọi bảng dữ liệu danh sách 
    - **Data State**: Hiển thị dữ liệu kèm thanh phân trang chuẩn tiếng Việt: *"Hiển thị {first} - {last} trong tổng số {totalRecords} bản ghi"*.
 5. **Custom Cells**: Hỗ trợ chiếu template tùy biến (ví dụ avatar, role pills, status badge, action buttons) qua Angular `ng-template` có context rõ ràng.
 
-### 5.2. Mẫu triển khai Reusable Table Chuẩn
+### 5.2. Mẫu triển khai Reusable Table Chuẩn (`DataTableComponent`)
+Bảng dữ liệu chuẩn hóa của dự án là `DataTableComponent` (`app-data-table`), kết hợp cùng `TableCellDirective` (`appTableCell`):
+
 ```html
-<p-table
-  [value]="data()"
-  [lazy]="true"
-  (onLazyLoad)="onLazyLoad($event)"
-  [paginator]="true"
-  [rows]="pageSize()"
+<app-data-table
+  [data]="items()"
+  [columns]="columns"
   [totalRecords]="totalRecords()"
   [loading]="isLoading()"
-  [rowsPerPageOptions]="[10, 20, 50]"
-  [showCurrentPageReport]="true"
-  currentPageReportTemplate="Hiển thị {first} - {last} trong tổng số {totalRecords} bản ghi"
-  styleClass="p-datatable-sm saas-data-table"
-  responsiveLayout="scroll"
+  [first]="first()"
+  [pageSize]="pageSize()"
+  [lazy]="true"
+  (lazyLoad)="onLazyLoad($event)"
+  (rowClick)="onRowClick($event)"
 >
-  <!-- Template Header -->
-  ...
-  <!-- Template Body với dynamic hoặc slot templates -->
-  ...
-  <!-- Template Empty State -->
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td [attr.colspan]="columnCount" class="p-0">
-        <app-empty-state
-          [title]="emptyTitle"
-          [description]="emptyDescription"
-        />
-      </td>
-    </tr>
+  <!-- Custom cell template cho cột có trường dữ liệu cụ thể -->
+  <ng-template appTableCell="status" let-row>
+    <app-status-badge [status]="row.status" />
   </ng-template>
-</p-table>
+
+  <!-- Custom cell template cho cột action -->
+  <ng-template appTableCell="actions" let-row>
+    <div class="table-actions">
+      <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" (onClick)="onEdit(row)" />
+      <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(row)" />
+    </div>
+  </ng-template>
+</app-data-table>
 ```
 
 ---

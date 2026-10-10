@@ -8,17 +8,18 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
 import { Tooltip } from 'primeng/tooltip';
 
 import { NotificationService } from '../../../../core/services/notification.service';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
-import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ConfirmModalComponent } from '../../../../shared/components/confirm-modal/confirm-modal.component';
 import { SearchInputComponent } from '../../../../shared/components/search-input/search-input.component';
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
+import { DataTableComponent } from '../../../../shared/components/data-table/data-table.component';
+import { TableCellDirective } from '../../../../shared/components/data-table/table-cell.directive';
+import { TableColumn, TableLazyLoadEvent } from '../../../../shared/models/table.model';
 import { HasPermissionDirective } from '../../../../shared/directives/has-permission.directive';
 import { DateViPipe } from '../../../../shared/pipes/date-vi.pipe';
 
@@ -40,12 +41,12 @@ import { finalize } from 'rxjs';
   imports: [
     CommonModule,
     FormsModule,
-    TableModule,
+    DataTableComponent,
+    TableCellDirective,
     Button,
     Select,
     Tooltip,
     PageHeaderComponent,
-    EmptyStateComponent,
     ConfirmModalComponent,
     SearchInputComponent,
     StatusBadgeComponent,
@@ -68,6 +69,18 @@ export class RoleListPageComponent implements OnInit {
   readonly currentPage = signal<number>(0);
   readonly pageSize = signal<number>(10);
   readonly sortField = signal<string>('createdAt,desc');
+
+  // SHARED TABLE CONFIG
+  readonly columns: TableColumn<Role>[] = [
+    { field: 'code', header: 'Mã vai trò', width: '160px' },
+    { field: 'name', header: 'Tên vai trò', minWidth: '180px' },
+    { field: 'isSystem', header: 'Loại vai trò', width: '130px' },
+    { field: 'description', header: 'Mô tả', minWidth: '220px' },
+    { field: 'permissionCount', header: 'Quyền hạn', width: '130px', align: 'center' },
+    { field: 'status', header: 'Trạng thái', width: '130px', align: 'center' },
+    { field: 'createdAt', header: 'Ngày tạo', width: '140px' },
+    { field: 'actions', header: 'Thao tác', width: '160px', align: 'right' },
+  ];
 
   // FILTER SIGNALS
   readonly searchTerm = signal<string>('');

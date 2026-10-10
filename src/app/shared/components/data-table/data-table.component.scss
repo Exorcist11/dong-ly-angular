@@ -1,0 +1,96 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.dl-data-table-wrapper {
+  width: 100%;
+  position: relative;
+  background: var(--color-surface, #ffffff);
+}
+
+.table-error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  gap: 14px;
+  background: var(--color-surface, #ffffff);
+  border-radius: 8px;
+  text-align: center;
+
+  .error-icon {
+    font-size: 36px;
+    color: var(--color-danger, #d71920);
+  }
+
+  .error-message {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-secondary, #3a3733);
+    max-width: 480px;
+    line-height: 1.5;
+  }
+}
+
+.header-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--color-text-primary, #16161a);
+  letter-spacing: -0.01em;
+}
+
+.default-cell-text {
+  font-size: 13.5px;
+  color: var(--color-text-primary, #16161a);
+}
+
+:host ::ng-deep {
+  .p-datatable {
+    .p-datatable-thead > tr > th {
+      background: var(--color-surface-sunken, #f7f5f1);
+      color: var(--color-text-primary, #16161a);
+      font-weight: 600;
+      font-size: 13px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--color-border, #d9d4cc);
+      white-space: nowrap;
+    }
+
+    .p-datatable-tbody > tr {
+      background: var(--color-surface, #ffffff);
+      color: var(--color-text-primary, #16161a);
+      transition: background-color var(--ease, 150ms ease);
+
+      > td {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--color-border-subtle, #edeae5);
+        font-size: 13.5px;
+        vertical-align: middle;
+      }
+
+      &:hover {
+        background-color: var(--color-surface-hover, #faf8f5) !important;
+      }
+    }
+
+    .p-paginator {
+      background: var(--color-surface, #ffffff);
+      border-top: 1px solid var(--color-border, #d9d4cc);
+      padding: 10px 14px;
+      font-size: 13px;
+
+      .p-paginator-current {
+        font-size: 12.5px;
+        color: var(--color-text-muted, #8a857d);
+        margin-right: auto;
+      }
+    }
+  }
+
+  .p-0 {
+    padding: 0 !important;
+  }
+}

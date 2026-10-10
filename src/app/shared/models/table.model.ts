@@ -1,5 +1,5 @@
 /**
- * Model cấu hình cột cho Data Table dùng chung
+ * Model cấu hình cột cho Data Table dùng chung Đông Lý Admin
  */
 export interface TableColumn<T = unknown> {
   /** Trường dữ liệu trong model T hoặc key path */
@@ -14,8 +14,18 @@ export interface TableColumn<T = unknown> {
   sortable?: boolean;
   /** Căn lề nội dung */
   align?: 'left' | 'center' | 'right';
-  /** Tên ng-template tùy biến cho cell nếu có */
+  /** Tên định danh template tùy biến cho cell (mặc định lấy theo field nếu không khai báo) */
   template?: string;
+  /** Giá trị hiển thị mặc định khi dữ liệu null hoặc undefined (mặc định là '-') */
+  defaultValue?: string;
+  /** Hàm format dữ liệu hiển thị (khi không dùng custom template) */
+  formatter?: (value: unknown, row: T) => string;
+  /** Class CSS bổ sung cho ô header */
+  headerClass?: string;
+  /** Class CSS bổ sung cho ô cell */
+  cellClass?: string;
+  /** Ẩn cột */
+  hidden?: boolean;
 }
 
 /**

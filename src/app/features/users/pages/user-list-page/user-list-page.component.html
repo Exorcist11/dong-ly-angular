@@ -63,194 +63,143 @@
 
   <!-- BẢNG DỮ LIỆU NGƯỜI DÙNG -->
   <div class="saas-card table-card">
-    @if (hasError()) {
-      <div class="error-container">
-        <i class="pi pi-exclamation-circle error-icon"></i>
-        <p class="error-text">Không thể kết nối hoặc tải danh sách người dùng.</p>
-        <p-button
-          label="Thử lại"
-          icon="pi pi-refresh"
-          [outlined]="true"
-          severity="danger"
-          (onClick)="loadUsers()"
-        />
-      </div>
-    } @else {
-      <p-table
-        [value]="displayedUsers()"
-        [lazy]="true"
-        (onLazyLoad)="onLazyLoad($event)"
-        [paginator]="true"
-        [rows]="pageSize()"
-        [totalRecords]="totalRecords()"
-        [loading]="isLoading()"
-        [rowsPerPageOptions]="[10, 20, 50]"
-        [showCurrentPageReport]="true"
-        currentPageReportTemplate="Hiển thị {first} - {last} trong tổng số {totalRecords} người dùng"
-        styleClass="p-datatable-sm saas-data-table"
-        [tableStyle]="{ 'min-width': '960px' }"
-      >
-        <!-- TABLE HEADER -->
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="width: 260px">Tài khoản & Họ tên</th>
-            <th style="width: 220px">Email & Số điện thoại</th>
-            <th style="width: 140px">Trạng thái</th>
-            <th style="width: 220px">Vai trò</th>
-            <th style="width: 130px">Ngày tạo</th>
-            <th style="width: 120px" class="text-center">Thao tác</th>
-          </tr>
-        </ng-template>
+    <app-data-table
+      [data]="displayedUsers()"
+      [columns]="columns"
+      [loading]="isLoading()"
+      [lazy]="true"
+      (lazyLoad)="onLazyLoad($event)"
+      [paginator]="true"
+      [first]="currentPage() * pageSize()"
+      [pageSize]="pageSize()"
+      [totalRecords]="totalRecords()"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      [errorMessage]="hasError() ? 'Không thể kết nối hoặc tải danh sách người dùng.' : null"
+      (retry)="loadUsers()"
+      currentPageReportTemplate="Hiển thị {first} - {last} trong tổng số {totalRecords} người dùng"
+      minWidth="960px"
+      [rowClass]="rowClass"
+    >
+      <!-- CỘT 1: TÀI KHOẢN & HỌ TÊN -->
+      <ng-template appTableCell="fullName" let-u>
+        <div class="user-cell">
+          <div class="user-avatar" [class.avatar-admin]="hasAdminRole(u)">
+            {{ getInitials(u.fullName) }}
+          </div>
+          <div class="user-cell-info">
+            <span class="user-name">{{ u.fullName }}</span>
+            <div class="username-wrap">
+              <span class="user-handle">&#64;{{ u.username }}</span>
+              @if (isCurrentUser(u)) {
+                <span class="you-badge">(Bạn)</span>
+              }
+            </div>
+          </div>
+        </div>
+      </ng-template>
 
-        <!-- TABLE BODY -->
-        <ng-template pTemplate="body" let-u>
-          <tr [class.self-row]="isCurrentUser(u)">
-            <!-- CỘT 1: TÀI KHOẢN & HỌ TÊN -->
-            <td>
-              <div class="user-cell">
-                <div class="user-avatar" [class.avatar-admin]="hasAdminRole(u)">
-                  {{ getInitials(u.fullName) }}
-                </div>
-                <div class="user-cell-info">
-                  <span class="user-name">{{ u.fullName }}</span>
-                  <div class="username-wrap">
-                    <span class="user-handle">&#64;{{ u.username }}</span>
-                    @if (isCurrentUser(u)) {
-                      <span class="you-badge">(Bạn)</span>
-                    }
-                  </div>
-                </div>
-              </div>
-            </td>
+      <!-- CỘT 2: EMAIL & SĐT -->
+      <ng-template appTableCell="email" let-u>
+        <div class="contact-cell">
+          <span class="email-text">{{ u.email }}</span>
+          @if (u.phone) {
+            <span class="phone-text">
+              <i class="pi pi-phone phone-icon"></i>
+              {{ u.phone }}
+            </span>
+          } @else {
+            <span class="phone-empty">—</span>
+          }
+        </div>
+      </ng-template>
 
-            <!-- CỘT 2: EMAIL & SĐT -->
-            <td>
-              <div class="contact-cell">
-                <span class="email-text">{{ u.email }}</span>
-                @if (u.phone) {
-                  <span class="phone-text">
-                    <i class="pi pi-phone phone-icon"></i>
-                    {{ u.phone }}
-                  </span>
-                } @else {
-                  <span class="phone-empty">—</span>
-                }
-              </div>
-            </td>
+      <!-- CỘT 3: TRẠNG THÁI -->
+      <ng-template appTableCell="status" let-u>
+        <app-status-badge [status]="u.status" />
+      </ng-template>
 
-            <!-- CỘT 3: TRẠNG THÁI -->
-            <td>
-              <app-status-badge [status]="u.status" />
-            </td>
-
-            <!-- CỘT 4: VAI TRÒ -->
-            <td>
-              <div class="roles-cell">
-                @if (u.roles && u.roles.length > 0) {
-                  @for (role of u.roles; track role) {
-                    <span
-                      class="role-pill"
-                      [class.role-admin]="role === 'ADMIN'"
-                      [class.role-operator]="role === 'OPERATOR'"
-                      [class.role-staff]="role === 'STAFF'"
-                    >
-                      {{ role }}
-                    </span>
-                  }
-                } @else {
-                  <span class="role-empty">Chưa gán</span>
-                }
-              </div>
-            </td>
-
-            <!-- CỘT 5: NGÀY TẠO -->
-            <td>
-              <span class="date-text">{{ u.createdAt | dateVi : true }}</span>
-            </td>
-
-            <!-- CỘT 6: THAO TÁC -->
-            <td class="text-center">
-              <div class="row-actions">
-                <!-- SỬA THÔNG TIN -->
-                <p-button
-                  *appHasPermission="'USER_UPDATE'"
-                  icon="pi pi-pencil"
-                  [text]="true"
-                  size="small"
-                  styleClass="action-btn edit-btn"
-                  pTooltip="Chỉnh sửa thông tin"
-                  tooltipPosition="top"
-                  (onClick)="openEditDialog(u)"
-                  [disabled]="isActionDisabled(u)"
-                />
-
-                <!-- PHÂN VAI TRÒ -->
-                <p-button
-                  *appHasPermission="['ROLE_ASSIGN', 'ADMIN']"
-                  icon="pi pi-shield"
-                  [text]="true"
-                  size="small"
-                  styleClass="action-btn role-btn"
-                  pTooltip="Phân vai trò (RBAC)"
-                  tooltipPosition="top"
-                  (onClick)="openRoleDialog(u)"
-                  [disabled]="isCurrentUser(u)"
-                />
-
-                <!-- ĐỔI TRẠNG THÁI: KHÓA / KÍCH HOẠT -->
-                @if (u.status === 'ACTIVE') {
-                  <p-button
-                    *appHasPermission="'USER_UPDATE'"
-                    icon="pi pi-lock"
-                    [text]="true"
-                    size="small"
-                    styleClass="action-btn lock-btn"
-                    pTooltip="Khóa tài khoản"
-                    tooltipPosition="top"
-                    (onClick)="confirmToggleStatus(u)"
-                    [disabled]="isCurrentUser(u)"
-                  />
-                } @else {
-                  <p-button
-                    *appHasPermission="'USER_UPDATE'"
-                    icon="pi pi-lock-open"
-                    [text]="true"
-                    size="small"
-                    styleClass="action-btn unlock-btn"
-                    pTooltip="Kích hoạt lại tài khoản"
-                    tooltipPosition="top"
-                    (onClick)="confirmToggleStatus(u)"
-                  />
-                }
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-
-        <!-- EMPTY STATE -->
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td colspan="6" class="p-0">
-              <app-empty-state
-                title="Không tìm thấy người dùng"
-                description="Không có tài khoản nào phù hợp với điều kiện tìm kiếm hoặc bộ lọc hiện tại."
+      <!-- CỘT 4: VAI TRÒ -->
+      <ng-template appTableCell="roles" let-u>
+        <div class="roles-cell">
+          @if (u.roles && u.roles.length > 0) {
+            @for (role of u.roles; track role) {
+              <span
+                class="role-pill"
+                [class.role-admin]="role === 'ADMIN'"
+                [class.role-operator]="role === 'OPERATOR'"
+                [class.role-staff]="role === 'STAFF'"
               >
-                <div action>
-                  <p-button
-                    *appHasPermission="'USER_CREATE'"
-                    label="Tạo người dùng mới"
-                    icon="pi pi-plus"
-                    severity="danger"
-                    size="small"
-                    (onClick)="openCreateDialog()"
-                  />
-                </div>
-              </app-empty-state>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    }
+                {{ role }}
+              </span>
+            }
+          } @else {
+            <span class="role-empty">Chưa gán</span>
+          }
+        </div>
+      </ng-template>
+
+      <!-- CỘT 5: NGÀY TẠO -->
+      <ng-template appTableCell="createdAt" let-u>
+        <span class="date-text">{{ u.createdAt | dateVi : true }}</span>
+      </ng-template>
+
+      <!-- CỘT 6: THAO TÁC -->
+      <ng-template appTableCell="actions" let-u>
+        <div class="row-actions">
+          <!-- SỬA THÔNG TIN -->
+          <p-button
+            *appHasPermission="'USER_UPDATE'"
+            icon="pi pi-pencil"
+            [text]="true"
+            size="small"
+            styleClass="action-btn edit-btn"
+            pTooltip="Chỉnh sửa thông tin"
+            tooltipPosition="top"
+            (onClick)="openEditDialog(u)"
+            [disabled]="isActionDisabled(u)"
+          />
+
+          <!-- PHÂN VAI TRÒ -->
+          <p-button
+            *appHasPermission="['ROLE_ASSIGN', 'ADMIN']"
+            icon="pi pi-shield"
+            [text]="true"
+            size="small"
+            styleClass="action-btn role-btn"
+            pTooltip="Phân vai trò (RBAC)"
+            tooltipPosition="top"
+            (onClick)="openRoleDialog(u)"
+            [disabled]="isCurrentUser(u)"
+          />
+
+          <!-- ĐỔI TRẠNG THÁI: KHÓA / KÍCH HOẠT -->
+          @if (u.status === 'ACTIVE') {
+            <p-button
+              *appHasPermission="'USER_UPDATE'"
+              icon="pi pi-lock"
+              [text]="true"
+              size="small"
+              styleClass="action-btn lock-btn"
+              pTooltip="Khóa tài khoản"
+              tooltipPosition="top"
+              (onClick)="confirmToggleStatus(u)"
+              [disabled]="isCurrentUser(u)"
+            />
+          } @else {
+            <p-button
+              *appHasPermission="'USER_UPDATE'"
+              icon="pi pi-lock-open"
+              [text]="true"
+              size="small"
+              styleClass="action-btn unlock-btn"
+              pTooltip="Kích hoạt lại tài khoản"
+              tooltipPosition="top"
+              (onClick)="confirmToggleStatus(u)"
+            />
+          }
+        </div>
+      </ng-template>
+    </app-data-table>
   </div>
 
   <!-- DIALOG FORM: TẠO MỚI / CHỈNH SỬA USER -->

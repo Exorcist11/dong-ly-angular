@@ -13,12 +13,14 @@ import { KpiCardComponent } from '../../components/kpi-card/kpi-card.component';
 import { Card } from 'primeng/card';
 import { Button } from 'primeng/button';
 import { SelectButton } from 'primeng/selectbutton';
-import { TableModule } from 'primeng/table';
 import { Tag } from 'primeng/tag';
 import { ProgressBar } from 'primeng/progressbar';
 import { Timeline } from 'primeng/timeline';
 import { UIChart } from 'primeng/chart';
 import { Message } from 'primeng/message';
+import { DataTableComponent } from '../../../../shared/components/data-table/data-table.component';
+import { TableCellDirective } from '../../../../shared/components/data-table/table-cell.directive';
+import { TableColumn } from '../../../../shared/models/table.model';
 
 export interface TripSchedule {
   id: string;
@@ -52,7 +54,8 @@ export interface RecentActivity {
     Card,
     Button,
     SelectButton,
-    TableModule,
+    DataTableComponent,
+    TableCellDirective,
     Tag,
     ProgressBar,
     Timeline,
@@ -65,6 +68,15 @@ export interface RecentActivity {
 })
 export class DashboardPageComponent {
   private readonly layoutService = inject(LayoutService);
+
+  readonly tripColumns: TableColumn<TripSchedule>[] = [
+    { field: 'departureTime', header: 'Giờ chạy', width: '90px' },
+    { field: 'route', header: 'Tuyến xe' },
+    { field: 'plateNumber', header: 'Biển số' },
+    { field: 'vehicleType', header: 'Loại xe' },
+    { field: 'occupied', header: 'Ghế ngồi', width: '140px', align: 'right' },
+    { field: 'status', header: 'Trạng thái', width: '110px', align: 'center' },
+  ];
 
   readonly isLoading = signal<boolean>(false);
   readonly isRefreshing = signal<boolean>(false);

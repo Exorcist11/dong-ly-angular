@@ -180,26 +180,3 @@
 .self-row {
   background-color: rgba(215, 25, 32, 0.02) !important;
 }
-
-.error-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px 20px;
-  gap: 12px;
-
-  .error-icon {
-    font-size: 32px;
-    color: var(--color-danger, #d71920);
-  }
-
-  .error-text {
-    margin: 0;
-    font-size: 14px;
-    color: var(--color-text-secondary, #3a3733);
-  }
-}
-
-.p-0 {
-  padding: 0 !important;
-}
