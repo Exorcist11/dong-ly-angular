@@ -1,4 +1,79 @@
 <div class="dl-data-table-wrapper">
+  <!-- INTEGRATED TOOLBAR: SEARCH & FILTERS -->
+  @if (hasToolbar()) {
+    <div class="table-toolbar">
+      <div class="toolbar-left">
+        @if (searchable()) {
+          <div class="table-search-box">
+            <app-search-input
+              [value]="searchValue()"
+              [placeholder]="searchPlaceholder()"
+              [debounceMs]="searchDebounce()"
+              (searchChange)="onSearchChange($event)"
+              (clear)="onSearchChange('')"
+            />
+          </div>
+        }
+
+        @if (filters(); as filterList) {
+          <div class="table-filters-group">
+            @for (filter of filterList; track filter.key) {
+              <div class="table-filter-item">
+                @if (filter.label) {
+                  <span class="table-filter-label">{{ filter.label }}</span>
+                }
+                <p-select
+                  [options]="filter.options"
+                  [ngModel]="filter.value"
+                  (ngModelChange)="onFilterSelectChange(filter.key, $event)"
+                  [placeholder]="filter.placeholder ?? 'Tất cả'"
+                  optionLabel="label"
+                  optionValue="value"
+                  [style]="filter.width ? { width: filter.width } : null"
+                  styleClass="table-filter-select"
+                />
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Custom projected filter controls -->
+        <ng-content select="[tableFilters]" />
+
+        @if (showResetFilters()) {
+          <p-button
+            [label]="resetFiltersLabel()"
+            icon="pi pi-filter-slash"
+            severity="secondary"
+            [outlined]="true"
+            size="small"
+            (onClick)="onResetFiltersClick()"
+            styleClass="reset-filters-btn"
+          />
+        }
+      </div>
+
+      <div class="toolbar-right">
+        <!-- Custom projected action buttons -->
+        <ng-content select="[tableActions]" />
+
+        @if (showRefresh()) {
+          <p-button
+            icon="pi pi-refresh"
+            [outlined]="true"
+            severity="secondary"
+            size="small"
+            [loading]="loading()"
+            [pTooltip]="refreshTooltip()"
+            tooltipPosition="top"
+            (onClick)="onRefreshClick()"
+            styleClass="refresh-btn"
+          />
+        }
+      </div>
+    </div>
+  }
+
   @if (errorMessage()) {
     <!-- ERROR STATE -->
     <div class="table-error-container" role="alert">

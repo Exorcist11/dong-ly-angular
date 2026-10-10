@@ -8,13 +8,22 @@ import {
   output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   TableLazyLoadEvent as PrimeNgLazyLoadEvent,
   TableModule,
 } from 'primeng/table';
 import { Button } from 'primeng/button';
-import { TableColumn, TableLazyLoadEvent } from '../../models/table.model';
+import { Select } from 'primeng/select';
+import { Tooltip } from 'primeng/tooltip';
+import {
+  TableColumn,
+  TableFilterChangeEvent,
+  TableFilterConfig,
+  TableLazyLoadEvent,
+} from '../../models/table.model';
 import { EmptyStateComponent } from '../empty-state/empty-state.component';
+import { SearchInputComponent } from '../search-input/search-input.component';
 import {
   TableCellDirective,
   TableHeaderDirective,
@@ -22,16 +31,21 @@ import {
 
 /**
  * Component Bảng dữ liệu tái sử dụng cao (Generic Data Table) Đông Lý Admin.
- * Hỗ trợ Server-side / Client-side pagination, sorting, row selection, custom cell templates.
+ * Hỗ trợ Server-side / Client-side pagination, sorting, row selection, custom cell templates,
+ * tích hợp sẵn toolbar tìm kiếm (search) và bộ lọc (filters).
  */
 @Component({
   selector: 'app-data-table',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     TableModule,
     Button,
+    Select,
+    Tooltip,
     EmptyStateComponent,
+    SearchInputComponent,
   ],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
@@ -123,7 +137,50 @@ export class DataTableComponent<T extends Record<string, any> = Record<string, a
   /** Bố cục responsive */
   readonly responsiveLayout = input<'scroll' | 'stack'>('scroll');
 
+  // --- TÙY CHỌN TOOLBAR, TÌM KIẾM & BỘ LỌC ---
+  /** Bật/tắt thanh tìm kiếm tích hợp */
+  readonly searchable = input<boolean>(false);
+
+  /** Giá trị tìm kiếm hiện tại */
+  readonly searchValue = input<string>('');
+
+  /** Placeholder cho ô tìm kiếm */
+  readonly searchPlaceholder = input<string>('Tìm kiếm...');
+
+  /** Thời gian trễ debounce (ms) cho tìm kiếm */
+  readonly searchDebounce = input<number>(300);
+
+  /** Danh sách cấu hình bộ lọc dropdown */
+  readonly filters = input<TableFilterConfig<any>[] | null>(null);
+
+  /** Hiển thị nút "Đặt lại" bộ lọc */
+  readonly showResetFilters = input<boolean>(false);
+
+  /** Nhãn nút đặt lại bộ lọc */
+  readonly resetFiltersLabel = input<string>('Đặt lại');
+
+  /** Hiển thị nút làm mới dữ liệu */
+  readonly showRefresh = input<boolean>(false);
+
+  /** Tooltip cho nút làm mới */
+  readonly refreshTooltip = input<string>('Tải lại danh sách');
+
+  /** Cưỡng chế ẩn/hiện thanh toolbar (nếu null sẽ tự tính) */
+  readonly showToolbar = input<boolean | null>(null);
+
   // OUTPUTS
+  /** Phát sự kiện khi giá trị tìm kiếm thay đổi */
+  readonly searchChange = output<string>();
+
+  /** Phát sự kiện khi một bộ lọc dropdown thay đổi giá trị */
+  readonly filterChange = output<TableFilterChangeEvent<any>>();
+
+  /** Phát sự kiện khi bấm nút đặt lại bộ lọc */
+  readonly resetFilters = output<void>();
+
+  /** Phát sự kiện khi bấm nút làm mới */
+  readonly refresh = output<void>();
+
   /** Sự kiện khi thay đổi trang, số dòng hoặc sort ở chế độ lazy */
   readonly lazyLoad = output<TableLazyLoadEvent>();
 
@@ -139,6 +196,19 @@ export class DataTableComponent<T extends Record<string, any> = Record<string, a
   // CONTENT CHILDREN
   readonly cellDirectives = contentChildren(TableCellDirective);
   readonly headerDirectives = contentChildren(TableHeaderDirective);
+
+  /** Kiểm tra có hiển thị thanh toolbar tìm kiếm / lọc hay không */
+  readonly hasToolbar = computed(() => {
+    if (this.showToolbar() !== null) {
+      return !!this.showToolbar();
+    }
+    return (
+      this.searchable() ||
+      (this.filters() != null && this.filters()!.length > 0) ||
+      this.showResetFilters() ||
+      this.showRefresh()
+    );
+  });
 
   /** Danh sách các cột hiển thị (không bị hidden) */
   readonly visibleColumns = computed(() => {
@@ -237,5 +307,25 @@ export class DataTableComponent<T extends Record<string, any> = Record<string, a
   /** Xử lý nhấn nút thử lại */
   handleRetry(): void {
     this.retry.emit();
+  }
+
+  /** Xử lý tìm kiếm từ search input */
+  onSearchChange(value: string): void {
+    this.searchChange.emit(value);
+  }
+
+  /** Xử lý thay đổi filter select */
+  onFilterSelectChange(key: string, value: unknown): void {
+    this.filterChange.emit({ key, value });
+  }
+
+  /** Xử lý nhấn nút đặt lại bộ lọc */
+  onResetFiltersClick(): void {
+    this.resetFilters.emit();
+  }
+
+  /** Xử lý nhấn nút làm mới */
+  onRefreshClick(): void {
+    this.refresh.emit();
   }
 }

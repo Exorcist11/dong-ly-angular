@@ -9,17 +9,21 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
-import { Select } from 'primeng/select';
 import { Tooltip } from 'primeng/tooltip';
 
 import { NotificationService } from '../../../../core/services/notification.service';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { ConfirmModalComponent } from '../../../../shared/components/confirm-modal/confirm-modal.component';
-import { SearchInputComponent } from '../../../../shared/components/search-input/search-input.component';
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
 import { DataTableComponent } from '../../../../shared/components/data-table/data-table.component';
 import { TableCellDirective } from '../../../../shared/components/data-table/table-cell.directive';
-import { TableColumn, TableLazyLoadEvent } from '../../../../shared/models/table.model';
+import {
+  TableColumn,
+  TableFilterChangeEvent,
+  TableFilterConfig,
+  TableLazyLoadEvent,
+} from '../../../../shared/models/table.model';
+import { SelectOption } from '../../../../shared/models/select-option.model';
 import { HasPermissionDirective } from '../../../../shared/directives/has-permission.directive';
 import { DateViPipe } from '../../../../shared/pipes/date-vi.pipe';
 
@@ -44,11 +48,9 @@ import { finalize } from 'rxjs';
     DataTableComponent,
     TableCellDirective,
     Button,
-    Select,
     Tooltip,
     PageHeaderComponent,
     ConfirmModalComponent,
-    SearchInputComponent,
     StatusBadgeComponent,
     HasPermissionDirective,
     DateViPipe,
@@ -106,11 +108,21 @@ export class RoleListPageComponent implements OnInit {
   readonly roleForDelete = signal<Role | null>(null);
 
   // OPTIONS
-  readonly statusFilterOptions = [
+  readonly statusFilterOptions: SelectOption<RoleStatus | 'ALL'>[] = [
     { label: 'Tất cả trạng thái', value: 'ALL' },
     { label: 'Đang hoạt động', value: 'ACTIVE' },
     { label: 'Tạm khóa', value: 'INACTIVE' },
   ];
+
+  readonly tableFilters = computed<TableFilterConfig<RoleStatus | 'ALL'>[]>(() => [
+    {
+      key: 'status',
+      placeholder: 'Lọc trạng thái',
+      options: this.statusFilterOptions,
+      value: this.selectedStatus(),
+      width: '180px',
+    },
+  ]);
 
   // COMPUTED
   readonly isFiltered = computed(() => {
@@ -179,6 +191,12 @@ export class RoleListPageComponent implements OnInit {
     this.selectedStatus.set(status);
     this.currentPage.set(0);
     this.loadRoles();
+  }
+
+  onFilterChange(event: TableFilterChangeEvent<any>): void {
+    if (event.key === 'status') {
+      this.onStatusFilterChange(event.value as RoleStatus | 'ALL');
+    }
   }
 
   onResetFilters(): void {

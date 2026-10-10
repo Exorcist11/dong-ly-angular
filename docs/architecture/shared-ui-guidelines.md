@@ -154,7 +154,7 @@ Trong ứng dụng quản trị Đông Lý, mọi bảng dữ liệu danh sách 
 5. **Custom Cells**: Hỗ trợ chiếu template tùy biến (ví dụ avatar, role pills, status badge, action buttons) qua Angular `ng-template` có context rõ ràng.
 
 ### 5.2. Mẫu triển khai Reusable Table Chuẩn (`DataTableComponent`)
-Bảng dữ liệu chuẩn hóa của dự án là `DataTableComponent` (`app-data-table`), kết hợp cùng `TableCellDirective` (`appTableCell`):
+Bảng dữ liệu chuẩn hóa của dự án là `DataTableComponent` (`app-data-table`), tích hợp sẵn toolbar tìm kiếm (search), bộ lọc dropdown (filters), nút làm mới (refresh) và đặt lại (reset), kết hợp cùng `TableCellDirective` (`appTableCell`):
 
 ```html
 <app-data-table
@@ -167,6 +167,16 @@ Bảng dữ liệu chuẩn hóa của dự án là `DataTableComponent` (`app-da
   [lazy]="true"
   (lazyLoad)="onLazyLoad($event)"
   (rowClick)="onRowClick($event)"
+  [searchable]="true"
+  [searchValue]="searchTerm()"
+  searchPlaceholder="Tìm kiếm..."
+  (searchChange)="onSearchChange($event)"
+  [filters]="tableFilters()"
+  (filterChange)="onFilterChange($event)"
+  [showResetFilters]="isFiltered()"
+  (resetFilters)="onResetFilters()"
+  [showRefresh]="true"
+  (refresh)="loadData()"
 >
   <!-- Custom cell template cho cột có trường dữ liệu cụ thể -->
   <ng-template appTableCell="status" let-row>

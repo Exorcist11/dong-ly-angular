@@ -3,7 +3,7 @@ import { Component, signal } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { DataTableComponent } from './data-table.component';
 import { TableCellDirective, TableHeaderDirective } from './table-cell.directive';
-import { TableColumn } from '../../models/table.model';
+import { TableColumn, TableFilterChangeEvent, TableFilterConfig } from '../../models/table.model';
 
 interface TestItem {
   id: string;
@@ -24,6 +24,15 @@ interface TestItem {
       [paginator]="false"
       [errorMessage]="errorMessage()"
       [selectionMode]="selectionMode()"
+      [searchable]="searchable()"
+      [searchValue]="searchValue()"
+      (searchChange)="onSearchChange($event)"
+      [filters]="filters()"
+      (filterChange)="onFilterChange($event)"
+      [showRefresh]="showRefresh()"
+      (refresh)="onRefresh()"
+      [showResetFilters]="showResetFilters()"
+      (resetFilters)="onResetFilters()"
       (rowClick)="onRowClick($event)"
       (retry)="onRetry()"
       (selectionChange)="onSelectionChange($event)"
@@ -63,10 +72,19 @@ class TestHostComponent {
   readonly loading = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
   readonly selectionMode = signal<'single' | 'multiple' | null>(null);
+  readonly searchable = signal<boolean>(false);
+  readonly searchValue = signal<string>('');
+  readonly filters = signal<TableFilterConfig<any>[] | null>(null);
+  readonly showRefresh = signal<boolean>(false);
+  readonly showResetFilters = signal<boolean>(false);
 
   clickedRow: TestItem | null = null;
   retryClicked = false;
   selectedItems: unknown = null;
+  searchQuery = '';
+  lastFilterChange: TableFilterChangeEvent<any> | null = null;
+  refreshCalled = false;
+  resetFiltersCalled = false;
 
   onRowClick(row: TestItem): void {
     this.clickedRow = row;
@@ -78,6 +96,22 @@ class TestHostComponent {
 
   onSelectionChange(items: unknown): void {
     this.selectedItems = items;
+  }
+
+  onSearchChange(val: string): void {
+    this.searchQuery = val;
+  }
+
+  onFilterChange(event: TableFilterChangeEvent<any>): void {
+    this.lastFilterChange = event;
+  }
+
+  onRefresh(): void {
+    this.refreshCalled = true;
+  }
+
+  onResetFilters(): void {
+    this.resetFiltersCalled = true;
   }
 }
 
@@ -144,5 +178,58 @@ describe('DataTableComponent', () => {
 
     const emptyState = fixture.debugElement.query(By.css('app-empty-state'));
     expect(emptyState).toBeTruthy();
+  });
+
+  it('nên hiển thị ô tìm kiếm và phát sự kiện searchChange khi searchable=true', () => {
+    host.searchable.set(true);
+    fixture.detectChanges();
+
+    const searchInput = fixture.debugElement.query(By.css('app-search-input'));
+    expect(searchInput).toBeTruthy();
+
+    const dataTable = fixture.debugElement.query(By.directive(DataTableComponent)).componentInstance;
+    dataTable.onSearchChange('test query');
+    expect(host.searchQuery).toBe('test query');
+  });
+
+  it('nên hiển thị filter select và phát sự kiện filterChange khi có cấu hình filters', () => {
+    host.filters.set([
+      {
+        key: 'category',
+        label: 'Danh mục:',
+        options: [
+          { label: 'Tất cả', value: 'ALL' },
+          { label: 'Cat A', value: 'Cat A' },
+        ],
+        value: 'ALL',
+      },
+    ]);
+    fixture.detectChanges();
+
+    const filterSelect = fixture.debugElement.query(By.css('p-select'));
+    expect(filterSelect).toBeTruthy();
+
+    const dataTable = fixture.debugElement.query(By.directive(DataTableComponent)).componentInstance;
+    dataTable.onFilterSelectChange('category', 'Cat A');
+    expect(host.lastFilterChange).toEqual({ key: 'category', value: 'Cat A' });
+  });
+
+  it('nên hiển thị nút refresh và nút resetFilters khi được bật', () => {
+    host.showRefresh.set(true);
+    host.showResetFilters.set(true);
+    fixture.detectChanges();
+
+    const refreshBtn = fixture.debugElement.query(By.css('.refresh-btn'));
+    expect(refreshBtn).toBeTruthy();
+
+    const resetBtn = fixture.debugElement.query(By.css('.reset-filters-btn'));
+    expect(resetBtn).toBeTruthy();
+
+    const dataTable = fixture.debugElement.query(By.directive(DataTableComponent)).componentInstance;
+    dataTable.onRefreshClick();
+    expect(host.refreshCalled).toBe(true);
+
+    dataTable.onResetFiltersClick();
+    expect(host.resetFiltersCalled).toBe(true);
   });
 });

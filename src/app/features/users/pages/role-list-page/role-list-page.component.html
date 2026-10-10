@@ -18,41 +18,6 @@
     </div>
   </app-page-header>
 
-  <!-- FILTER & SEARCH BAR -->
-  <div class="filter-card">
-    <div class="search-box">
-      <app-search-input
-        [value]="searchTerm()"
-        (searchChange)="onSearch($event)"
-        (clear)="onSearch('')"
-        placeholder="Tìm theo mã hoặc tên vai trò..."
-      />
-    </div>
-
-    <div class="filter-controls">
-      <p-select
-        [options]="statusFilterOptions"
-        [ngModel]="selectedStatus()"
-        (ngModelChange)="onStatusFilterChange($event)"
-        optionLabel="label"
-        optionValue="value"
-        placeholder="Lọc trạng thái"
-        class="status-select"
-      />
-
-      @if (isFiltered()) {
-        <p-button
-          label="Đặt lại"
-          icon="pi pi-filter-slash"
-          severity="secondary"
-          [outlined]="true"
-          (onClick)="onResetFilters()"
-          styleClass="reset-btn"
-        />
-      }
-    </div>
-  </div>
-
   <!-- DATA TABLE -->
   <div class="table-card">
     <app-data-table
@@ -72,6 +37,16 @@
       [emptyTitle]="isFiltered() ? 'Không tìm thấy vai trò phù hợp' : 'Chưa có vai trò nào trong hệ thống'"
       [emptyMessage]="isFiltered() ? 'Vui lòng thử lại với từ khóa hoặc bộ lọc khác.' : 'Hệ thống chưa ghi nhận vai trò nào.'"
       emptyIcon="pi pi-shield"
+      [searchable]="true"
+      [searchValue]="searchTerm()"
+      searchPlaceholder="Tìm theo mã hoặc tên vai trò..."
+      (searchChange)="onSearch($event)"
+      [filters]="tableFilters()"
+      (filterChange)="onFilterChange($event)"
+      [showResetFilters]="isFiltered()"
+      (resetFilters)="onResetFilters()"
+      [showRefresh]="true"
+      (refresh)="loadRoles()"
     >
       <!-- CỘT 1: MÃ VAI TRÒ -->
       <ng-template appTableCell="code" let-role>

@@ -20,47 +20,6 @@
     </div>
   </app-page-header>
 
-  <!-- TOOLBAR: FILTER & SEARCH -->
-  <div class="saas-card toolbar-card">
-    <div class="toolbar-content">
-      <!-- TÌM KIẾM THEO TÊN / USERNAME / EMAIL / PHONE -->
-      <div class="search-box">
-        <app-search-input
-          [value]="searchTerm()"
-          (searchChange)="onSearchChange($event)"
-          (clear)="onSearchChange('')"
-          placeholder="Tìm theo tên, username, email, SĐT..."
-        />
-      </div>
-
-      <!-- LỌC TRẠNG THÁI TÀI KHOẢN -->
-      <div class="filter-group">
-        <span class="filter-label">Trạng thái:</span>
-        <p-select
-          [options]="statusOptions"
-          [ngModel]="selectedStatus()"
-          (ngModelChange)="onStatusChange($event)"
-          optionLabel="label"
-          optionValue="value"
-          styleClass="status-select"
-        />
-      </div>
-
-      <!-- NÚT LÀM MỚI DỮ LIỆU -->
-      <div class="refresh-action">
-        <p-button
-          icon="pi pi-refresh"
-          [outlined]="true"
-          severity="secondary"
-          [loading]="isLoading()"
-          pTooltip="Tải lại danh sách"
-          tooltipPosition="top"
-          (onClick)="loadUsers()"
-        />
-      </div>
-    </div>
-  </div>
-
   <!-- BẢNG DỮ LIỆU NGƯỜI DÙNG -->
   <div class="saas-card table-card">
     <app-data-table
@@ -79,6 +38,14 @@
       currentPageReportTemplate="Hiển thị {first} - {last} trong tổng số {totalRecords} người dùng"
       minWidth="960px"
       [rowClass]="rowClass"
+      [searchable]="true"
+      [searchValue]="searchTerm()"
+      searchPlaceholder="Tìm theo tên, username, email, SĐT..."
+      (searchChange)="onSearchChange($event)"
+      [filters]="tableFilters()"
+      (filterChange)="onFilterChange($event)"
+      [showRefresh]="true"
+      (refresh)="loadUsers()"
     >
       <!-- CỘT 1: TÀI KHOẢN & HỌ TÊN -->
       <ng-template appTableCell="fullName" let-u>
