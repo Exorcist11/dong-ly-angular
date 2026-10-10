@@ -1,0 +1,104 @@
+<app-dialog
+  [visible]="visible"
+  [header]="(vehicle ? 'fleet.vehicles.form.editTitle' : 'fleet.vehicles.form.createTitle') | translate"
+  size="lg"
+  [submitLoading]="submitting"
+  [submitDisabled]="submitting"
+  [submitLabel]="'common.actions.save' | translate"
+  [cancelLabel]="'common.actions.cancel' | translate"
+  submitIcon="pi pi-check"
+  (visibleChange)="visibleChange.emit($event)"
+  (submitted)="onSubmit()"
+  (cancelled)="onClose()"
+>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="vehicle-form-grid">
+    <div class="form-row two-cols">
+      <app-input
+        formControlName="plateNumber"
+        [label]="'fleet.vehicles.form.plateNumberLabel' | translate"
+        [required]="true"
+        [placeholder]="'fleet.vehicles.form.plateNumberPlaceholder' | translate"
+        [errorMessage]="form.get('plateNumber')?.touched && form.get('plateNumber')?.invalid ? ('fleet.vehicles.form.plateNumberPatternError' | translate) : ''"
+      />
+
+      <app-form-field
+        [label]="'fleet.vehicles.form.vehicleTypeLabel' | translate"
+        [required]="true"
+        [control]="form.get('vehicleType')"
+      >
+        <app-select
+          formControlName="vehicleType"
+          [options]="vehicleTypeOptions"
+          [placeholder]="'fleet.vehicles.form.vehicleTypePlaceholder' | translate"
+          width="100%"
+        />
+      </app-form-field>
+    </div>
+
+    <div class="form-row two-cols">
+      <app-input
+        formControlName="brand"
+        [label]="'fleet.vehicles.form.brandLabel' | translate"
+        [required]="true"
+        [placeholder]="'fleet.vehicles.form.brandPlaceholder' | translate"
+        [errorMessage]="form.get('brand')?.touched && form.get('brand')?.invalid ? ('fleet.vehicles.form.brandRequiredError' | translate) : ''"
+      />
+
+      <app-input
+        formControlName="model"
+        [label]="'fleet.vehicles.form.modelLabel' | translate"
+        [placeholder]="'fleet.vehicles.form.modelPlaceholder' | translate"
+      />
+    </div>
+
+    <div class="form-row two-cols">
+      <app-input
+        type="number"
+        formControlName="manufactureYear"
+        [label]="'fleet.vehicles.form.manufactureYearLabel' | translate"
+        [placeholder]="'fleet.vehicles.form.manufactureYearPlaceholder' | translate"
+      />
+
+      <app-form-field
+        [label]="'fleet.vehicles.form.totalFloorsLabel' | translate"
+        [required]="true"
+        [control]="form.get('totalFloors')"
+      >
+        <app-select
+          formControlName="totalFloors"
+          [options]="floorOptions"
+          [placeholder]="'fleet.vehicles.form.totalFloorsPlaceholder' | translate"
+          width="100%"
+        />
+      </app-form-field>
+    </div>
+
+    <div class="form-row two-cols">
+      <app-input
+        type="number"
+        formControlName="totalRows"
+        [label]="'fleet.vehicles.form.totalRowsLabel' | translate"
+        [required]="true"
+        [placeholder]="'fleet.vehicles.form.totalRowsPlaceholder' | translate"
+        [hint]="'fleet.vehicles.form.totalRowsHint' | translate"
+      />
+
+      <app-input
+        type="number"
+        formControlName="totalColumns"
+        [label]="'fleet.vehicles.form.totalColumnsLabel' | translate"
+        [required]="true"
+        [placeholder]="'fleet.vehicles.form.totalColumnsPlaceholder' | translate"
+        [hint]="'fleet.vehicles.form.totalColumnsHint' | translate"
+      />
+    </div>
+
+    <div class="form-row single-col">
+      <app-input
+        formControlName="description"
+        [label]="'fleet.vehicles.form.descriptionLabel' | translate"
+        [placeholder]="'fleet.vehicles.form.descriptionPlaceholder' | translate"
+      />
+    </div>
+  </form>
+</app-dialog>

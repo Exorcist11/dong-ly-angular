@@ -1,0 +1,86 @@
+<app-dialog
+  [visible]="visible"
+  [header]="(driver ? 'fleet.drivers.form.editTitle' : 'fleet.drivers.form.createTitle') | translate"
+  size="lg"
+  [submitLoading]="submitting"
+  [submitDisabled]="submitting"
+  [submitLabel]="'common.actions.save' | translate"
+  [cancelLabel]="'common.actions.cancel' | translate"
+  submitIcon="pi pi-check"
+  (visibleChange)="visibleChange.emit($event)"
+  (submitted)="onSubmit()"
+  (cancelled)="onClose()"
+>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="driver-form-grid">
+    <div class="form-row two-cols">
+      <app-input
+        formControlName="code"
+        [label]="'fleet.drivers.form.codeLabel' | translate"
+        [required]="true"
+        [placeholder]="'fleet.drivers.form.codePlaceholder' | translate"
+        [errorMessage]="form.get('code')?.touched && form.get('code')?.invalid ? ('fleet.drivers.form.codeRequiredError' | translate) : ''"
+      />
+
+      <app-input
+        formControlName="fullName"
+        [label]="'fleet.drivers.form.fullNameLabel' | translate"
+        [required]="true"
+        [placeholder]="'fleet.drivers.form.fullNamePlaceholder' | translate"
+        [errorMessage]="form.get('fullName')?.touched && form.get('fullName')?.invalid ? ('fleet.drivers.form.fullNameRequiredError' | translate) : ''"
+      />
+    </div>
+
+    <div class="form-row two-cols">
+      <app-input
+        formControlName="phone"
+        [label]="'fleet.drivers.form.phoneLabel' | translate"
+        [required]="true"
+        [placeholder]="'fleet.drivers.form.phonePlaceholder' | translate"
+        [errorMessage]="form.get('phone')?.touched && form.get('phone')?.invalid ? ('fleet.drivers.form.phonePatternError' | translate) : ''"
+      />
+
+      <app-input
+        formControlName="licenseNumber"
+        [label]="'fleet.drivers.form.licenseNumberLabel' | translate"
+        [required]="true"
+        [placeholder]="'fleet.drivers.form.licenseNumberPlaceholder' | translate"
+        [errorMessage]="form.get('licenseNumber')?.touched && form.get('licenseNumber')?.invalid ? ('fleet.drivers.form.licenseNumberRequiredError' | translate) : ''"
+      />
+    </div>
+
+    <div class="form-row two-cols">
+      <app-form-field
+        [label]="'fleet.drivers.form.licenseClassLabel' | translate"
+        [required]="true"
+        [control]="form.get('licenseClass')"
+      >
+        <app-select
+          formControlName="licenseClass"
+          [options]="licenseClassOptions"
+          [placeholder]="'fleet.drivers.form.licenseClassPlaceholder' | translate"
+          width="100%"
+        />
+      </app-form-field>
+
+      <app-input
+        type="date"
+        formControlName="licenseExpiryDate"
+        [label]="'fleet.drivers.form.licenseExpiryDateLabel' | translate"
+      />
+    </div>
+
+    <div class="form-row two-cols">
+      <app-input
+        type="date"
+        formControlName="dateOfBirth"
+        [label]="'fleet.drivers.form.dateOfBirthLabel' | translate"
+      />
+
+      <app-input
+        formControlName="note"
+        [label]="'fleet.drivers.form.noteLabel' | translate"
+        [placeholder]="'fleet.drivers.form.notePlaceholder' | translate"
+      />
+    </div>
+  </form>
+</app-dialog>

@@ -1,0 +1,175 @@
+.fleet-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.tabs-bar {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--color-border, #d9d4cc);
+  padding-bottom: 8px;
+
+  .nav-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    font-size: 13.5px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--color-text-secondary, #3a3733);
+    cursor: pointer;
+    transition: all var(--ease, 200ms ease);
+
+    i {
+      font-size: 14px;
+    }
+
+    .count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1px 7px;
+      border-radius: 9999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      background: var(--color-surface-sunken, #f4f1ec);
+      color: var(--color-text-secondary, #3a3733);
+      transition: all var(--ease, 200ms ease);
+    }
+
+    &:hover {
+      background: var(--color-surface-hover, #f8f5f0);
+      color: var(--color-text-primary, #16161a);
+    }
+
+    &.active {
+      background: var(--color-primary, #d71920);
+      color: #ffffff;
+      box-shadow: 0 2px 4px rgba(215, 25, 32, 0.2);
+
+      i {
+        color: #ffffff;
+      }
+
+      .count-badge {
+        background: rgba(255, 255, 255, 0.25);
+        color: #ffffff;
+      }
+    }
+  }
+}
+
+.table-card {
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #d9d4cc);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.plate-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border: 1.5px solid var(--color-text-primary, #16161a);
+  border-radius: 6px;
+  background: var(--color-surface-sunken, #f4f1ec);
+  font-weight: 700;
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--color-text-primary, #16161a);
+  letter-spacing: 0.05em;
+}
+
+.badge-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  font-size: 11.5px;
+  font-weight: 600;
+
+  &.tag-luxury {
+    background: #fdf4ff;
+    color: #9333ea;
+    border: 1px solid #f0abfc;
+  }
+
+  &.tag-sleeper {
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #86efac;
+  }
+
+  &.tag-seater {
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+  }
+}
+
+.vehicle-brand-col,
+.seat-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  strong {
+    color: var(--color-text-primary, #16161a);
+  }
+
+  .model-text,
+  .grid-spec {
+    font-size: 12px;
+    color: var(--color-text-muted, #8a857d);
+  }
+}
+
+.driver-code-tag {
+  font-weight: 700;
+  color: var(--color-text-primary, #16161a);
+  background: var(--color-surface-sunken, #f4f1ec);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: monospace;
+}
+
+.license-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  .license-class-badge {
+    font-weight: 700;
+    color: var(--color-primary, #d71920);
+    font-size: 12px;
+  }
+
+  .license-num {
+    font-size: 12px;
+    color: var(--color-text-muted, #8a857d);
+    font-family: monospace;
+  }
+}
+
+.expiry-date {
+  font-size: 13px;
+  color: var(--color-text-secondary, #3a3733);
+}
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

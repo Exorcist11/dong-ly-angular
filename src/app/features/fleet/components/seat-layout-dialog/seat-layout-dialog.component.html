@@ -1,0 +1,222 @@
+<app-dialog
+  [visible]="visible"
+  [header]="('fleet.seatLayout.titlePrefix' | translate) + (vehicleData()?.plateNumber || vehicle?.plateNumber || '')"
+  size="xl"
+  [submitLoading]="submitting"
+  [submitDisabled]="submitting"
+  [submitLabel]="'common.actions.save' | translate"
+  [cancelLabel]="'common.actions.cancel' | translate"
+  submitIcon="pi pi-check"
+  (visibleChange)="visibleChange.emit($event)"
+  (submitted)="onApplyFullLayout()"
+  (cancelled)="onClose()"
+>
+  <div class="seat-layout-workspace">
+    <!-- TOOLBAR THÔNG TIN VÀ CHUYỂN TẦNG -->
+    <div class="workspace-header">
+      <div class="vehicle-specs">
+        <span class="spec-tag"><i class="pi pi-car"></i> {{ vehicleData()?.brand || vehicle?.brand }} - {{ vehicleData()?.model || vehicle?.model || 'Tiêu chuẩn' }}</span>
+        <span class="spec-tag"><i class="pi pi-th-large"></i> {{ 'fleet.seatLayout.specGrid' | translate:{ rows: vehicleData()?.totalRows ?? vehicle?.totalRows ?? 0, cols: vehicleData()?.totalColumns ?? vehicle?.totalColumns ?? 0 } }}</span>
+        <span class="spec-tag badge-primary"><i class="pi pi-ticket"></i> {{ 'fleet.seatLayout.specTotalSeats' | translate:{ active: totalActiveSeats(), total: currentSeats().length } }}</span>
+      </div>
+
+      <div class="header-tools">
+        <!-- NÚT CHUYỂN TẦNG -->
+        <div class="floor-selector">
+          <app-button
+            [variant]="activeFloor() === 1 ? 'primary' : 'outlined'"
+            size="small"
+            icon="pi pi-arrow-down"
+            [label]="'fleet.seatLayout.floor1' | translate"
+            (clicked)="activeFloor.set(1)"
+          />
+          @if ((vehicleData()?.totalFloors ?? vehicle?.totalFloors) === 2) {
+            <app-button
+              [variant]="activeFloor() === 2 ? 'primary' : 'outlined'"
+              size="small"
+              icon="pi pi-arrow-up"
+              [label]="'fleet.seatLayout.floor2' | translate"
+              (clicked)="activeFloor.set(2)"
+            />
+          }
+        </div>
+
+        <!-- CÔNG CỤ TẠO NHANH SƠ ĐỒ -->
+        <div class="quick-tools">
+          <app-button
+            variant="outlined"
+            size="small"
+            icon="pi pi-sparkles"
+            [label]="'fleet.seatLayout.autoGenerateBtn' | translate"
+            [tooltip]="'fleet.seatLayout.autoGenerateHint' | translate"
+            (clicked)="autoGenerateLayout()"
+          />
+          @if (currentSeats().length > 0) {
+            <app-button
+              variant="text"
+              size="small"
+              icon="pi pi-trash"
+              class="danger-btn"
+              [label]="'fleet.seatLayout.clearAllBtn' | translate"
+              (clicked)="clearAllSeats()"
+            />
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN INTERACTIVE AREA -->
+    <div class="workspace-content">
+      <!-- SƠ ĐỒ LƯỚI MA TRẬN XE TRỰC QUAN -->
+      <div class="seat-map-container">
+        <!-- CẢNH BÁO NẾU TẦNG HIỆN TẠI CHƯA CÓ GHẾ -->
+        @if (currentFloorSeatsCount() === 0) {
+          <div class="empty-floor-alert">
+            <i class="pi pi-info-circle"></i>
+            <span>{{ 'fleet.seatLayout.emptyFloorNotice' | translate:{ floor: activeFloor() } }}</span>
+            <app-button
+              variant="text"
+              size="small"
+              icon="pi pi-sparkles"
+              [label]="'fleet.seatLayout.autoGenerateBtn' | translate"
+              (clicked)="autoGenerateLayout()"
+            />
+          </div>
+        }
+
+        <div class="bus-cab">
+          <div class="steering-wheel"><i class="pi pi-compass"></i> {{ 'fleet.seatLayout.cabLabel' | translate }}</div>
+          <div class="door-entry"><i class="pi pi-sign-in"></i> {{ 'fleet.seatLayout.entryDoor' | translate }}</div>
+        </div>
+
+        <div class="matrix-grid">
+          @let matrix = activeFloor() === 1 ? floor1Grid() : floor2Grid();
+          @for (row of matrix; track $index) {
+            <div class="matrix-row">
+              <span class="row-label">H{{ $index + 1 }}</span>
+              <div class="row-cells">
+                @for (cell of row; track cell.col) {
+                  @if (cell.seat) {
+                    <!-- Ghế tồn tại -->
+                    <div
+                      class="seat-card"
+                      [class.type-luxury]="cell.seat.seatType === 'LUXURY_ROOM'"
+                      [class.type-sleeper]="cell.seat.seatType === 'SLEEPER'"
+                      [class.type-vip]="cell.seat.seatType === 'VIP'"
+                      [class.status-blocked]="cell.seat.status === 'BLOCKED'"
+                      [class.status-inactive]="cell.seat.status === 'INACTIVE'"
+                      [class.selected]="selectedSeat()?.floor === cell.floor && selectedSeat()?.rowIndex === cell.row && selectedSeat()?.columnIndex === cell.col"
+                      (click)="onSelectCell(cell)"
+                      [title]="'Ghế ' + cell.seat.seatCode"
+                    >
+                      <span class="seat-badge-code">{{ cell.seat.seatCode }}</span>
+                      <span class="seat-type-label">
+                        @switch (cell.seat.seatType) {
+                          @case ('LUXURY_ROOM') { Phòng VIP }
+                          @case ('SLEEPER') { Giường }
+                          @case ('VIP') { VIP }
+                          @default { Ghế }
+                        }
+                      </span>
+                      @if (cell.seat.extraPrice > 0) {
+                        <span class="seat-price">+{{ cell.seat.extraPrice | number }}đ</span>
+                      }
+                    </div>
+                  } @else {
+                    <!-- Vị trí trống / Lối đi (Aisle) -->
+                    <div
+                      class="aisle-card"
+                      [class.selected]="selectedSeat()?.floor === cell.floor && selectedSeat()?.rowIndex === cell.row && selectedSeat()?.columnIndex === cell.col"
+                      (click)="onSelectCell(cell)"
+                      [title]="'fleet.seatLayout.aisleHint' | translate"
+                    >
+                      <i class="pi pi-plus"></i>
+                      <span class="coord-label">{{ cell.row }}-{{ cell.col }}</span>
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- CHÚ THÍCH MÃ MÀU (LEGEND) -->
+        <div class="seat-legend">
+          <div class="legend-item"><span class="legend-box luxury"></span> {{ 'fleet.seatLayout.legend.luxury' | translate }}</div>
+          <div class="legend-item"><span class="legend-box sleeper"></span> {{ 'fleet.seatLayout.legend.sleeper' | translate }}</div>
+          <div class="legend-item"><span class="legend-box vip"></span> {{ 'fleet.seatLayout.legend.vip' | translate }}</div>
+          <div class="legend-item"><span class="legend-box standard"></span> {{ 'fleet.seatLayout.legend.standard' | translate }}</div>
+          <div class="legend-item"><span class="legend-box blocked"></span> {{ 'fleet.seatLayout.legend.blocked' | translate }}</div>
+          <div class="legend-item"><span class="legend-box aisle"></span> {{ 'fleet.seatLayout.legend.aisle' | translate }}</div>
+        </div>
+      </div>
+
+      <!-- KHUNG CHI TIẾT VÀ CHỈNH SỬA GHẾ ĐANG CHỌN -->
+      <div class="seat-editor-panel">
+        @if (selectedSeat(); as current) {
+          <div class="editor-header">
+            <h4><i class="pi pi-pencil"></i> {{ 'fleet.seatLayout.editorTitle' | translate }}</h4>
+            <span class="editor-pos">{{ 'fleet.seatLayout.editorPos' | translate:{ floor: current.floor, row: current.rowIndex, col: current.columnIndex } }}</span>
+          </div>
+
+          <div class="editor-fields">
+            <app-input
+              [ngModel]="current.seatCode"
+              (ngModelChange)="current.seatCode = $event"
+              [label]="'fleet.seatLayout.seatCodeLabel' | translate"
+              [required]="true"
+              [placeholder]="'fleet.seatLayout.seatCodePlaceholder' | translate"
+            />
+
+            <app-form-field [label]="'fleet.seatLayout.seatTypeLabel' | translate">
+              <app-select
+                [ngModel]="current.seatType"
+                (ngModelChange)="current.seatType = $event"
+                [options]="seatTypeOptions"
+                width="100%"
+              />
+            </app-form-field>
+
+            <app-input
+              type="number"
+              [ngModel]="current.extraPrice"
+              (ngModelChange)="current.extraPrice = $event"
+              [label]="'fleet.seatLayout.extraPriceLabel' | translate"
+              [placeholder]="'fleet.seatLayout.extraPricePlaceholder' | translate"
+            />
+
+            <app-form-field [label]="'fleet.seatLayout.statusLabel' | translate">
+              <app-select
+                [ngModel]="current.status"
+                (ngModelChange)="current.status = $event"
+                [options]="seatStatusOptions"
+                width="100%"
+              />
+            </app-form-field>
+
+            <div class="editor-actions">
+              <app-button
+                variant="primary"
+                icon="pi pi-check"
+                [label]="'fleet.seatLayout.saveSeatBtn' | translate"
+                (clicked)="onSaveSeatToLayout()"
+              />
+
+              <app-button
+                variant="danger"
+                icon="pi pi-trash"
+                [label]="'fleet.seatLayout.removeSeatBtn' | translate"
+                (clicked)="onRemoveSeatFromLayout(current)"
+              />
+            </div>
+          </div>
+        } @else {
+          <div class="editor-empty">
+            <i class="pi pi-hand-pointer"></i>
+            <p>{{ 'fleet.seatLayout.emptyHint' | translate }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</app-dialog>

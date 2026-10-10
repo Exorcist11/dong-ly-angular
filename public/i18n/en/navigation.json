@@ -25,6 +25,7 @@
     "dashboard": "Dashboard",
     "users": "User Management",
     "tripsAndRoutes": "Trips & Routes",
+    "vehicles": "Vehicles & Drivers",
     "bookings": "Tickets & Bookings",
     "rolesAndPermissions": "Roles & Permissions",
     "settings": "System Settings",

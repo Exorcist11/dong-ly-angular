@@ -50,6 +50,12 @@ export const MENU_CONFIG: NavGroup[] = [
         permission: 'ROUTE_READ',
       },
       {
+        labelKey: 'navigation.items.vehicles',
+        route: '/vehicles',
+        icon: 'pi pi-truck',
+        permission: 'FLEET_READ',
+      },
+      {
         labelKey: 'navigation.items.bookings',
         icon: 'pi pi-ticket',
         isUpcoming: true,

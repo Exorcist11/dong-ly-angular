@@ -50,6 +50,15 @@ export const routes: Routes = [
             (m) => m.RouteListPageComponent
           ),
       },
+      {
+        path: 'vehicles',
+        canActivate: [permissionGuard],
+        data: { permission: 'FLEET_READ' },
+        loadComponent: () =>
+          import('./features/fleet/pages/fleet-list-page/fleet-list-page.component').then(
+            (m) => m.FleetListPageComponent
+          ),
+      },
     ],
   },
   {
