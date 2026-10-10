@@ -130,6 +130,8 @@
     [visible]="showTripRunDialog()"
     [tripRun]="selectedTripRun()"
     [routeOptions]="routeOptions()"
+    [vehicleOptions]="vehicleOptions()"
+    [driverOptions]="driverOptions()"
     [submitting]="tripRunSubmitting()"
     (visibleChange)="showTripRunDialog.set($event)"
     (save)="onSaveTripRun($event)"

@@ -8,6 +8,7 @@ import { signal } from '@angular/core';
 import { TripRunListPageComponent } from './trip-run-list-page.component';
 import { TripRunService } from '../../services/trip-run.service';
 import { RouteService } from '../../../routes/services/route.service';
+import { FleetService } from '../../../fleet/services/fleet.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { PageResponse } from '../../../../core/models/api-response.model';
@@ -18,6 +19,7 @@ describe('TripRunListPageComponent', () => {
   let fixture: ComponentFixture<TripRunListPageComponent>;
   let tripRunServiceMock: any;
   let routeServiceMock: any;
+  let fleetServiceMock: any;
   let notificationMock: any;
   let authServiceMock: any;
 
@@ -66,7 +68,33 @@ describe('TripRunListPageComponent', () => {
     };
 
     routeServiceMock = {
-      searchRoutes: vi.fn().mockReturnValue(of({ success: true, data: { items: [] } })),
+      searchRoutes: vi.fn().mockReturnValue(
+        of({
+          success: true,
+          data: {
+            items: [{ id: 'r-1', code: 'HN-TH', name: 'Hà Nội - Thanh Hóa' }],
+          },
+        })
+      ),
+    };
+
+    fleetServiceMock = {
+      searchVehicles: vi.fn().mockReturnValue(
+        of({
+          success: true,
+          data: {
+            items: [{ id: 'v-1', plateNumber: '29B-12345', brand: 'Hyundai' }],
+          },
+        })
+      ),
+      searchDrivers: vi.fn().mockReturnValue(
+        of({
+          success: true,
+          data: {
+            items: [{ id: 'd-1', code: 'DRV-01', fullName: 'Nguyễn Văn A' }],
+          },
+        })
+      ),
     };
 
     notificationMock = {
@@ -95,6 +123,7 @@ describe('TripRunListPageComponent', () => {
         provideRouter([]),
         { provide: TripRunService, useValue: tripRunServiceMock },
         { provide: RouteService, useValue: routeServiceMock },
+        { provide: FleetService, useValue: fleetServiceMock },
         { provide: NotificationService, useValue: notificationMock },
         { provide: AuthService, useValue: authServiceMock },
       ],
@@ -110,6 +139,22 @@ describe('TripRunListPageComponent', () => {
     expect(tripRunServiceMock.searchTripRuns).toHaveBeenCalled();
     expect(component.tripRunsList().length).toBe(1);
     expect(component.tripRunsTotal()).toBe(1);
+  });
+
+  it('nên nạp danh sách routeOptions, vehicleOptions và driverOptions khi khởi tạo', () => {
+    expect(routeServiceMock.searchRoutes).toHaveBeenCalledWith(0, 100);
+    expect(fleetServiceMock.searchVehicles).toHaveBeenCalledWith(0, 100);
+    expect(fleetServiceMock.searchDrivers).toHaveBeenCalledWith(0, 100);
+
+    expect(component.routeOptions()).toEqual([
+      { label: 'HN-TH - Hà Nội - Thanh Hóa', value: 'r-1' },
+    ]);
+    expect(component.vehicleOptions()).toEqual([
+      { label: '29B-12345 (Hyundai)', value: 'v-1' },
+    ]);
+    expect(component.driverOptions()).toEqual([
+      { label: 'DRV-01 - Nguyễn Văn A', value: 'd-1' },
+    ]);
   });
 
   it('nên mở dialog tạo mới lịch vòng chạy khi gọi openCreateTripRunDialog()', () => {

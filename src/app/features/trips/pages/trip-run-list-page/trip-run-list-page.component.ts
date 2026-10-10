@@ -37,6 +37,7 @@ import {
 } from '../../models/trip-run.model';
 import { TripRunService } from '../../services/trip-run.service';
 import { RouteService } from '../../../routes/services/route.service';
+import { FleetService } from '../../../fleet/services/fleet.service';
 import { TripRunFormDialogComponent } from '../../components/trip-run-form-dialog/trip-run-form-dialog.component';
 import { GenerateTripsDialogComponent } from '../../components/generate-trips-dialog/generate-trips-dialog.component';
 
@@ -64,11 +65,14 @@ import { GenerateTripsDialogComponent } from '../../components/generate-trips-di
 export class TripRunListPageComponent implements OnInit {
   private readonly tripRunService = inject(TripRunService);
   private readonly routeService = inject(RouteService);
+  private readonly fleetService = inject(FleetService);
   private readonly notification = inject(NotificationService);
   private readonly i18n = inject(TranslationService);
 
   // SELECT OPTIONS CACHE
   readonly routeOptions = signal<SelectOption[]>([]);
+  readonly vehicleOptions = signal<SelectOption[]>([]);
+  readonly driverOptions = signal<SelectOption[]>([]);
 
   // BREADCRUMBS
   readonly breadcrumbs = computed<BreadcrumbItem[]>(() => {
@@ -147,6 +151,7 @@ export class TripRunListPageComponent implements OnInit {
   }
 
   private loadSelectOptions(): void {
+    // 1. Tuyến đường
     this.routeService.searchRoutes(0, 100).subscribe({
       next: (res) => {
         if (res.data?.items) {
@@ -155,6 +160,32 @@ export class TripRunListPageComponent implements OnInit {
             value: r.id,
           }));
           this.routeOptions.set(opts);
+        }
+      },
+    });
+
+    // 2. Phương tiện
+    this.fleetService.searchVehicles(0, 100).subscribe({
+      next: (res) => {
+        if (res.data?.items) {
+          const opts = res.data.items.map((v) => ({
+            label: `${v.plateNumber} (${v.brand})`,
+            value: v.id,
+          }));
+          this.vehicleOptions.set(opts);
+        }
+      },
+    });
+
+    // 3. Tài xế & Phụ xe
+    this.fleetService.searchDrivers(0, 100).subscribe({
+      next: (res) => {
+        if (res.data?.items) {
+          const opts = res.data.items.map((d) => ({
+            label: `${d.code} - ${d.fullName}`,
+            value: d.id,
+          }));
+          this.driverOptions.set(opts);
         }
       },
     });
