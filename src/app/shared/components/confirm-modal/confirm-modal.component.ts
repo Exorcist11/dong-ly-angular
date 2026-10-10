@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
+import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-confirm-modal',
   standalone: true,
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, ButtonComponent],
   templateUrl: './confirm-modal.component.html',
   styleUrl: './confirm-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

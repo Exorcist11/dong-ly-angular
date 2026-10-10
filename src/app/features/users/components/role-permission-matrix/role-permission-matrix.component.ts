@@ -13,7 +13,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Dialog } from 'primeng/dialog';
-import { Button } from 'primeng/button';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { Checkbox } from 'primeng/checkbox';
 import { Tag } from 'primeng/tag';
 import { Tooltip } from 'primeng/tooltip';
@@ -46,7 +46,7 @@ export const CORE_ADMIN_PERMISSIONS = [
     FormsModule,
     TranslatePipe,
     Dialog,
-    Button,
+    ButtonComponent,
     Checkbox,
     Tag,
     Tooltip,

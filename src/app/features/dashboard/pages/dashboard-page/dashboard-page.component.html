@@ -26,23 +26,23 @@
 
       <!-- Refresh Button with Spin & Time Caption -->
       <div class="refresh-btn-group">
-        <p-button
+        <app-button
           [label]="'common.actions.refresh' | translate"
           icon="pi pi-refresh"
-          severity="secondary"
-          [outlined]="true"
+          variant="secondary"
           [loading]="isRefreshing()"
-          (onClick)="refreshData()"
+          (clicked)="refreshData()"
           styleClass="saas-header-btn"
         />
         <span class="refresh-caption">{{ 'dashboard.updatedAt' | translate:{ time: lastUpdatedTime() } }}</span>
       </div>
 
       <!-- Add Trip Primary Action -->
-      <p-button
+      <app-button
         [label]="'dashboard.addTrip' | translate"
         icon="pi pi-plus"
-        (onClick)="onAddTrip()"
+        variant="primary"
+        (clicked)="onAddTrip()"
         styleClass="saas-header-btn btn-primary-action"
       />
     </div>
@@ -54,7 +54,7 @@
       <p-message severity="error">
         <div class="error-message-content">
           <span>{{ 'dashboard.errorRealtime' | translate }}</span>
-          <p-button [label]="'common.actions.retry' | translate" [text]="true" size="small" (onClick)="refreshData()" />
+          <app-button [label]="'common.actions.retry' | translate" variant="text" size="small" (clicked)="refreshData()" />
         </div>
       </p-message>
     </div>

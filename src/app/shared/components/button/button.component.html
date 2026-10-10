@@ -1,0 +1,22 @@
+<p-button
+  [type]="type()"
+  [label]="resolvedLabel()"
+  [icon]="icon()"
+  [iconPos]="iconPos()"
+  [severity]="primeSeverity()"
+  [outlined]="isOutlined()"
+  [text]="isText()"
+  [rounded]="rounded()"
+  [size]="primeSize()"
+  [loading]="loading()"
+  [disabled]="isEffectivelyDisabled()"
+  [pTooltip]="resolvedTooltip()"
+  [tooltipPosition]="tooltipPosition()"
+  [ariaLabel]="resolvedAriaLabel()"
+  [attr.aria-label]="resolvedAriaLabel()"
+  [attr.aria-busy]="loading() ? 'true' : null"
+  [styleClass]="computedStyleClass()"
+  (onClick)="handleClick($event)"
+>
+  <ng-content />
+</p-button>

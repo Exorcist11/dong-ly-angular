@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Button } from 'primeng/button';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { Tooltip } from 'primeng/tooltip';
 
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -50,7 +50,7 @@ import { finalize } from 'rxjs';
     TranslatePipe,
     DataTableComponent,
     TableCellDirective,
-    Button,
+    ButtonComponent,
     Tooltip,
     PageHeaderComponent,
     ConfirmModalComponent,

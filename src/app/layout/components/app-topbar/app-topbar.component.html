@@ -2,13 +2,13 @@
   <!-- LEFT SECTION -->
   <div class="topbar-left">
     <!-- Collapse / Hamburger Button -->
-    <p-button
-      [text]="true"
+    <app-button
+      variant="text"
       [rounded]="true"
       icon="pi pi-bars"
       styleClass="topbar-icon-btn"
-      [attr.aria-label]="'navigation.topbar.toggleSidebar' | translate"
-      (onClick)="onToggleSidebar()"
+      [ariaLabel]="'navigation.topbar.toggleSidebar' | translate"
+      (clicked)="onToggleSidebar()"
     />
 
     <!-- Breadcrumb -->
@@ -62,32 +62,30 @@
     </div>
 
     <!-- ONE Theme Button cycling Light -> Dark -> System -->
-    <p-button
-      [text]="true"
+    <app-button
+      variant="text"
       [rounded]="true"
       [icon]="themeIcon()"
-      [attr.aria-label]="themeAriaLabel()"
-      [pTooltip]="themeTooltip()"
+      [ariaLabel]="themeAriaLabel()"
+      [tooltip]="themeTooltip()"
       tooltipPosition="bottom"
       styleClass="topbar-icon-btn"
-      (onClick)="layoutService.cycleTheme()"
+      (clicked)="layoutService.cycleTheme()"
     />
 
     <!-- Notification Bell with OverlayBadge -->
-    <p-button
-      [text]="true"
+    <app-button
+      variant="text"
       [rounded]="true"
-      [pTooltip]="'navigation.topbar.notificationsTooltip' | translate"
+      [tooltip]="'navigation.topbar.notificationsTooltip' | translate"
       tooltipPosition="bottom"
       styleClass="topbar-icon-btn"
-      [attr.aria-label]="'navigation.topbar.notificationsAria' | translate"
+      [ariaLabel]="'navigation.topbar.notificationsAria' | translate"
     >
-      <ng-template #icon>
-        <p-overlaybadge severity="danger" styleClass="badge-dot">
-          <i class="pi pi-bell text-lg"></i>
-        </p-overlaybadge>
-      </ng-template>
-    </p-button>
+      <p-overlaybadge severity="danger" styleClass="badge-dot">
+        <i class="pi pi-bell text-lg"></i>
+      </p-overlaybadge>
+    </app-button>
 
     <!-- Avatar Quick Link -->
     <p-avatar

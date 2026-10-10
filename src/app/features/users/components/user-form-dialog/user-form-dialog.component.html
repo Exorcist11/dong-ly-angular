@@ -132,19 +132,19 @@
 
     <!-- DIALOG FOOTER -->
     <div class="dialog-actions">
-      <p-button
+      <app-button
         type="button"
         [label]="'common.actions.cancel' | translate"
-        severity="secondary"
-        [outlined]="true"
-        (onClick)="onCancel()"
+        variant="secondary"
+        (clicked)="onCancel()"
         [disabled]="submitting"
       />
-      <p-button
+      <app-button
         type="submit"
         [label]="(isEditMode ? 'users.dialog.editSubmit' : 'users.dialog.createSubmit') | translate"
-        [icon]="submitting ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
-        severity="danger"
+        icon="pi pi-check"
+        variant="primary"
+        [loading]="submitting"
         [disabled]="submitting"
       />
     </div>

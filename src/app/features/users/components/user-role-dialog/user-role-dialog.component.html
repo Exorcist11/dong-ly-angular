@@ -98,20 +98,19 @@
     </div>
 
     <div class="dialog-actions">
-      <p-button
+      <app-button
         type="button"
         [label]="'common.actions.cancel' | translate"
-        severity="secondary"
-        [outlined]="true"
-        (onClick)="onCancel()"
+        variant="secondary"
+        (clicked)="onCancel()"
         [disabled]="submitting"
       />
-      <p-button
+      <app-button
         type="button"
         [label]="'users.roleDialog.submit' | translate"
         icon="pi pi-check"
-        severity="danger"
-        (onClick)="onSave()"
+        variant="primary"
+        (clicked)="onSave()"
         [disabled]="submitting || !hasChanges"
         [loading]="submitting"
       />

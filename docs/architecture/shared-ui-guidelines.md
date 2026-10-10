@@ -20,9 +20,9 @@ Trong hệ thống quản trị nhà xe Đông Lý (bao gồm các phân hệ Qu
 
 ---
 
-## 2. MA TRẬN PHÂN LOẠI UI: PRIMENG TRỰC TIẾP VS SHARED WRAPPER
+## 2. MA TRẬN PHÂN LOẠI UI: PRIMENG TRỰC TIẾP VS SHARED COMPONENT
 
-Dự án sử dụng **PrimeNG 21.x** kết hợp `@primeng/themes` (`DongLyThemePreset`) và `@angular/cdk 21.x`. Nguyên tắc cốt lõi: **Không tạo wrapper vô giá trị chỉ để đổi tên thẻ, nhưng bắt buộc tạo Shared Component khi mang lại giá trị kiến trúc cụ thể.**
+Dự án sử dụng **PrimeNG 21.x** kết hợp `@primeng/themes` (`DongLyThemePreset`) và `@angular/cdk 21.x`. Nguyên tắc cốt lõi: **Không tạo wrapper vô giá trị chỉ để đổi tên thẻ, nhưng bắt buộc tạo và sử dụng Shared Component khi mang lại giá trị kiến trúc cụ thể.**
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -31,17 +31,14 @@ Dự án sử dụng **PrimeNG 21.x** kết hợp `@primeng/themes` (`DongLyThem
                                     │
     ┌───────────────────────────────┴───────────────────────────────┐
     ▼                                                               ▼
-【DÙNG TRỰC TIẾP PRIMENG】                                   【TẠO SHARED WRAPPER / COMPONENT】
-- Không có logic bổ sung                                    - Đóng gói logic validation form lặp lại
-- PrimeNG đã hỗ trợ A11y & Form                             - Chuẩn hóa layout & state (Loading, Empty, Error)
-- Ví dụ:                                                    - Tích hợp hợp đồng Backend (PageResponse<T>)
-  * p-button (nút bấm đơn lẻ)                                - Dialog xác nhận chuẩn hóa (ConfirmModal)
-  * input[pInputText] (input thuần)                          - Format đặc thù vận tải (Biển số xe, Sơ đồ ghế)
-  * p-password, p-checkbox, p-toast                         - Ví dụ:
-                                                              * FormFieldComponent (Label + Control + Error)
-                                                              * DataTableComponent (hoặc chuẩn p-table wrapper)
-                                                              * StatusBadgeComponent (Tag chuẩn màu/trạng thái)
-                                                              * SearchInputComponent (Input + debounce + clear)
+【DÙNG TRỰC TIẾP PRIMENG】                                   【BẮT BUỘC DÙNG SHARED COMPONENT】
+- Không có logic bổ sung                                    - Nút bấm toàn hệ thống (app-button BẮT BUỘC)
+- PrimeNG đã hỗ trợ A11y & Form                             - Đóng gói form validation (FormFieldComponent)
+- Ví dụ:                                                    - Thanh tìm kiếm debounce (SearchInputComponent)
+  * input[pInputText] (input thuần)                          - Bảng dữ liệu chuẩn (DataTableComponent)
+  * p-password, p-checkbox, p-toast                         - Dialog xác nhận chuẩn hóa (ConfirmModalComponent)
+  * p-datepicker (dd/mm/yy)                                  - Huy hiệu trạng thái enum (StatusBadgeComponent)
+                                                            - Dropdown chọn lựa chọn (SelectComponent)
 ```
 
 ---
@@ -53,7 +50,7 @@ Dự án sử dụng **PrimeNG 21.x** kết hợp `@primeng/themes` (`DongLyThem
 | :--- | :--- | :--- |
 | **`FormFieldComponent`** | Đóng gói nhãn (`label`), đánh dấu bắt buộc (`*`), gợi ý (`hint`), và thông báo lỗi validation tự động theo tiếng Việt. | Component dùng chung (`shared/components/form-field`). Chiếu control qua Content Projection `<ng-content>`. |
 | **`SearchInputComponent`** | Ô tìm kiếm kèm icon kính lúp, nút xóa nhanh (clear), và cơ chế debounce emission để tránh spam API. | Component dùng chung (`shared/components/search-input`). Nhận `[placeholder]`, phát `(searchChange)`. |
-| **`Button`** | Nút bấm thao tác, hỗ trợ trạng thái loading, icon, severity. | Dùng trực tiếp `<p-button>` của PrimeNG theo Design Tokens. |
+| **`ButtonComponent`** | Nút bấm thao tác chuẩn hóa: Variants (primary, secondary, danger, success, warn, info, text, outlined), kích thước (small, medium, large), loading, fullWidth, accessibility A11y và tự động hóa i18n. | Component dùng chung (`shared/components/button`). Selector: `<app-button>`. |
 | **`Input / Textarea`** | Nhập văn bản một hoặc nhiều dòng. | Dùng trực tiếp `input[pInputText]` / `textarea[pTextarea]`. |
 | **`SelectComponent`** | Chọn giá trị từ danh sách tùy chọn, triển khai `ControlValueAccessor` tương thích hoàn hảo Reactive Forms / ngModel, hỗ trợ icon tùy chọn, xóa nhanh và tìm kiếm lọc. | Component dùng chung (`shared/components/select`). Nhận `[options]`, `[placeholder]`, `[width]`, `[clearable]`, `[filter]`. |
 | **`Checkbox / Radio`** | Chọn một hoặc nhiều tùy chọn logic. | Dùng trực tiếp `<p-checkbox>` / `<p-radiobutton>`. |
@@ -186,11 +183,91 @@ Bảng dữ liệu chuẩn hóa của dự án là `DataTableComponent` (`app-da
   <!-- Custom cell template cho cột action -->
   <ng-template appTableCell="actions" let-row>
     <div class="table-actions">
-      <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" (onClick)="onEdit(row)" />
-      <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(row)" />
+      <app-button icon="pi pi-pencil" variant="text" [rounded]="true" ariaLabel="Sửa" (clicked)="onEdit(row)" />
+      <app-button icon="pi pi-trash" variant="text" [rounded]="true" ariaLabel="Xóa" (clicked)="onDelete(row)" />
     </div>
   </ng-template>
 </app-data-table>
+```
+
+---
+
+### 5.3. QUY CHUẨN CHI TIẾT: SHARED BUTTON COMPONENT (`app-button`)
+
+`ButtonComponent` (`<app-button>`) tại `src/app/shared/components/button/` là **thành phần nút bấm duy nhất được phê duyệt** cho toàn bộ hệ thống Đông Lý Admin.
+
+#### 5.3.1. 8 Điều luật Bắt buộc đối với Nút bấm:
+1. **Tiêu chuẩn bắt buộc toàn diện**: Mọi button trong màn hình quản trị, modal, form, toolbar, table action, và widget **phải** sử dụng `<app-button>`.
+2. **Nghiêm cấm button tự chế**: Tuyệt đối không tự tạo button component riêng, không viết CSS button riêng (`.btn`, `.btn-primary`), và không dùng trực tiếp `<p-button>`, `button[pButton]` hoặc thẻ `<button>` thuần trong feature templates nếu không có ngoại lệ kỹ thuật được phê duyệt.
+3. **Quản trị API tập trung (Không thêm ad-hoc input)**: Chỉ được mở rộng API của `ButtonComponent` (`button.types.ts`) khi có nhu cầu dùng chung thực sự từ 2 feature trở lên. Nghiêm cấm thêm input/prop chỉ phục vụ riêng 1 màn hình đơn lẻ.
+4. **Phân tách ngữ nghĩa (Button vs Semantic Controls)**:
+   - **Button (`<app-button>`)**: Dùng cho hành động (action), kích hoạt mutation, gọi API, mở dialog, submit form.
+   - **Link điều hướng (`<a routerLink="...">`)**: Bắt buộc dùng thẻ `<a>` kèm `routerLink` cho việc chuyển trang/URL. Không dùng Button để thay thế link.
+   - **Semantic Controls khác**: Không dùng Button để giả lập tabs, checkboxes, toggle switches hoặc dropdown menus.
+5. **Đầy đủ thuộc tính kỹ thuật, A11y và i18n**:
+   - Khai báo đúng `[type]="'button' | 'submit' | 'reset'"` (mặc định `'button'`, submit form bắt buộc `'submit'`).
+   - Có accessible name rõ ràng (`label` hoặc `ariaLabel` bắt buộc cho icon-only button).
+   - Tự động hiển thị trạng thái `loading` (spinner và vô hiệu hóa click chống double-submit) và `disabled`.
+   - Hỗ trợ translation key tự động qua `TranslationService` (`label="common.actions.save"`).
+6. **Phân tầng kiến trúc rõ ràng (Zero Business Logic in Button)**: Button chỉ hiển thị giao diện và phát sự kiện `(clicked)`. Logic nghiệp vụ, gọi API, và phân quyền (`*appHasPermission`) nằm ở component controller, service hoặc directive cha.
+7. **Kiểm tra tuân thủ khi phát triển & review**: Bắt buộc rà soát 100% templates khi thêm hoặc sửa feature; loại bỏ mọi thẻ button vi phạm quy chuẩn.
+8. **Quy trình Quản lý Ngoại lệ Kỹ thuật**:
+   - Ngoại lệ chỉ được cấp khi có trở ngại kỹ thuật bất khả kháng (ví dụ template lồng của 3rd-party component như `p-fileUpload`).
+   - Bắt buộc chú thích mã nguồn: `<!-- EXEMPTION [BUTTON]: <lý do kỹ thuật> -->`.
+   - Giới hạn phạm vi hẹp nhất và áp dụng đúng Design Tokens (`--color-surface`, `--color-border`, `--radius-md`).
+
+#### 5.3.2. Bảng Ma trận Thuộc tính & Variants của `ButtonComponent`
+| Input / Output | Kiểu dữ liệu | Mặc định | Ý nghĩa & Mô tả |
+| :--- | :--- | :--- | :--- |
+| `[label]` | `string` | `undefined` | Nhãn hiển thị hoặc translation key i18n (`'common.actions.save'`) |
+| `[variant]` | `ButtonVariant` | `'primary'` | Biến thể màu: `'primary'` (Đỏ Đông Lý), `'secondary'`, `'danger'`, `'success'`, `'warn'`, `'info'`, `'text'`, `'outlined'` |
+| `[size]` | `ButtonSize` | `'medium'` | Kích thước: `'small'`, `'medium'`, `'large'` |
+| `[type]` | `ButtonType` | `'button'` | Kiểu HTML: `'button'`, `'submit'`, `'reset'` |
+| `[icon]` | `string` | `undefined` | Class PrimeIcons (VD: `'pi pi-plus'`, `'pi pi-trash'`) |
+| `[iconPos]` | `'left' \| 'right'` | `'left'` | Vị trí icon so với nhãn text |
+| `[loading]` | `boolean` | `false` | Trạng thái đang tải (hiện spinner, tự động chặn click) |
+| `[disabled]` | `boolean` | `false` | Trạng thái vô hiệu hóa |
+| `[fullWidth]` | `boolean` | `false` | Chiếm 100% chiều rộng khung chứa |
+| `[rounded]` | `boolean` | `false` | Bo tròn hoàn toàn (cho icon-only button) |
+| `[ariaLabel]` | `string` | `undefined` | Accessible name cho Screen Reader (Bắt buộc khi không có `label`) |
+| `[tooltip]` | `string` | `undefined` | Chú thích nổi khi di chuột |
+| `[tooltipPosition]` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'top'` | Vị trí hiển thị tooltip |
+| `(clicked)` | `output<MouseEvent>` | — | Sự kiện click (an toàn, không phát ra khi loading/disabled) |
+
+#### 5.3.3. Mẫu Triển khai Chuẩn (Do & Don't)
+```html
+<!-- ĐÚNG: Nút hành động chính có i18n, icon và loading -->
+<app-button
+  label="common.actions.save"
+  icon="pi pi-check"
+  type="submit"
+  [loading]="isSubmitting()"
+  (clicked)="onSubmit()"
+/>
+
+<!-- ĐÚNG: Nút icon-only trong bảng có accessible name và variant text -->
+<app-button
+  icon="pi pi-trash"
+  variant="text"
+  [rounded]="true"
+  ariaLabel="Xóa bản ghi"
+  tooltip="Xóa"
+  (clicked)="onDelete(item)"
+/>
+
+<!-- ĐÚNG: Thẻ Link điều hướng URL thay vì dùng Button -->
+<a routerLink="/users" class="nav-link">
+  Quay lại danh sách
+</a>
+
+<!-- SAI: Dùng trực tiếp p-button trong feature -->
+<p-button label="Lưu" (onClick)="save()" />
+
+<!-- SAI: Nút icon-only không có accessible name -->
+<app-button icon="pi pi-pencil" (clicked)="edit()" />
+
+<!-- SAI: Dùng button để chuyển trang URL -->
+<app-button label="Đến trang chủ" (clicked)="router.navigate(['/home'])" />
 ```
 
 ---
@@ -261,6 +338,7 @@ Chuẩn hóa vùng nhập liệu bằng wrapper `app-form-field`:
 ```text
 src/app/shared/
 ├── components/                 # Các component UI primitives dùng chung
+│   ├── button/                 # Nút bấm thao tác chuẩn hóa (ButtonComponent)
 │   ├── confirm-modal/          # Modal xác nhận thao tác nguy hiểm (ConfirmModalComponent)
 │   ├── empty-state/            # Trạng thái danh sách rỗng (EmptyStateComponent)
 │   ├── loading-spinner/        # Trạng thái loading kèm backdrop (LoadingSpinnerComponent)
@@ -294,18 +372,22 @@ Mọi lập trình viên và AI Agent khi triển khai hoặc chỉnh sửa màn
 
 1. **Khảo sát Shared UI trước khi code**:
    - Kiểm tra `src/app/shared/components/` xem đã có thành phần tương ứng chưa.
-   - Nếu có (ví dụ: `PageHeader`, `EmptyState`, `ConfirmModal`, `StatusBadge`), **bắt buộc tái sử dụng**.
-2. **Không tự dựng lại (No Reinventing the Wheel)**:
+   - Nếu có (ví dụ: `ButtonComponent` (`app-button`), `PageHeader`, `EmptyState`, `ConfirmModal`, `StatusBadge`, `SelectComponent`), **bắt buộc tái sử dụng**.
+2. **Tuân thủ Chuẩn mực Shared Button**:
+   - 100% nút bấm trong feature phải dùng `<app-button>`.
+   - Khai báo đúng `[type]`, `label`/`ariaLabel`, `[loading]`/`[disabled]`.
+   - Không tự viết CSS button riêng, không dùng trực tiếp `<p-button>` hay `<button>` thuần trừ khi có chú thích ngoại lệ kỹ thuật.
+3. **Không tự dựng lại (No Reinventing the Wheel)**:
    - Không tự viết lại HTML/CSS của ô tìm kiếm, không tự viết lại logic debounce.
    - Không tự sao chép đoạn mã kiểm tra `@if (control.hasError('...'))` lặp đi lặp lại.
    - Không tự tạo modal xác nhận riêng cho từng màn hình bằng alert trình duyệt hay custom div.
-3. **Đánh giá mở rộng (Extend before Fork)**:
-   - Nếu component dùng chung thiếu một thuộc tính (ví dụ: `PageHeader` cần thêm nút phụ hoặc slot), hãy mở rộng component dùng chung qua `@Input()` hoặc `<ng-content>` thay vì sao chép ra component mới.
-4. **Không làm rò rỉ nghiệp vụ vào Shared**:
+4. **Đánh giá mở rộng (Extend before Fork)**:
+   - Nếu component dùng chung thiếu một thuộc tính, hãy đánh giá xem có thực sự là nhu cầu chung của hệ thống không trước khi mở rộng API; không thêm input phục vụ riêng 1 màn hình.
+5. **Không làm rò rỉ nghiệp vụ vào Shared**:
    - Tuyệt đối không import models hoặc gọi API của Users, Trips, Bookings, Tickets vào `src/app/shared/`.
-5. **Tuân thủ Design Tokens & Dark Mode**:
+6. **Tuân thủ Design Tokens & Dark Mode**:
    - Sử dụng CSS variables (`--color-surface`, `--color-border`, `--color-text-primary`). Không hardcode mã hex `#ffffff`, `#000000`.
-6. **Kiểm thử đầy đủ**:
+7. **Kiểm thử đầy đủ**:
    - Viết Unit Test cho component mới với Vitest. Đảm bảo toàn bộ test pass (`npm test`).
 
 ---

@@ -11,6 +11,7 @@ import { ThemeSwitcherComponent } from '../../../../shared/components/theme-swit
 import { LanguageSwitcherComponent } from '../../../../shared/components/language-switcher/language-switcher.component';
 
 import { TranslationService } from '../../../../core/i18n/translation.service';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 
 @Component({
   selector: 'app-login-page',
@@ -20,6 +21,7 @@ import { TranslationService } from '../../../../core/i18n/translation.service';
     TranslatePipe,
     ThemeSwitcherComponent,
     LanguageSwitcherComponent,
+    ButtonComponent,
   ],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss',

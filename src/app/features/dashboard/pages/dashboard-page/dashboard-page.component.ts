@@ -14,7 +14,7 @@ import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { KpiCardComponent } from '../../components/kpi-card/kpi-card.component';
 
 import { Card } from 'primeng/card';
-import { Button } from 'primeng/button';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { SelectButton } from 'primeng/selectbutton';
 import { Tag } from 'primeng/tag';
 import { ProgressBar } from 'primeng/progressbar';
@@ -56,7 +56,7 @@ export interface RecentActivity {
     TranslatePipe,
     KpiCardComponent,
     Card,
-    Button,
+    ButtonComponent,
     SelectButton,
     DataTableComponent,
     TableCellDirective,

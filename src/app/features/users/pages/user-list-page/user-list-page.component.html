@@ -6,12 +6,12 @@
     [breadcrumbs]="breadcrumbs()"
   >
     <div actions class="header-action-buttons">
-      <p-button
+      <app-button
         *appHasPermission="'USER_CREATE'"
         [label]="'users.actions.create' | translate"
         icon="pi pi-plus"
-        severity="danger"
-        (onClick)="openCreateDialog()"
+        variant="primary"
+        (clicked)="openCreateDialog()"
       />
     </div>
   </app-page-header>
@@ -110,54 +110,54 @@
       <ng-template appTableCell="actions" let-u>
         <div class="row-actions">
           <!-- SỬA THÔNG TIN -->
-          <p-button
+          <app-button
             *appHasPermission="'USER_UPDATE'"
             icon="pi pi-pencil"
-            [text]="true"
+            variant="text"
             size="small"
             styleClass="action-btn edit-btn"
-            [pTooltip]="'users.actions.edit' | translate"
+            [tooltip]="'users.actions.edit' | translate"
             tooltipPosition="top"
-            (onClick)="openEditDialog(u)"
+            (clicked)="openEditDialog(u)"
             [disabled]="isActionDisabled(u)"
           />
 
           <!-- PHÂN VAI TRÒ -->
-          <p-button
+          <app-button
             *appHasPermission="['ROLE_ASSIGN', 'ADMIN']"
             icon="pi pi-shield"
-            [text]="true"
+            variant="text"
             size="small"
             styleClass="action-btn role-btn"
-            [pTooltip]="'users.actions.assignRole' | translate"
+            [tooltip]="'users.actions.assignRole' | translate"
             tooltipPosition="top"
-            (onClick)="openRoleDialog(u)"
+            (clicked)="openRoleDialog(u)"
             [disabled]="isCurrentUser(u)"
           />
 
           <!-- ĐỔI TRẠNG THÁI: KHÓA / KÍCH HOẠT -->
           @if (u.status === 'ACTIVE') {
-            <p-button
+            <app-button
               *appHasPermission="'USER_UPDATE'"
               icon="pi pi-lock"
-              [text]="true"
+              variant="text"
               size="small"
               styleClass="action-btn lock-btn"
-              [pTooltip]="'users.actions.lock' | translate"
+              [tooltip]="'users.actions.lock' | translate"
               tooltipPosition="top"
-              (onClick)="confirmToggleStatus(u)"
+              (clicked)="confirmToggleStatus(u)"
               [disabled]="isCurrentUser(u)"
             />
           } @else {
-            <p-button
+            <app-button
               *appHasPermission="'USER_UPDATE'"
               icon="pi pi-lock-open"
-              [text]="true"
+              variant="text"
               size="small"
               styleClass="action-btn unlock-btn"
-              [pTooltip]="'users.actions.unlock' | translate"
+              [tooltip]="'users.actions.unlock' | translate"
               tooltipPosition="top"
-              (onClick)="confirmToggleStatus(u)"
+              (clicked)="confirmToggleStatus(u)"
             />
           }
         </div>

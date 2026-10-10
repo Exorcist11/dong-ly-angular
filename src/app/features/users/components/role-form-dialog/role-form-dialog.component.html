@@ -80,20 +80,19 @@
 
     <!-- Actions -->
     <div class="dialog-actions">
-      <p-button
+      <app-button
         [label]="'common.actions.cancel' | translate"
         icon="pi pi-times"
-        severity="secondary"
-        [outlined]="true"
-        (onClick)="onClose()"
+        variant="secondary"
+        (clicked)="onClose()"
         [disabled]="submitting"
       />
 
-      <p-button
+      <app-button
         type="submit"
         [label]="(isEditMode ? 'roles.dialog.editSubmit' : 'roles.dialog.createSubmit') | translate"
         icon="pi pi-check"
-        severity="primary"
+        variant="primary"
         [loading]="submitting"
         [disabled]="submitting"
       />

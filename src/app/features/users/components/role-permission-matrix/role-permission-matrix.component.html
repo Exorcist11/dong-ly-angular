@@ -55,34 +55,32 @@
       </div>
 
       <div class="quick-actions">
-        <p-button
+        <app-button
           [label]="'roles.matrix.selectAll' | translate"
           icon="pi pi-check-square"
-          severity="secondary"
-          [outlined]="true"
+          variant="secondary"
           size="small"
-          (onClick)="selectAll()"
+          (clicked)="selectAll()"
           [disabled]="loading() || saving()"
         />
 
-        <p-button
+        <app-button
           [label]="'roles.matrix.deselectAll' | translate"
           icon="pi pi-stop"
-          severity="secondary"
-          [outlined]="true"
+          variant="secondary"
           size="small"
-          (onClick)="deselectAll()"
+          (clicked)="deselectAll()"
           [disabled]="loading() || saving()"
         />
 
         @if (hasChanges()) {
-          <p-button
+          <app-button
             [label]="'roles.matrix.reset' | translate"
             icon="pi pi-refresh"
-            severity="warn"
+            variant="warn"
             [text]="true"
             size="small"
-            (onClick)="resetChanges()"
+            (clicked)="resetChanges()"
             [disabled]="loading() || saving()"
           />
         }
@@ -205,20 +203,19 @@
       </div>
 
       <div class="footer-actions">
-        <p-button
+        <app-button
           [label]="'common.actions.cancel' | translate"
           icon="pi pi-times"
-          severity="secondary"
-          [outlined]="true"
-          (onClick)="onClose()"
+          variant="secondary"
+          (clicked)="onClose()"
           [disabled]="saving()"
         />
 
-        <p-button
+        <app-button
           [label]="'roles.matrix.saveSubmit' | translate"
           icon="pi pi-check"
-          severity="primary"
-          (onClick)="savePermissions()"
+          variant="primary"
+          (clicked)="savePermissions()"
           [loading]="saving()"
           [disabled]="loading() || saving() || !hasChanges()"
         />

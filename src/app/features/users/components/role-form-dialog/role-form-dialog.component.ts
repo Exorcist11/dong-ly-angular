@@ -16,7 +16,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Dialog } from 'primeng/dialog';
-import { Button } from 'primeng/button';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { InputText } from 'primeng/inputtext';
 import { Textarea } from 'primeng/textarea';
 import { Tag } from 'primeng/tag';
@@ -37,7 +37,7 @@ import {
     ReactiveFormsModule,
     TranslatePipe,
     Dialog,
-    Button,
+    ButtonComponent,
     InputText,
     Textarea,
     FormFieldComponent,

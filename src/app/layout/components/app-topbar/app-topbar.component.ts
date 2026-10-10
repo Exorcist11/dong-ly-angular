@@ -11,7 +11,7 @@ import { AppBreadcrumbComponent } from '../app-breadcrumb/app-breadcrumb.compone
 import { TranslationService } from '../../../core/i18n/translation.service';
 import { SupportedLanguage } from '../../../core/i18n/i18n.model';
 
-import { Button } from 'primeng/button';
+import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
@@ -44,7 +44,7 @@ interface RawSearchItem {
   imports: [
     FormsModule,
     AppBreadcrumbComponent,
-    Button,
+    ButtonComponent,
     IconField,
     InputIcon,
     InputText,

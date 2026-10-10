@@ -16,7 +16,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Dialog } from 'primeng/dialog';
-import { Button } from 'primeng/button';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { InputText } from 'primeng/inputtext';
 import { Password } from 'primeng/password';
 import { MultiSelect } from 'primeng/multiselect';
@@ -32,7 +32,7 @@ import { CreateUserRequest, Role, UpdateUserRequest, User } from '../../models/u
     ReactiveFormsModule,
     TranslatePipe,
     Dialog,
-    Button,
+    ButtonComponent,
     InputText,
     Password,
     MultiSelect,

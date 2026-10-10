@@ -8,8 +8,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Button } from 'primeng/button';
-import { Tooltip } from 'primeng/tooltip';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { TranslationService } from '../../../../core/i18n/translation.service';
@@ -50,8 +49,7 @@ import { UserRoleDialogComponent } from '../../components/user-role-dialog/user-
     TranslatePipe,
     DataTableComponent,
     TableCellDirective,
-    Button,
-    Tooltip,
+    ButtonComponent,
     PageHeaderComponent,
     ConfirmModalComponent,
     StatusBadgeComponent,

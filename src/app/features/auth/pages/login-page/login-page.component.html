@@ -52,6 +52,7 @@
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
           </svg>
           <span class="alert-message">{{ error }}</span>
+          <!-- EXEMPTION [BUTTON]: Nút đóng nhanh thông báo lỗi (inline alert dismiss), kích thước siêu nhỏ lồng trong alert banner -->
           <button
             type="button"
             class="alert-close-btn"
@@ -138,7 +139,7 @@
               [attr.aria-invalid]="passwordControl.invalid && (passwordControl.dirty || passwordControl.touched)"
               aria-describedby="password-error"
             />
-            <!-- Show/hide eye button: inside input, vertically centered, 16px from right edge, 44x44px tap area -->
+            <!-- EXEMPTION [BUTTON]: Nút toggle ẩn/hiện mật khẩu (input suffix icon) nằm trong ô input, diện tích chạm 44x44px tuyệt đối theo WCAG 2.2 AA -->
             <button
               type="button"
               class="btn-toggle-password"
@@ -196,23 +197,17 @@
 
         <!-- SUBMIT BUTTON (Full width, 48px, radius 12px, font-weight 600) -->
         <div class="form-actions">
-          <button
+          <app-button
             type="submit"
-            class="btn-submit"
-            [disabled]="isLoading() || loginForm.invalid"
-            tabindex="5"
-          >
-            @if (isLoading()) {
-              <span class="btn-spinner" aria-hidden="true"></span>
-              <span>{{ 'auth.authenticating' | translate }}</span>
-            } @else {
-              <span>{{ 'auth.loginSubmit' | translate }}</span>
-              <svg class="btn-icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M5 12h14"></path>
-                <path d="m12 5 7 7-7 7"></path>
-              </svg>
-            }
-          </button>
+            variant="primary"
+            size="large"
+            [fullWidth]="true"
+            [loading]="isLoading()"
+            [disabled]="loginForm.invalid"
+            [label]="isLoading() ? ('auth.authenticating' | translate) : ('auth.loginSubmit' | translate)"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+          />
         </div>
       </form>
 

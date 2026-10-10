@@ -205,15 +205,19 @@ Theme Preset thống nhất: `DongLyThemePreset` (`src/app/core/theme/theme.conf
 Chi tiết tài liệu hướng dẫn xem tại: [`docs/architecture/shared-ui-guidelines.md`](file:///E:/du-an-ma/Angular-FE/docs/architecture/shared-ui-guidelines.md).
 
 ### 7.1. Nguyên tắc sử dụng Thư viện UI (PrimeNG Trực tiếp vs Shared Wrapper)
-1. **Ưu tiên sử dụng trực tiếp**: Nếu component PrimeNG (`p-button`, `input[pInputText]`, `p-password`, `p-checkbox`, `p-message`, `p-toast`, `p-datepicker`, `p-select`) đã đáp ứng đầy đủ yêu cầu UX/UI, accessibility và data binding thì **bắt buộc sử dụng trực tiếp** trong template.
-2. **Nghiêm cấm tạo wrapper vô giá trị**: Tuyệt đối không tạo component chỉ để đổi tên thẻ PrimeNG (ví dụ tạo `app-button` chỉ để bọc `<p-button>` mà không thêm bất kỳ logic giá trị gia tăng nào).
-3. **Khi nào tạo Shared Wrapper / UI Component**: Chỉ tạo khi mang lại giá trị kiến trúc rõ rệt:
+1. **Shared Button Component (`app-button`) là tiêu chuẩn bắt buộc**: Mọi nút bấm tương tác trong toàn bộ giao diện của dự án **bắt buộc** sử dụng `ButtonComponent` (`<app-button>`). Tuyệt đối không dùng trực tiếp `<p-button>`, `button[pButton]` hoặc tự tạo component button riêng / CSS button riêng trong các feature nếu không có ngoại lệ kỹ thuật được giải trình và phê duyệt.
+2. **Sử dụng trực tiếp PrimeNG cho Form Controls cơ bản**: Khi component PrimeNG (`input[pInputText]`, `p-password`, `p-checkbox`, `p-message`, `p-toast`, `p-datepicker`) đã đáp ứng đầy đủ yêu cầu UX/UI, accessibility và data binding thì sử dụng trực tiếp trong template.
+3. **Nghiêm cấm tạo wrapper vô giá trị**: Tuyệt đối không tạo wrapper chỉ để đổi tên thẻ PrimeNG mà không bổ sung logic giá trị gia tăng (trừ các Shared Primitives đã được chuẩn hóa và phê duyệt của dự án).
+4. **Khi nào tạo Shared Wrapper / UI Component**: Chỉ tạo khi mang lại giá trị kiến trúc rõ rệt:
+   * **Chuẩn hóa Nút bấm toàn hệ thống**: `ButtonComponent` (`<app-button>`) chuẩn hóa variants thương hiệu Đông Lý, kích thước, loading chống double-submit, i18n tự động, và WCAG 2.2 AA.
    * **Đóng gói Form Validation lặp lại**: `FormFieldComponent` (tự động render nhãn, required mark, kiểm tra touched/invalid và hiển thị lỗi tiếng Việt chuẩn hóa).
    * **Thanh tìm kiếm & lọc tối ưu**: `SearchInputComponent` (kèm icon kính lúp, nút xóa và cơ chế debounce để giảm tải API).
+   * **Đóng gói Dropdown chọn lựa chọn**: `SelectComponent` (tương thích Reactive Forms qua `ControlValueAccessor`, hỗ trợ tìm kiếm, xóa nhanh).
+   * **Bảng dữ liệu chuẩn hóa**: `DataTableComponent` (tích hợp phân trang `PageResponse<T>`, thanh tìm kiếm, bộ lọc và 4 trạng thái chuẩn).
    * **Đóng gói định dạng chuyên biệt**: Format tiền tệ VND, biển số xe, sơ đồ ghế xe khách 2 tầng Đông Lý (kết hợp `ControlValueAccessor`).
    * **Chuẩn hóa Dialog nguy hiểm**: `ConfirmModalComponent` (xác nhận xóa, tạm khóa, hủy vé với trạng thái loading an toàn).
    * **Chuẩn hóa Huy hiệu trạng thái**: `StatusBadgeComponent` (tập trung hóa ánh xạ màu sắc và nhãn hiển thị cho mọi enum trạng thái).
-4. **Không trộn nhiều UI library**: Tuyệt đối không cài thêm Angular Material, Bootstrap, Ant Design hay Tailwind UI vào dự án.
+5. **Không trộn nhiều UI library**: Tuyệt đối không cài thêm Angular Material, Bootstrap, Ant Design hay Tailwind UI vào dự án.
 
 ### 7.2. Quy tắc Thiết kế Shared Component
 1. **Độc lập và Trách nhiệm rõ ràng (SRP)**: Shared UI chỉ chịu trách nhiệm hiển thị và tương tác UI. Tuyệt đối **không** import models của feature, không gọi API service nghiệp vụ.
@@ -231,7 +235,7 @@ Chi tiết tài liệu hướng dẫn xem tại: [`docs/architecture/shared-ui-g
    * **Empty State**: Tự động hiển thị `EmptyStateComponent` kèm thông điệp phù hợp khi danh sách rỗng.
    * **Error State**: Vùng thông báo lỗi kèm nút "Thử lại".
    * **Data State**: Hiển thị bảng kèm phân trang tiếng Việt (*"Hiển thị {first} - {last} trong tổng số {totalRecords} bản ghi"*).
-5. **Custom Cell & Row Actions**: Chiếu `ng-template` cho các cột tùy biến (avatar, status badge, action buttons) thay vì nhúng logic nghiệp vụ vào table.
+5. **Custom Cell & Row Actions**: Chiếu `ng-template` cho các cột tùy biến (avatar, status badge, action buttons) thay vì nhúng logic nghiệp vụ vào table. Mọi nút thao tác trong hàng bảng phải sử dụng `<app-button>`.
 
 ### 7.4. Quy chuẩn Biểu mẫu & Form Controls (Input & Form)
 1. **Reactive Forms thống nhất**: Sử dụng `FormBuilder.nonNullable` hoặc Typed Forms.
@@ -242,16 +246,31 @@ Chi tiết tài liệu hướng dẫn xem tại: [`docs/architecture/shared-ui-g
 ### 7.5. Quy chuẩn Modal & Dialog
 1. **Modal xác nhận hành vi nguy hiểm**: Bắt buộc sử dụng `ConfirmModalComponent` cho các thao tác xóa, hủy, tạm khóa tài khoản hoặc thay đổi trạng thái quan trọng.
 2. **Hộp thoại Form (`p-dialog`)**: Chuẩn hóa cấu hình `[modal]="true"`, `[draggable]="false"`, `[resizable]="false"`, `[dismissableMask]="true"`, hỗ trợ đóng bằng phím ESC.
-3. **Footer Action chuẩn**: Nút Hủy (Secondary, outlined) bên trái, Nút Xác nhận/Lưu (Primary hoặc Danger) bên phải kèm trạng thái `[loading]`.
+3. **Footer Action chuẩn**: Nút Hủy (Secondary, outlined) bên trái, Nút Xác nhận/Lưu (Primary hoặc Danger) bên phải kèm trạng thái `[loading]`. Cả hai nút **bắt buộc sử dụng `<app-button>`**.
 
 ### 7.6. Quy tắc Tái sử dụng & Bắt buộc cho Feature Mới
 Mọi AI Coding Agent và Developer khi phát triển hoặc sửa đổi tính năng **bắt buộc tuân thủ quy trình 6 bước**:
-1. **Khảo sát trước khi viết code**: Tìm kiếm trong `src/app/shared/components/` các thành phần đã có (`PageHeader`, `EmptyState`, `ConfirmModal`, `StatusBadge`, `SearchInput`).
-2. **Bắt buộc tái sử dụng**: Nếu đã có component đáp ứng yêu cầu, bắt buộc tái sử dụng.
+1. **Khảo sát trước khi viết code**: Tìm kiếm trong `src/app/shared/components/` các thành phần đã có (`ButtonComponent`, `PageHeader`, `EmptyState`, `ConfirmModal`, `StatusBadge`, `SearchInput`, `SelectComponent`).
+2. **Bắt buộc tái sử dụng**: Nếu đã có component đáp ứng yêu cầu, bắt buộc tái sử dụng (đặc biệt là `<app-button>` cho mọi nút bấm).
 3. **Mở rộng trước khi tạo mới (Extend before Fork)**: Nếu component hiện có đáp ứng một phần, ưu tiên mở rộng qua `@Input()`, configuration hoặc `<ng-content>` thay vì sao chép code ra component mới.
 4. **Không tạo component dùng chung quá phức tạp (Universal Component)**: Tránh dồn mọi biến thể vào một component duy nhất bằng hàng chục cờ logic (flags).
 5. **Không sao chép HTML/CSS/Validation**: Nghiêm cấm copy-paste đoạn mã tìm kiếm, phân trang hoặc kiểm tra form giữa các feature.
 6. **Kiểm thử & Đảm bảo không hồi quy**: Viết unit test cho component mới hoặc mở rộng; chạy kiểm thử toàn bộ dự án (`npm test`, `npm run typecheck`) trước khi hoàn thành task.
+
+### 7.7. Tiêu chuẩn Bắt buộc cho Shared Button Component (`app-button`)
+Mọi nút bấm trong toàn bộ hệ thống Đông Lý Admin phải tuân thủ nghiêm ngặt **8 nguyên tắc bắt buộc**:
+
+1. **Chuẩn hóa bắt buộc toàn diện**: Mọi button giao diện mới (màn hình nghiệp vụ, modal dialog, form actions, toolbar, header, bảng dữ liệu, widget) **bắt buộc sử dụng Shared Button Component đã được phê duyệt**: `ButtonComponent` (`<app-button>`, đường dẫn `src/app/shared/components/button/button.component.ts`).
+2. **Nghiêm cấm button tự chế**: Tuyệt đối không tự tạo button component riêng, không viết class CSS button riêng (ví dụ `.custom-btn`, `.btn-primary`, `.save-button`), và không sử dụng trực tiếp button của thư viện UI (`<p-button>`, `button[pButton]`, hoặc native `<button>` cho các hành động giao diện) trong feature nếu không có ngoại lệ kỹ thuật được giải trình.
+3. **Quản trị API Shared Button (Zero-Ad-hoc-Props)**: Chỉ được mở rộng API của `ButtonComponent` khi có yêu cầu dùng chung thực sự trong toàn hệ thống (phục vụ từ 2 tính năng trở lên). Tuyệt đối không bổ sung thuộc tính/input chỉ để phục vụ một màn hình hoặc một feature đơn lẻ.
+4. **Phân tách ranh giới ngữ nghĩa (Semantic Controls)**: Không dùng Button để thay thế link điều hướng (`<a routerLink="...">`). Button dùng để thực thi hành động (action), gửi biểu mẫu (submit), gọi API, hoặc bật mở dialog; Thẻ Link dùng để điều hướng trang/URL. Không dùng button để thay thế các semantic controls khác như tabs, checkboxes, toggle switches hoặc menu items.
+5. **Chuẩn hóa Thuộc tính & Trợ năng (A11y & Forms)**: Mọi button phải có mục đích rõ ràng, khai báo đúng thuộc tính `[type]="'button' | 'submit' | 'reset'"` (mặc định `'button'`, submit form bắt buộc `'submit'`), có accessible name (`label` hoặc `ariaLabel` bắt buộc cho icon-only button), hiển thị trạng thái `loading` (tự động ngăn chặn double-click submit) và `disabled`, hỗ trợ dịch tự động i18n qua `TranslationService` theo chuẩn dự án (`label="common.actions.save"`).
+6. **Phân tầng trách nhiệm kiến trúc**: `ButtonComponent` chỉ chịu trách nhiệm trình bày trạng thái giao diện và phát sự kiện `(clicked)`. Logic nghiệp vụ, gọi API backend, xử lý lỗi và kiểm tra quyền hạn (directive `*appHasPermission`, logic RBAC) phải nằm ở đúng tầng kiến trúc (Component controller, Service, Directive), không đưa vào trong button.
+7. **Quy trình kiểm tra tuân thủ khi tạo hoặc sửa feature**: Khi tạo mới hoặc chỉnh sửa bất kỳ feature nào, lập trình viên và AI Agent bắt buộc rà soát việc sử dụng Shared Button trong template, loại bỏ triệt để các thẻ `<button>` hoặc `<p-button>` không tuân thủ, và xử lý các trường hợp ngoại lệ theo quy trình.
+8. **Quy trình Quản lý Ngoại lệ Kỹ thuật**: Mọi ngoại lệ kỹ thuật (khi buộc phải dùng nút ngoài `app-button`) phải thỏa mãn đồng thời 3 điều kiện:
+   * **Lý do kỹ thuật rõ ràng**: Ví dụ vị trí tích hợp đặc thù của thư viện bên thứ ba đòi hỏi template con đặc biệt (chẳng hạn template lồng bên trong `p-fileUpload`), hoặc thao tác canvas/SVG đặc thù không hỗ trợ Angular custom element host.
+   * **Phạm vi cô lập**: Chỉ áp dụng đúng điểm tương tác đó, không lan rộng sang các phần khác của feature.
+   * **Duy trì nhất quán**: Phải gắn chú thích mã nguồn `<!-- EXEMPTION [BUTTON]: <lý do kỹ thuật> -->`, đồng thời áp dụng chính xác Design Tokens (màu sắc, border-radius, focus-visible) để đảm bảo đồng nhất về mặt thị giác và khả năng tiếp cận WCAG 2.2 AA.
 
 ---
 
@@ -499,16 +518,17 @@ Mục tiêu là giảm duplication mà không tạo ra sự phụ thuộc không
 
 ### 17.7. Quy trình kiểm tra trước khi hoàn thành
 Trước khi báo cáo hoàn thành một task, phải tự review các câu hỏi:
-1. Có component, service hoặc utility tương tự đã tồn tại không?
-2. Có logic nào bị sao chép không cần thiết không?
-3. Component có đang làm quá nhiều việc không?
-4. Business logic có bị đặt sai layer không?
-5. Có thể đặt tên rõ hơn hoặc giảm độ phức tạp không?
-6. Có abstraction nào chưa cần thiết không?
-7. Thay đổi shared component có ảnh hưởng đến các feature khác không?
-8. Có test phù hợp cho logic mới và các trường hợp lỗi quan trọng không?
-9. Có file hoặc dependency nào không thực sự cần thiết không?
-10. Code có phù hợp với convention và kiến trúc hiện tại không?
+1. Có component, service hoặc utility tương tự đã tồn tại không? (Đặc biệt: 100% nút bấm trong feature đã sử dụng `<app-button>` chưa?)
+2. Có nút bấm nào tự chế CSS riêng, dùng trực tiếp `<p-button>` hay dùng sai ngữ nghĩa thay cho link điều hướng không?
+3. Có logic nào bị sao chép không cần thiết không?
+4. Component có đang làm quá nhiều việc không?
+5. Business logic có bị đặt sai layer không?
+6. Có thể đặt tên rõ hơn hoặc giảm độ phức tạp không?
+7. Có abstraction nào chưa cần thiết không?
+8. Thay đổi shared component có ảnh hưởng đến các feature khác không?
+9. Có test phù hợp cho logic mới và các trường hợp lỗi quan trọng không?
+10. Có file hoặc dependency nào không thực sự cần thiết không?
+11. Code có phù hợp với convention và kiến trúc hiện tại không?
 
 Nếu phát hiện vấn đề trong phạm vi task, hãy sửa trước khi hoàn thành. Nếu cần refactor ngoài phạm vi, hãy báo cáo và đề xuất riêng thay vì tự ý mở rộng phạm vi.
 
@@ -516,7 +536,7 @@ Nếu phát hiện vấn đề trong phạm vi task, hãy sửa trước khi ho�
 Một task chỉ được xem là hoàn thành khi:
 * Đáp ứng yêu cầu nghiệp vụ và acceptance criteria.
 * Không tạo duplication không cần thiết.
-* Tận dụng đúng các shared components và services hiện có.
+* Tận dụng đúng các shared components và services hiện có (100% buttons tuân thủ `<app-button>`).
 * Phân tách trách nhiệm hợp lý.
 * Tuân thủ TypeScript và Angular conventions.
 * Có xử lý loading, error và validation phù hợp.
@@ -571,11 +591,12 @@ Không đoán khi thiếu thông tin. Không tự ý thay đổi phạm vi. Khô
 ### 19.4. Quy trình triển khai Feature mới (Checklist dành cho Coding Agent)
 Khi triển khai bất kỳ màn hình hoặc tính năng mới nào, Coding Agent bắt buộc thực hiện theo các bước:
 1. Đọc `AGENTS.md` và các tài liệu liên quan trong `docs/`.
-2. Kiểm tra các component và pipes dùng chung (`TranslatePipe`, `LanguageSwitcherComponent`, `ThemeSwitcherComponent`, `ConfirmModalComponent`, v.v.).
+2. Kiểm tra các component và pipes dùng chung (`ButtonComponent` - `<app-button>` bắt buộc cho 100% nút bấm, `TranslatePipe`, `LanguageSwitcherComponent`, `ThemeSwitcherComponent`, `ConfirmModalComponent`, v.v.).
 3. Khai báo translation keys và định nghĩa nội dung cho cả 2 ngôn ngữ (`vi` và `en`).
 4. Viết template với semantic CSS variables, kiểm tra hiển thị chuẩn ở cả 3 chế độ `Light`, `Dark`, `System`.
-5. Kiểm tra responsive trên cả Mobile (<480px, 390px) và Desktop (1200px+).
-6. Kiểm tra Accessibility: nhãn form, `aria-label`, focus visible, contrast WCAG AA.
-7. Chạy đầy đủ: `npm run typecheck`, `npm test`, `npm run build` để đảm bảo 0 lỗi và 0 warnings.
-8. Đề xuất commit message bằng tiếng Việt chuẩn Conventional Commits.
+5. Rà soát tuân thủ Shared Button: 100% nút bấm sử dụng `<app-button>`, đúng `type`, có accessible name (`label`/`ariaLabel`), trạng thái `loading`/`disabled`, và không dùng button thay thế link điều hướng routerLink.
+6. Kiểm tra responsive trên cả Mobile (<480px, 390px) và Desktop (1200px+).
+7. Kiểm tra Accessibility: nhãn form, `aria-label`, focus visible, contrast WCAG AA.
+8. Chạy đầy đủ: `npm run typecheck`, `npm test`, `npm run build` để đảm bảo 0 lỗi và 0 warnings.
+9. Đề xuất commit message bằng tiếng Việt chuẩn Conventional Commits.
 

@@ -84,31 +84,44 @@ providePrimeNG({
 
 ---
 
-## 4. QUY TẮC SỬ DỤNG PRIMENG: TRỰC TIẾP VS WRAPPER
+## 4. QUY TẮC SỬ DỤNG PRIMENG: TRỰC TIẾP VS SHARED COMPONENT
 
-### 4.1. Khi nào sử dụng PrimeNG trực tiếp (Khuyến khích tối đa):
-- Hầu hết các thành phần UI tiêu chuẩn của PrimeNG đã hỗ trợ đầy đủ Accessibility, keyboard navigation, và data binding. Hãy dùng trực tiếp trong template:
-  - **Button**: `<p-button label="Lưu" [loading]="isLoading()" ...></p-button>`
-  - **InputText**: `<input pInputText formControlName="name" ... />`
-  - **Password**: `<p-password formControlName="password" [toggleMask]="true" ...></p-password>`
-  - **Checkbox**: `<p-checkbox formControlName="agree" [binary]="true"></p-checkbox>`
-  - **IconField**: `<p-iconfield><p-inputicon class="pi pi-search"></p-inputicon><input pInputText /></p-iconfield>`
-  - **Message**: `<p-message severity="error" text="..."></p-message>`
-  - **Toast**: `<p-toast position="top-right"></p-toast>`
-  - **Table**: `<p-table [value]="data" [paginator]="true" ...>`
+### 4.1. Khi nào sử dụng PrimeNG trực tiếp:
+Chỉ áp dụng cho các thành phần form controls cơ bản đã hỗ trợ đầy đủ Accessibility, keyboard navigation, và data binding:
+- **InputText**: `<input pInputText formControlName="name" ... />`
+- **Password**: `<p-password formControlName="password" [toggleMask]="true" ...></p-password>`
+- **Checkbox**: `<p-checkbox formControlName="agree" [binary]="true"></p-checkbox>`
+- **DatePicker**: `<p-datepicker formControlName="date" dateFormat="dd/mm/yy"></p-datepicker>`
+- **IconField**: `<p-iconfield><p-inputicon class="pi pi-search"></p-inputicon><input pInputText /></p-iconfield>`
+- **Message**: `<p-message severity="error" text="..."></p-message>`
+- **Toast**: `<p-toast position="top-right"></p-toast>`
 
-### 4.2. Khi nào tạo Shared Wrapper Component:
-Chỉ tạo wrapper khi giải quyết nhu cầu nghiệp vụ đặc thù hoặc đóng gói logic phức tạp (xem chi tiết tại [`shared-ui-guidelines.md`](./architecture/shared-ui-guidelines.md)):
-1. `ConfirmModalComponent`: Đóng gói luồng xác nhận hành động nguy hiểm (xóa vé, hủy chuyến xe, khóa tài khoản).
-2. `LoadingSpinnerComponent`: Trạng thái loading toàn màn hình hoặc vùng dữ liệu có kèm backdrop blur.
-3. `EmptyStateComponent`: Hiển thị trạng thái dữ liệu rỗng kèm icon và nút tạo mới.
-4. `PageHeaderComponent`: Tiêu đề trang chuẩn hóa kèm breadcrumbs và các nút thao tác chính.
-5. `StatusBadgeComponent`: Chuẩn hóa màu sắc và nhãn hiển thị cho mọi enum trạng thái hệ thống.
-6. `SearchInputComponent`: Ô tìm kiếm có debounce tự động và nút xóa nhanh, giảm tải gọi API.
-7. `FormFieldComponent`: Bọc label, required mark, hint và tự động bắt lỗi validation theo tiếng Việt.
-8. Form control phức tạp: Sơ đồ chọn ghế xe giường nằm / ghế ngồi xe khách Đông Lý (`SeatMapSelector`, kết hợp `ControlValueAccessor`).
+> **LƯU Ý ĐẶC BIỆT VỀ NÚT BẤM (BUTTON)**:
+> Tuyệt đối **KHÔNG** sử dụng trực tiếp `<p-button>`, `button[pButton]` hoặc viết thẻ `<button>` với CSS riêng trong các feature.
+> Mọi nút bấm trong toàn bộ hệ thống **BẮT BUỘC sử dụng `<app-button>`** (`ButtonComponent`).
 
-**Nghiêm cấm**: Tạo component chỉ để bọc `<p-button>` hay `<input pInputText>` nhằm mục đích đổi tên selector mà không cung cấp giá trị bổ sung.
+### 4.2. Danh mục Shared Components Bắt buộc & Đã được Phê duyệt:
+(Xem chi tiết tại [`shared-ui-guidelines.md`](./architecture/shared-ui-guidelines.md)):
+1. **`ButtonComponent` (`<app-button>`)**: **TIÊU CHUẨN BẮT BUỘC CHO MỌI NÚT BẤM**. Đóng gói biến thể thương hiệu Đông Lý (primary, secondary, danger, success, warn, info, text, outlined), kích thước (small, medium, large), loading chống double-submit, WCAG 2.2 AA (focus-visible viền vàng), và i18n tự động.
+2. `ConfirmModalComponent`: Đóng gói luồng xác nhận hành động nguy hiểm (xóa vé, hủy chuyến xe, khóa tài khoản).
+3. `LoadingSpinnerComponent`: Trạng thái loading toàn màn hình hoặc vùng dữ liệu có kèm backdrop blur.
+4. `EmptyStateComponent`: Hiển thị trạng thái dữ liệu rỗng kèm icon và nút tạo mới.
+5. `PageHeaderComponent`: Tiêu đề trang chuẩn hóa kèm breadcrumbs và các nút thao tác chính.
+6. `StatusBadgeComponent`: Chuẩn hóa màu sắc và nhãn hiển thị cho mọi enum trạng thái hệ thống.
+7. `SearchInputComponent`: Ô tìm kiếm có debounce tự động và nút xóa nhanh, giảm tải gọi API.
+8. `SelectComponent`: Dropdown chọn giá trị tương thích Reactive Forms qua `ControlValueAccessor`.
+9. `FormFieldComponent`: Bọc label, required mark, hint và tự động bắt lỗi validation theo tiếng Việt.
+10. Form control phức tạp: Sơ đồ chọn ghế xe giường nằm / ghế ngồi xe khách Đông Lý (`SeatMapSelector`, kết hợp `ControlValueAccessor`).
+
+### 4.3. 8 Điều luật Bắt buộc đối với Button trong Feature:
+1. Mọi button giao diện mới phải sử dụng Shared Button Component đã được phê duyệt (`<app-button>`).
+2. Không tự tạo button component riêng, CSS button riêng hoặc sử dụng trực tiếp button của thư viện UI trong feature nếu không có ngoại lệ kỹ thuật được giải trình.
+3. Chỉ được mở rộng API Shared Button khi có yêu cầu dùng chung thực sự (từ 2 feature trở lên); không thêm input chỉ phục vụ một feature.
+4. Không dùng Button để thay thế link điều hướng (`routerLink`) hoặc các semantic control khác (tabs, checkboxes, toggles).
+5. Mọi button phải có mục đích rõ ràng, đúng type (`button` / `submit`), accessible name (`label` / `ariaLabel`), trạng thái loading/disabled và i18n theo chuẩn dự án.
+6. Button chỉ được trình bày trạng thái giao diện; logic nghiệp vụ, API và phân quyền nằm ở đúng tầng kiến trúc (Controller, Service, Structural Directive).
+7. Khi tạo hoặc sửa feature, phải kiểm tra việc sử dụng Shared Button và xử lý các trường hợp ngoại lệ.
+8. Các ngoại lệ kỹ thuật phải có lý do kỹ thuật rõ ràng, phạm vi hẹp nhất, ghi chú `<!-- EXEMPTION [BUTTON]: ... -->` và phương án duy trì nhất quán qua Design Tokens.
 
 ---
 

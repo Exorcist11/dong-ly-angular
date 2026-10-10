@@ -14,8 +14,7 @@ import {
   TableLazyLoadEvent as PrimeNgLazyLoadEvent,
   TableModule,
 } from 'primeng/table';
-import { Button } from 'primeng/button';
-import { Tooltip } from 'primeng/tooltip';
+import { ButtonComponent } from '../button/button.component';
 import {
   TableColumn,
   TableFilterChangeEvent,
@@ -45,9 +44,8 @@ import { TranslatePipe } from '../../../core/i18n/translate.pipe';
     CommonModule,
     FormsModule,
     TableModule,
-    Button,
+    ButtonComponent,
     SelectComponent,
-    Tooltip,
     EmptyStateComponent,
     SearchInputComponent,
     TranslatePipe,

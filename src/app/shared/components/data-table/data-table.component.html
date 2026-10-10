@@ -38,13 +38,12 @@
         <ng-content select="[tableFilters]" />
 
         @if (showResetFilters()) {
-          <p-button
+          <app-button
             [label]="effectiveResetFiltersLabel()"
             icon="pi pi-filter-slash"
-            severity="secondary"
-            [outlined]="true"
+            variant="secondary"
             size="small"
-            (onClick)="onResetFiltersClick()"
+            (clicked)="onResetFiltersClick()"
             styleClass="reset-filters-btn"
           />
         }
@@ -55,15 +54,14 @@
         <ng-content select="[tableActions]" />
 
         @if (showRefresh()) {
-          <p-button
+          <app-button
             icon="pi pi-refresh"
-            [outlined]="true"
-            severity="secondary"
+            variant="secondary"
             size="small"
             [loading]="loading()"
-            [pTooltip]="effectiveRefreshTooltip()"
+            [tooltip]="effectiveRefreshTooltip()"
             tooltipPosition="top"
-            (onClick)="onRefreshClick()"
+            (clicked)="onRefreshClick()"
             styleClass="refresh-btn"
           />
         }
@@ -76,13 +74,13 @@
     <div class="table-error-container" role="alert">
       <i class="pi pi-exclamation-triangle error-icon" aria-hidden="true"></i>
       <p class="error-message">{{ errorMessage() }}</p>
-      <p-button
+      <app-button
         [label]="'common.actions.retry' | translate"
         icon="pi pi-refresh"
-        severity="danger"
+        variant="danger"
         [outlined]="true"
         size="small"
-        (onClick)="handleRetry()"
+        (clicked)="handleRetry()"
       />
     </div>
   } @else {

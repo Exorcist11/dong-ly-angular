@@ -5,12 +5,12 @@
     [breadcrumbs]="breadcrumbs()"
   >
     <div actions class="header-actions">
-      <p-button
+      <app-button
         *appHasPermission="'ROLE_CREATE'"
         [label]="'roles.actions.create' | translate"
         icon="pi pi-plus"
-        severity="primary"
-        (onClick)="openCreateDialog()"
+        variant="primary"
+        (clicked)="openCreateDialog()"
       />
     </div>
   </app-page-header>
@@ -77,6 +77,7 @@
 
       <!-- CỘT 5: SỐ QUYỀN HẠN -->
       <ng-template appTableCell="permissionCount" let-role>
+        <!-- EXEMPTION [BUTTON]: Interactive pill badge hiển thị số lượng quyền hạn lồng trong ô dữ liệu bảng -->
         <button
           type="button"
           class="permission-count-pill"
@@ -103,40 +104,40 @@
       <ng-template appTableCell="actions" let-role>
         <div class="action-buttons">
           <!-- Nút Ma trận phân quyền -->
-          <p-button
+          <app-button
             *appHasPermission="'ROLE_ASSIGN'"
             icon="pi pi-shield"
-            severity="primary"
+            variant="primary"
             [text]="true"
             size="small"
-            [pTooltip]="'roles.actions.matrix' | translate"
+            [tooltip]="'roles.actions.matrix' | translate"
             tooltipPosition="top"
-            (onClick)="openMatrixDialog(role)"
+            (clicked)="openMatrixDialog(role)"
           />
 
           <!-- Nút Sửa vai trò -->
-          <p-button
+          <app-button
             *appHasPermission="'ROLE_UPDATE'"
             icon="pi pi-pencil"
-            severity="secondary"
+            variant="secondary"
             [text]="true"
             size="small"
-            [pTooltip]="'roles.actions.edit' | translate"
+            [tooltip]="'roles.actions.edit' | translate"
             tooltipPosition="top"
-            (onClick)="openEditDialog(role)"
+            (clicked)="openEditDialog(role)"
           />
 
           <!-- Nút Khóa / Mở khóa -->
           @if (!role.isSystem) {
-            <p-button
+            <app-button
               *appHasPermission="'ROLE_UPDATE'"
               [icon]="role.status === 'ACTIVE' ? 'pi pi-lock' : 'pi pi-lock-open'"
-              [severity]="role.status === 'ACTIVE' ? 'warn' : 'success'"
+              [variant]="role.status === 'ACTIVE' ? 'warn' : 'success'"
               [text]="true"
               size="small"
-              [pTooltip]="(role.status === 'ACTIVE' ? 'roles.actions.lock' : 'roles.actions.unlock') | translate"
+              [tooltip]="(role.status === 'ACTIVE' ? 'roles.actions.lock' : 'roles.actions.unlock') | translate"
               tooltipPosition="top"
-              (onClick)="confirmStatusChange(role)"
+              (clicked)="confirmStatusChange(role)"
             />
           } @else {
             <span
@@ -150,15 +151,15 @@
 
           <!-- Nút Xóa (Chỉ cho vai trò tùy chỉnh) -->
           @if (!role.isSystem) {
-            <p-button
+            <app-button
               *appHasPermission="'ROLE_DELETE'"
               icon="pi pi-trash"
-              severity="danger"
+              variant="danger"
               [text]="true"
               size="small"
-              [pTooltip]="'roles.actions.delete' | translate"
+              [tooltip]="'roles.actions.delete' | translate"
               tooltipPosition="top"
-              (onClick)="confirmDeleteRole(role)"
+              (clicked)="confirmDeleteRole(role)"
             />
           }
         </div>

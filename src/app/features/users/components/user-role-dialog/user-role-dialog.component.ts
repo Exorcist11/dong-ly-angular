@@ -10,7 +10,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Dialog } from 'primeng/dialog';
-import { Button } from 'primeng/button';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { Tag } from 'primeng/tag';
 import { Checkbox } from 'primeng/checkbox';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
@@ -19,7 +19,7 @@ import { Role, User } from '../../models/user.model';
 @Component({
   selector: 'app-user-role-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslatePipe, Dialog, Button, Tag, Checkbox],
+  imports: [CommonModule, FormsModule, TranslatePipe, Dialog, ButtonComponent, Tag, Checkbox],
   templateUrl: './user-role-dialog.component.html',
   styleUrl: './user-role-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

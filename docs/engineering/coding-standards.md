@@ -35,3 +35,30 @@
 * **Class names**: PascalCase (`UserListComponent`, `AuthService`, `CurrencyVndPipe`).
 * **Methods & Variables**: camelCase (`fetchCurrentUser()`, `isRefreshing`, `totalElements`).
 * **Constants**: UPPER_SNAKE_CASE (`ACCESS_TOKEN_KEY`, `DEFAULT_PAGE_SIZE`).
+
+---
+
+## 5. Tiêu chuẩn Nút bấm & Semantic Controls (Shared Button Policy)
+* **Bắt buộc sử dụng Shared Button**: 100% nút bấm trong toàn bộ màn hình, modal, dialog, toolbar, table action, form phải sử dụng `ButtonComponent` (`<app-button>`). Nghiêm cấm tự tạo button component riêng, viết CSS riêng (`.btn`, `.btn-primary`), hoặc dùng trực tiếp `<p-button>`, `button[pButton]`, hay `<button>` thuần nếu không có ngoại lệ kỹ thuật được phê duyệt.
+* **Phân biệt rạch ròi Button vs Navigation Link**:
+  - Dùng `<app-button>` khi thực thi hành động (action), kích hoạt mutation, mở dialog/modal, submit form.
+  - Dùng `<a routerLink="...">` khi điều hướng trang / chuyển đổi URL. Tuyệt đối không dùng button để bọc routerLink hoặc gọi `router.navigate()` cho điều hướng thông thường.
+  - Không dùng button để giả lập checkbox, radio, tab hoặc toggle switch.
+* **Chuẩn hóa Thuộc tính HTML `type`**:
+  - `type="button"` (mặc định) cho các thao tác thông thường, hủy bỏ, đóng modal.
+  - `type="submit"` bắt buộc cho nút gửi form (phối hợp với `formGroup` và form submit event).
+  - `type="reset"` chỉ dùng khi thực sự cần reset form về trạng thái ban đầu.
+* **Trợ năng (Accessibility) & Accessible Name**:
+  - Nút có chữ: `label="key.or.text"`.
+  - Nút chỉ có icon (icon-only button): Bắt buộc có thuộc tính `[ariaLabel]="..."` và nên có `[tooltip]="..."` để Screen Reader đọc được hành động.
+* **Ngăn chặn Double-Submit & Quản lý Trạng thái**:
+  - Luôn truyền `[loading]="isSubmitting()"` vào nút thao tác chính/submit form. Nút tự động hiển thị spinner và ngăn chặn phát sinh thêm click event cho đến khi request hoàn tất.
+  - Kiểm soát `[disabled]` khi form không hợp lệ (`form.invalid`) hoặc khi người dùng chưa có đủ điều kiện thao tác.
+* **Phân tách Trách nhiệm (Separation of Concerns)**:
+  - Nút bấm chỉ là thành phần trình bày (presentational UI primitive).
+  - Tuyệt đối không nhúng logic gọi API, xử lý nghiệp vụ, hay kiểm tra quyền hạn vào trong button.
+  - Phân quyền phải đặt ở tầng ngoài thông qua structural directive `*appHasPermission="'USER_CREATE'"` hoặc RBAC check ở component controller.
+* **Quản trị API & Ngoại lệ Kỹ thuật**:
+  - Không tùy tiện thêm inputs/props vào `ButtonComponent` chỉ phục vụ 1 feature cá biệt (tuân thủ YAGNI & SRP).
+  - Mọi ngoại lệ kỹ thuật (ví dụ template lồng của 3rd-party component như `p-fileUpload`) phải có ghi chú `<!-- EXEMPTION [BUTTON]: <lý do> -->`, giới hạn phạm vi cục bộ và duy trì tính nhất quán thị giác qua Design Tokens.
+
