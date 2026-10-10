@@ -4,6 +4,7 @@ import {
   Component,
   DestroyRef,
   DoCheck,
+  ElementRef,
   OnInit,
   computed,
   inject,
@@ -22,20 +23,22 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { InputText } from 'primeng/inputtext';
 import { Password } from 'primeng/password';
+import { Textarea } from 'primeng/textarea';
 import { TranslationService } from '../../../core/i18n/translation.service';
 import { InputType } from './input.types';
 
 let nextUniqueId = 0;
 
 /**
- * Shared Input Component độc lập của Đông Lý Admin.
- * Tự đảm nhiệm toàn bộ giao diện: label, required mark, input/password, accessibility và validation message.
+ * Shared Input / Textarea Component độc lập của Đông Lý Admin.
+ * Tự đảm nhiệm toàn bộ giao diện: label, required mark, input/password/textarea, accessibility và validation message.
  * Tương thích trực tiếp với Reactive Forms qua ControlValueAccessor.
+ * Hỗ trợ cả 2 selector: <app-input> và <app-textarea>.
  */
 @Component({
-  selector: 'app-input',
+  selector: 'app-input, app-textarea',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, InputText, Password],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, InputText, Password, Textarea],
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -44,6 +47,9 @@ export class InputComponent implements ControlValueAccessor, OnInit, DoCheck {
   private readonly i18n = inject(TranslationService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly elementRef = inject(ElementRef);
+  private readonly isTagTextarea =
+    this.elementRef.nativeElement?.tagName?.toLowerCase() === 'app-textarea';
 
   /** Inject NgControl nếu được sử dụng cùng Reactive Forms (formControlName / formControl) */
   public readonly ngControl = inject(NgControl, { optional: true, self: true });
@@ -84,6 +90,12 @@ export class InputComponent implements ControlValueAccessor, OnInit, DoCheck {
   readonly styleClass = input<string>('');
   readonly inputStyleClass = input<string>('');
 
+  // --- Props Textarea ---
+  readonly multiline = input<boolean>(false);
+  readonly rows = input<number>(3);
+  readonly cols = input<number>();
+  readonly autoResize = input<boolean>(false);
+
   // --- Events ---
   readonly valueChange = output<any>();
   readonly input = output<Event>();
@@ -113,6 +125,10 @@ export class InputComponent implements ControlValueAccessor, OnInit, DoCheck {
   readonly effectiveId = computed(() => this.id() || this.autoId);
   readonly errorId = computed(() => `${this.effectiveId()}-error`);
   readonly hintId = computed(() => `${this.effectiveId()}-hint`);
+
+  readonly isTextarea = computed(() => {
+    return this.isTagTextarea || this.type() === 'textarea' || this.multiline();
+  });
 
   readonly effectiveDisabled = computed(() => {
     return this.disabled() || this.isControlDisabled();
@@ -240,10 +256,10 @@ export class InputComponent implements ControlValueAccessor, OnInit, DoCheck {
 
   // --- Handlers ---
   onNativeInput(event: Event): void {
-    const target = event.target as HTMLInputElement;
+    const target = event.target as HTMLInputElement | HTMLTextAreaElement;
     const val =
-      this.type() === 'number' && target.value !== ''
-        ? target.valueAsNumber
+      this.type() === 'number' && 'valueAsNumber' in target && (target as HTMLInputElement).value !== ''
+        ? (target as HTMLInputElement).valueAsNumber
         : target.value;
     this.internalValue.set(val);
     this.onChange(val);
@@ -278,3 +294,8 @@ export class InputComponent implements ControlValueAccessor, OnInit, DoCheck {
     this.cdr.markForCheck();
   }
 }
+
+/**
+ * Re-export alias TextareaComponent để tương thích với các module muốn import theo tên Textarea.
+ */
+export { InputComponent as TextareaComponent };

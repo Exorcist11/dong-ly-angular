@@ -35,6 +35,30 @@
         [attr.aria-invalid]="hasError()"
         [attr.aria-describedby]="ariaDescribedBy()"
       />
+    } @else if (isTextarea()) {
+      <textarea
+        pTextarea
+        [id]="effectiveId()"
+        [name]="name() ?? effectiveId()"
+        [value]="internalValue()"
+        (input)="onNativeInput($event)"
+        (blur)="onInputBlur($event)"
+        (focus)="onInputFocus($event)"
+        [rows]="rows()"
+        [cols]="cols()"
+        [autoResize]="autoResize()"
+        [placeholder]="placeholder() ?? ''"
+        [disabled]="effectiveDisabled()"
+        [readOnly]="readonly()"
+        [attr.maxlength]="maxlength()"
+        [attr.minlength]="minlength()"
+        [attr.aria-required]="required()"
+        [attr.aria-invalid]="hasError()"
+        [attr.aria-describedby]="ariaDescribedBy()"
+        class="dl-textarea"
+        [class.ng-invalid]="hasError()"
+        [ngClass]="inputStyleClass()"
+      ></textarea>
     } @else {
       <input
         pInputText

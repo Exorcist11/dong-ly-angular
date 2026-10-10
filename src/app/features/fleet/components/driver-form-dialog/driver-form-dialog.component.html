@@ -71,10 +71,14 @@
         formControlName="dateOfBirth"
         [label]="'fleet.drivers.form.dateOfBirthLabel' | translate"
       />
+    </div>
 
+    <div class="form-row">
       <app-input
         formControlName="note"
         [label]="'fleet.drivers.form.noteLabel' | translate"
+        type="textarea"
+        [rows]="3"
         [placeholder]="'fleet.drivers.form.notePlaceholder' | translate"
       />
     </div>

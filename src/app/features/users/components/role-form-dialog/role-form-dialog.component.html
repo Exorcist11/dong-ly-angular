@@ -54,20 +54,13 @@
     />
 
     <!-- Mô tả vai trò -->
-    <app-form-field
+    <app-input
+      id="roleDescription"
+      formControlName="description"
       [label]="'roles.dialog.descLabel' | translate"
-      forId="roleDescription"
-      [control]="roleForm.get('description')"
-    >
-      <textarea
-        pTextarea
-        id="roleDescription"
-        formControlName="description"
-        rows="3"
-        [placeholder]="'roles.dialog.descPlaceholder' | translate"
-        class="dl-textarea"
-        [class.ng-invalid]="roleForm.get('description')?.invalid && roleForm.get('description')?.touched"
-      ></textarea>
-    </app-form-field>
+      type="textarea"
+      [rows]="3"
+      [placeholder]="'roles.dialog.descPlaceholder' | translate"
+    />
   </form>
 </app-dialog>

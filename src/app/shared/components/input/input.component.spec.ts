@@ -30,6 +30,20 @@ import { InputComponent } from './input.component';
         mediumLabel="TB"
         strongLabel="Mạnh"
       />
+      <app-input
+        id="test-note"
+        formControlName="note"
+        label="Ghi chú"
+        type="textarea"
+        [rows]="4"
+        [placeholder]="'Nhập ghi chú'"
+      />
+      <app-textarea
+        id="test-remark"
+        formControlName="remark"
+        label="Nhận xét"
+        [rows]="5"
+      />
     </form>
   `,
 })
@@ -44,6 +58,8 @@ class TestHostComponent {
       Validators.required,
       Validators.minLength(8),
     ]),
+    note: new FormControl(''),
+    remark: new FormControl(''),
   });
 }
 
@@ -186,6 +202,28 @@ describe('InputComponent', () => {
     expect(inputEl.attributes['aria-invalid']).toBe('true');
     expect(inputEl.attributes['aria-describedby']).toBe('input-acc-error');
   });
+
+  it('render thẻ textarea khi type="textarea" hoặc multiline=true', () => {
+    fixture.componentRef.setInput('type', 'textarea');
+    fixture.componentRef.setInput('rows', 5);
+    fixture.componentRef.setInput('placeholder', 'Nhập mô tả chi tiết');
+    fixture.detectChanges();
+
+    const textareaEl = fixture.debugElement.query(By.css('textarea'));
+    expect(textareaEl).toBeTruthy();
+    expect(textareaEl.nativeElement.rows).toBe(5);
+    expect(textareaEl.nativeElement.placeholder).toBe('Nhập mô tả chi tiết');
+    expect(fixture.debugElement.query(By.css('input'))).toBeNull();
+  });
+
+  it('render thẻ textarea khi multiline=true dù type là text', () => {
+    fixture.componentRef.setInput('type', 'text');
+    fixture.componentRef.setInput('multiline', true);
+    fixture.detectChanges();
+
+    const textareaEl = fixture.debugElement.query(By.css('textarea'));
+    expect(textareaEl).toBeTruthy();
+  });
 });
 
 describe('InputComponent trong Reactive Forms', () => {
@@ -224,5 +262,33 @@ describe('InputComponent trong Reactive Forms', () => {
   it('render p-password khi type="password"', () => {
     const passwordDebug = hostFixture.debugElement.query(By.css('#test-password p-password'));
     expect(passwordDebug).toBeTruthy();
+  });
+
+  it('render textarea với rows="4" khi type="textarea" trong reactive forms', () => {
+    const textareaEl = hostFixture.debugElement.query(By.css('#test-note textarea'));
+    expect(textareaEl).toBeTruthy();
+    expect(textareaEl.nativeElement.rows).toBe(4);
+    expect(textareaEl.nativeElement.placeholder).toBe('Nhập ghi chú');
+
+    // Đồng bộ model -> UI
+    hostComponent.form.get('note')?.setValue('Nội dung ghi chú nhiều dòng');
+    hostFixture.detectChanges();
+    expect(textareaEl.nativeElement.value).toBe('Nội dung ghi chú nhiều dòng');
+
+    // Đồng bộ UI -> model
+    textareaEl.nativeElement.value = 'Cập nhật từ người dùng';
+    textareaEl.nativeElement.dispatchEvent(new Event('input'));
+    hostFixture.detectChanges();
+    expect(hostComponent.form.get('note')?.value).toBe('Cập nhật từ người dùng');
+  });
+
+  it('render textarea và hỗ trợ tag <app-textarea>', () => {
+    const remarkEl = hostFixture.debugElement.query(By.css('#test-remark textarea'));
+    expect(remarkEl).toBeTruthy();
+    expect(remarkEl.nativeElement.rows).toBe(5);
+
+    hostComponent.form.get('remark')?.setValue('Nhận xét đặc biệt');
+    hostFixture.detectChanges();
+    expect(remarkEl.nativeElement.value).toBe('Nhận xét đặc biệt');
   });
 });

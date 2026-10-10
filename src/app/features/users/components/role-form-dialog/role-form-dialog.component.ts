@@ -15,9 +15,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Textarea } from 'primeng/textarea';
 import { AppDialogComponent } from '../../../../shared/components/dialog/dialog.component';
-import { FormFieldComponent } from '../../../../shared/components/form-field/form-field.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import {
@@ -36,8 +34,6 @@ import {
     TranslatePipe,
     AppDialogComponent,
     InputComponent,
-    Textarea,
-    FormFieldComponent,
   ],
   templateUrl: './role-form-dialog.component.html',
   styleUrl: './role-form-dialog.component.scss',

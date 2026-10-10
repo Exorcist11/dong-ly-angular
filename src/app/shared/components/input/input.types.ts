@@ -8,5 +8,6 @@ export type InputType =
   | 'search'
   | 'date'
   | 'time'
-  | 'datetime-local';
+  | 'datetime-local'
+  | 'textarea';
 

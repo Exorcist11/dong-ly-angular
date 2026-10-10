@@ -49,6 +49,22 @@
   }
 }
 
+.dl-textarea {
+  width: 100% !important;
+  min-height: 80px;
+  border-radius: 8px !important;
+  font-size: 13.5px !important;
+  line-height: 1.5;
+  padding: 0.5rem 0.75rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  resize: vertical;
+  font-family: inherit;
+
+  &.ng-invalid {
+    border-color: var(--color-danger, #dc2626) !important;
+  }
+}
+
 :host ::ng-deep {
   .p-password {
     width: 100% !important;
@@ -64,6 +80,12 @@
         border-color: var(--color-danger, #dc2626) !important;
       }
     }
+  }
+
+  .p-textarea {
+    width: 100% !important;
+    border-radius: 8px !important;
+    font-size: 13.5px !important;
   }
 }
 
