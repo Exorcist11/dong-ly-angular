@@ -19,7 +19,6 @@ import {
   StatusBadgeComponent,
   StatusTagSeverity,
 } from '../../../../shared/components/status-badge/status-badge.component';
-import { ConfirmModalComponent } from '../../../../shared/components/confirm-modal/confirm-modal.component';
 import { HasPermissionDirective } from '../../../../shared/directives/has-permission.directive';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { TranslationService } from '../../../../core/i18n/translation.service';
@@ -58,7 +57,6 @@ import { TripStatusDialogComponent } from '../../components/trip-status-dialog/t
     TableCellDirective,
     ButtonComponent,
     StatusBadgeComponent,
-    ConfirmModalComponent,
     HasPermissionDirective,
     TripFormDialogComponent,
     TripStatusDialogComponent,

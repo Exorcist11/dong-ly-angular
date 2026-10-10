@@ -89,8 +89,8 @@
       <ng-template appTableCell="status" let-item>
         <app-status-badge
           [status]="item.status"
-          [customLabel]="getTripStatusLabel(item.status)"
-          [customSeverity]="getTripStatusSeverity(item.status)"
+          [label]="getTripStatusLabel(item.status)"
+          [severity]="getTripStatusSeverity(item.status)"
         />
       </ng-template>
 

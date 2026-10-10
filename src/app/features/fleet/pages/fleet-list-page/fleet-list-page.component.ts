@@ -235,12 +235,12 @@ export class FleetListPageComponent implements OnInit {
 
   openSeatLayoutDialog(vehicle: VehicleSummary): void {
     this.configuringVehicle.set(vehicle);
-    this.fleetService.getVehicleSeats(vehicle.id).subscribe({
-      next: (seats) => {
-        this.currentVehicleSeats.set(seats);
+    this.fleetService.getSeatLayout(vehicle.id).subscribe({
+      next: (res) => {
+        this.currentVehicleSeats.set(res.data?.seats || []);
         this.showSeatLayoutDialog.set(true);
       },
-      error: (err) => {
+      error: (err: { error?: { message?: string } }) => {
         this.notification.error(
           err.error?.message || this.i18n.translate('fleet.notifications.error')
         );

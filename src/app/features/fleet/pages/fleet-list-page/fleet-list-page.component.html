@@ -126,10 +126,10 @@
   <app-seat-layout-dialog
     [visible]="showSeatLayoutDialog()"
     [vehicle]="configuringVehicle()"
-    [seats]="currentVehicleSeats()"
+    [initialSeats]="currentVehicleSeats()"
     [submitting]="submittingSeatLayout()"
     (visibleChange)="showSeatLayoutDialog.set($event)"
-    (save)="onSaveSeatLayout($event)"
+    (saveLayout)="onSaveSeatLayout($event)"
   />
 
   <!-- CONFIRM DELETE MODAL -->
@@ -137,7 +137,7 @@
     [isOpen]="showDeleteConfirm()"
     [title]="'fleet.confirmDelete.title' | translate"
     [message]="'fleet.confirmDelete.message' | translate: { name: deletingName() }"
-    [confirmButtonText]="'fleet.confirmDelete.confirmBtn' | translate"
+    [confirmText]="'fleet.confirmDelete.confirmBtn' | translate"
     [loading]="deletingInProgress()"
     (isOpenChange)="showDeleteConfirm.set($event)"
     (confirm)="executeDelete()"
