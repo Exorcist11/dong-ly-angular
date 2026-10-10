@@ -24,6 +24,8 @@
   "items": {
     "dashboard": "Dashboard",
     "users": "User Management",
+    "routes": "Routes & Stops",
+    "trips": "Trips & Schedules",
     "tripsAndRoutes": "Trips & Routes",
     "vehicles": "Vehicles & Drivers",
     "bookings": "Tickets & Bookings",

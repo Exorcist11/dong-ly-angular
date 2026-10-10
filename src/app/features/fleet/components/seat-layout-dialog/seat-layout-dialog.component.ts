@@ -13,7 +13,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AppDialogComponent } from '../../../../shared/components/dialog/dialog.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
-import { FormFieldComponent } from '../../../../shared/components/form-field/form-field.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { SelectComponent } from '../../../../shared/components/select/select.component';
 import { SelectOption } from '../../../../shared/models/select-option.model';
@@ -42,7 +41,6 @@ interface GridCell {
     FormsModule,
     AppDialogComponent,
     ButtonComponent,
-    FormFieldComponent,
     InputComponent,
     SelectComponent,
     TranslatePipe,

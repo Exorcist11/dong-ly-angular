@@ -1,0 +1,111 @@
+<app-dialog
+  [visible]="visible"
+  [header]="trip ? ('trips.tripForm.editTitle' | translate:{ code: trip.code }) : ('trips.tripForm.createTitle' | translate)"
+  size="lg"
+  [submitLoading]="submitting"
+  [submitDisabled]="submitting"
+  [submitLabel]="trip ? ('trips.tripForm.saveUpdate' | translate) : ('trips.tripForm.saveCreate' | translate)"
+  submitIcon="pi pi-check"
+  (visibleChange)="onClose()"
+  (submitted)="onSubmit()"
+  (cancelled)="onClose()"
+>
+  <form [formGroup]="form" class="trip-form" (ngSubmit)="onSubmit()">
+    @if (conflictWarning()) {
+      <div class="conflict-alert">
+        <i class="pi pi-exclamation-triangle"></i>
+        <span>{{ conflictWarning() }}</span>
+      </div>
+    }
+
+    <div class="form-grid">
+      <!-- Tuyến đường -->
+      <app-select
+        formControlName="routeId"
+        [label]="'trips.tripForm.routeLabel' | translate"
+        [required]="true"
+        [options]="routeOptions"
+        [placeholder]="'trips.tripForm.routePlaceholder' | translate"
+      />
+
+      <!-- Phương tiện -->
+      <app-select
+        formControlName="vehicleId"
+        [label]="'trips.tripForm.vehicleLabel' | translate"
+        [required]="true"
+        [options]="vehicleOptions"
+        [placeholder]="'trips.tripForm.vehiclePlaceholder' | translate"
+      />
+
+      <!-- Tài xế chính -->
+      <app-select
+        formControlName="driverId"
+        [label]="'trips.tripForm.driverLabel' | translate"
+        [required]="true"
+        [options]="driverOptions"
+        [placeholder]="'trips.tripForm.driverPlaceholder' | translate"
+      />
+
+      <!-- Phụ xe / Tài xế phụ -->
+      <app-select
+        formControlName="assistantDriverId"
+        [label]="'trips.tripForm.assistantDriverLabel' | translate"
+        [required]="true"
+        [options]="driverOptions"
+        [placeholder]="'trips.tripForm.assistantDriverPlaceholder' | translate"
+      />
+
+      <!-- Thời gian xuất bến -->
+      <app-input
+        type="datetime-local"
+        formControlName="departureTime"
+        [label]="'trips.tripForm.departureTimeLabel' | translate"
+        [required]="true"
+      />
+
+      <!-- Thời gian đến dự kiến -->
+      <app-input
+        type="datetime-local"
+        formControlName="estimatedArrivalTime"
+        [label]="'trips.tripForm.arrivalTimeLabel' | translate"
+        [required]="true"
+      />
+
+      <!-- Giá vé cơ bản -->
+      <app-input
+        type="number"
+        formControlName="basePrice"
+        [label]="'trips.tripForm.basePriceLabel' | translate"
+        [required]="true"
+        [placeholder]="'trips.tripForm.basePricePlaceholder' | translate"
+      />
+
+      <!-- Mã chuyến tùy chỉnh -->
+      <app-input
+        formControlName="code"
+        [label]="'trips.tripForm.codeLabel' | translate"
+        [hint]="'trips.tripForm.codeHint' | translate"
+        [placeholder]="'trips.tripForm.codePlaceholder' | translate"
+      />
+    </div>
+
+    <!-- Ghi chú -->
+    <app-input
+      formControlName="note"
+      [label]="'trips.tripForm.noteLabel' | translate"
+      [placeholder]="'trips.tripForm.notePlaceholder' | translate"
+    />
+
+    <div class="conflict-check-row">
+      <app-button
+        type="button"
+        variant="secondary"
+        size="small"
+        [loading]="checkingConflict()"
+        icon="pi pi-shield"
+        [label]="'trips.tripForm.checkConflictBtn' | translate"
+        (clicked)="onCheckConflict()"
+      />
+    </div>
+  </form>
+</app-dialog>

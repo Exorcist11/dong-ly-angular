@@ -24,6 +24,8 @@
   "items": {
     "dashboard": "Bàn làm việc",
     "users": "Quản lý người dùng",
+    "routes": "Tuyến đường & Điểm dừng",
+    "trips": "Lịch chạy & Chuyến xe",
     "tripsAndRoutes": "Chuyến xe & Tuyến",
     "vehicles": "Phương tiện & Tài xế",
     "bookings": "Vé & Giữ chỗ",

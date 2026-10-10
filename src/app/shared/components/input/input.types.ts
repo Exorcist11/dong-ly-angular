@@ -6,5 +6,7 @@ export type InputType =
   | 'tel'
   | 'url'
   | 'search'
-  | 'date';
+  | 'date'
+  | 'time'
+  | 'datetime-local';
 

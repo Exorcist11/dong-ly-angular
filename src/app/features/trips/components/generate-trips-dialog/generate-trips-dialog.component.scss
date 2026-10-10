@@ -1,0 +1,133 @@
+.generate-dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 0.5rem 0;
+}
+
+.notice-box {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1rem;
+  background-color: var(--color-surface-sunken, #f4f1ec);
+  border: 1px solid var(--color-border, #d9d4cc);
+  border-radius: 10px;
+
+  p {
+    margin: 0;
+  }
+}
+
+.date-range-form {
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 1rem;
+    align-items: flex-start;
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .action-col {
+    display: flex;
+    align-items: flex-end;
+    padding-top: 24px;
+  }
+}
+
+.preview-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-top: 1px solid var(--color-border, #d9d4cc);
+  padding-top: 1rem;
+}
+
+.stats-summary {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  .stat-pill {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.5rem 0.875rem;
+    background-color: var(--color-surface-sunken, #f4f1ec);
+    border-radius: 8px;
+    font-size: 0.875rem;
+
+    .label {
+      color: var(--color-text-secondary, #3a3733);
+    }
+  }
+}
+
+.preview-table-wrapper {
+  max-height: 280px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border, #d9d4cc);
+  border-radius: 8px;
+}
+
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+
+  th {
+    background-color: var(--color-surface-sunken, #f4f1ec);
+    color: var(--color-text-secondary, #3a3733);
+    font-weight: 600;
+    text-align: left;
+    padding: 0.625rem 0.75rem;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  td {
+    padding: 0.625rem 0.75rem;
+    border-top: 1px solid var(--color-border, #d9d4cc);
+    color: var(--color-text-primary, #16161a);
+  }
+
+  tr.skipped-row {
+    background-color: var(--color-surface-sunken, #f4f1ec);
+    opacity: 0.75;
+  }
+}
+
+.driver-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &-success {
+    background-color: #dcfce7;
+    color: #15803d;
+  }
+
+  &-warn {
+    background-color: #fef3c7;
+    color: #b45309;
+  }
+}
+
+.text-success {
+  color: #16a34a;
+}
+
+.text-warn {
+  color: #d97706;
+}

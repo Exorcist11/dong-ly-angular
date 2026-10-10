@@ -37,33 +37,25 @@
 
     <div class="form-grid">
       <!-- ĐIỂM KHỞI HÀNH -->
-      <app-form-field
+      <app-select
+        formControlName="originLocationId"
         [label]="'routes.form.originLabel' | translate"
         [required]="true"
-        [control]="form.get('originLocationId')"
-      >
-        <app-select
-          formControlName="originLocationId"
-          [options]="locationOptions"
-          [placeholder]="'common.actions.select' | translate"
-          width="100%"
-        />
-      </app-form-field>
+        [options]="locationOptions"
+        [placeholder]="'common.actions.select' | translate"
+        width="100%"
+      />
 
       <!-- ĐIỂM ĐẾN -->
-      <app-form-field
+      <app-select
+        formControlName="destinationLocationId"
         [label]="'routes.form.destinationLabel' | translate"
         [required]="true"
-        [control]="form.get('destinationLocationId')"
+        [options]="locationOptions"
+        [placeholder]="'common.actions.select' | translate"
         [errorMessage]="form.get('destinationLocationId')?.hasError('sameAsOrigin') ? 'Điểm đến không được trùng điểm khởi hành' : undefined"
-      >
-        <app-select
-          formControlName="destinationLocationId"
-          [options]="locationOptions"
-          [placeholder]="'common.actions.select' | translate"
-          width="100%"
-        />
-      </app-form-field>
+        width="100%"
+      />
     </div>
 
     <div class="form-grid">

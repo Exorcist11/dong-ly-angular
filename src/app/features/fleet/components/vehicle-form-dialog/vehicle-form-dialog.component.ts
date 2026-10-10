@@ -16,7 +16,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { AppDialogComponent } from '../../../../shared/components/dialog/dialog.component';
-import { FormFieldComponent } from '../../../../shared/components/form-field/form-field.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { SelectComponent } from '../../../../shared/components/select/select.component';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
@@ -35,7 +34,6 @@ import {
     CommonModule,
     ReactiveFormsModule,
     AppDialogComponent,
-    FormFieldComponent,
     InputComponent,
     SelectComponent,
     TranslatePipe,

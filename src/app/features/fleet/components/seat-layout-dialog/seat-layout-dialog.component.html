@@ -168,14 +168,13 @@
               [placeholder]="'fleet.seatLayout.seatCodePlaceholder' | translate"
             />
 
-            <app-form-field [label]="'fleet.seatLayout.seatTypeLabel' | translate">
-              <app-select
-                [ngModel]="current.seatType"
-                (ngModelChange)="current.seatType = $event"
-                [options]="seatTypeOptions"
-                width="100%"
-              />
-            </app-form-field>
+            <app-select
+              [ngModel]="current.seatType"
+              (ngModelChange)="current.seatType = $event"
+              [label]="'fleet.seatLayout.seatTypeLabel' | translate"
+              [options]="seatTypeOptions"
+              width="100%"
+            />
 
             <app-input
               type="number"
@@ -185,14 +184,13 @@
               [placeholder]="'fleet.seatLayout.extraPricePlaceholder' | translate"
             />
 
-            <app-form-field [label]="'fleet.seatLayout.statusLabel' | translate">
-              <app-select
-                [ngModel]="current.status"
-                (ngModelChange)="current.status = $event"
-                [options]="seatStatusOptions"
-                width="100%"
-              />
-            </app-form-field>
+            <app-select
+              [ngModel]="current.status"
+              (ngModelChange)="current.status = $event"
+              [label]="'fleet.seatLayout.statusLabel' | translate"
+              [options]="seatStatusOptions"
+              width="100%"
+            />
 
             <div class="editor-actions">
               <app-button

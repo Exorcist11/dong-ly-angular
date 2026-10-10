@@ -1,0 +1,128 @@
+<app-dialog
+  [visible]="visible"
+  [header]="tripRun ? ('trips.tripRunForm.editTitle' | translate) : ('trips.tripRunForm.createTitle' | translate)"
+  size="lg"
+  [submitLoading]="submitting"
+  [submitDisabled]="submitting"
+  [submitLabel]="tripRun ? ('trips.tripRunForm.saveUpdate' | translate) : ('trips.tripRunForm.saveCreate' | translate)"
+  submitIcon="pi pi-check"
+  (visibleChange)="onClose()"
+  (submitted)="onSubmit()"
+  (cancelled)="onClose()"
+>
+  <form [formGroup]="form" class="trip-run-form" (ngSubmit)="onSubmit()">
+    <div class="form-grid">
+      <!-- Mã lịch chạy -->
+      <app-input
+        formControlName="code"
+        [label]="'trips.tripRunForm.codeLabel' | translate"
+        [required]="true"
+        [placeholder]="'trips.tripRunForm.codePlaceholder' | translate"
+      />
+
+      <!-- Tên lịch chạy -->
+      <app-input
+        formControlName="name"
+        [label]="'trips.tripRunForm.nameLabel' | translate"
+        [required]="true"
+        [placeholder]="'trips.tripRunForm.namePlaceholder' | translate"
+      />
+
+      <!-- Tuyến đường -->
+      <app-select
+        formControlName="routeId"
+        [label]="'trips.tripRunForm.routeLabel' | translate"
+        [required]="true"
+        [options]="routeOptions"
+        [placeholder]="'trips.tripRunForm.routePlaceholder' | translate"
+      />
+
+      <!-- Giờ xuất bến hàng ngày -->
+      <app-input
+        type="time"
+        formControlName="departureTime"
+        [label]="'trips.tripRunForm.departureTimeLabel' | translate"
+        [required]="true"
+      />
+    </div>
+
+    <!-- Các ngày hoạt động trong tuần -->
+    <div class="days-section">
+      <label class="section-label">{{ 'trips.tripRunForm.daysSectionLabel' | translate }} <span class="required">*</span></label>
+      <div class="days-pills">
+        @for (day of daysOfWeekList(); track day.value) {
+          <button
+            type="button"
+            class="day-pill"
+            [class.active]="isDaySelected(day.value)"
+            (click)="toggleDay(day.value)"
+          >
+            {{ day.label }}
+          </button>
+        }
+      </div>
+      <p class="section-hint">{{ 'trips.tripRunForm.daysSectionHint' | translate }}</p>
+    </div>
+
+    <div class="form-grid">
+      <!-- Ngày bắt đầu áp dụng -->
+      <app-input
+        type="date"
+        formControlName="startDate"
+        [label]="'trips.tripRunForm.startDateLabel' | translate"
+        [required]="true"
+      />
+
+      <!-- Ngày kết thúc áp dụng -->
+      <app-input
+        type="date"
+        formControlName="endDate"
+        [label]="'trips.tripRunForm.endDateLabel' | translate"
+        [hint]="'trips.tripRunForm.endDateHint' | translate"
+      />
+
+      <!-- Phương tiện mặc định -->
+      <app-select
+        formControlName="defaultVehicleId"
+        [label]="'trips.tripRunForm.defaultVehicleLabel' | translate"
+        [hint]="'trips.tripRunForm.defaultVehicleHint' | translate"
+        [options]="vehicleOptions"
+        [placeholder]="'trips.tripRunForm.defaultVehiclePlaceholder' | translate"
+      />
+
+      <!-- Giá vé cơ bản -->
+      <app-input
+        type="number"
+        formControlName="basePrice"
+        [label]="'trips.tripRunForm.basePriceLabel' | translate"
+        [required]="true"
+        [placeholder]="'trips.tripRunForm.basePricePlaceholder' | translate"
+      />
+
+      <!-- Tài xế chính mặc định -->
+      <app-select
+        formControlName="defaultDriverId"
+        [label]="'trips.tripRunForm.defaultDriverLabel' | translate"
+        [hint]="'trips.tripRunForm.defaultDriverHint' | translate"
+        [options]="driverOptions"
+        [placeholder]="'trips.tripRunForm.defaultDriverPlaceholder' | translate"
+      />
+
+      <!-- Phụ xe mặc định -->
+      <app-select
+        formControlName="defaultAssistantDriverId"
+        [label]="'trips.tripRunForm.defaultAssistantDriverLabel' | translate"
+        [hint]="'trips.tripRunForm.defaultAssistantDriverHint' | translate"
+        [options]="driverOptions"
+        [placeholder]="'trips.tripRunForm.defaultAssistantDriverPlaceholder' | translate"
+      />
+    </div>
+
+    <!-- Ghi chú -->
+    <app-input
+      formControlName="note"
+      [label]="'trips.tripRunForm.noteLabel' | translate"
+      [placeholder]="'trips.tripRunForm.notePlaceholder' | translate"
+    />
+  </form>
+</app-dialog>

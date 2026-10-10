@@ -1,53 +1,77 @@
 <div
-  class="dl-select-wrapper"
+  class="dl-form-field"
+  [class]="styleClass()"
   [class.label-top]="labelPosition() === 'top'"
   [class.label-left]="labelPosition() === 'left'"
   [class.has-label]="!!label()"
+  [class.has-error]="hasError()"
+  [class.is-standalone]="isStandalone()"
+  [class.no-margin]="marginBottom() === false"
 >
   @if (label()) {
-    <label class="dl-select-label">
-      {{ label() }}
-      @if (required()) {
-        <span class="dl-select-required" aria-hidden="true">*</span>
-      }
-    </label>
+    <div class="field-header">
+      <label [attr.for]="effectiveId()" class="field-label dl-select-label">
+        {{ label() }}
+        @if (required()) {
+          <span class="required-mark dl-select-required" aria-hidden="true">*</span>
+        }
+      </label>
+      <ng-content select="[labelSuffix]" />
+    </div>
   }
 
-  <p-select
-    [options]="options()"
-    [ngModel]="internalValue()"
-    (ngModelChange)="onModelChange($event)"
-    (onBlur)="onBlur()"
-    [placeholder]="effectivePlaceholder()"
-    [disabled]="effectiveDisabled()"
-    [showClear]="clearable()"
-    [filter]="filter()"
-    [filterPlaceholder]="effectiveFilterPlaceholder()"
-    [ariaLabel]="label() ?? effectiveAriaLabel()"
-    optionLabel="label"
-    optionValue="value"
-    optionDisabled="disabled"
-    [style]="width() ? { width: width() } : null"
-    [styleClass]="'dl-select ' + styleClass()"
-  >
-    <ng-template #item let-option>
-      <div class="dl-select-option">
-        @if (option.icon) {
-          <i [class]="option.icon + ' dl-select-option-icon'" aria-hidden="true"></i>
-        }
-        <span class="dl-select-option-label">{{ option.label }}</span>
-      </div>
-    </ng-template>
-
-    <ng-template #selectedItem let-selectedOption>
-      @if (selectedOption) {
-        <div class="dl-select-selected-item" [title]="selectedOption.label">
-          @if (selectedOption.icon) {
-            <i [class]="selectedOption.icon + ' dl-select-option-icon'" aria-hidden="true"></i>
+  <div class="control-wrapper">
+    <p-select
+      [inputId]="effectiveId()"
+      [options]="options()"
+      [ngModel]="internalValue()"
+      (ngModelChange)="onModelChange($event)"
+      (onBlur)="onBlur()"
+      (onFocus)="onFocus($event)"
+      [placeholder]="effectivePlaceholder()"
+      [disabled]="effectiveDisabled()"
+      [showClear]="clearable()"
+      [filter]="filter()"
+      [filterPlaceholder]="effectiveFilterPlaceholder()"
+      [ariaLabel]="label() ?? effectiveAriaLabel()"
+      [attr.aria-required]="required()"
+      [attr.aria-invalid]="hasError()"
+      [attr.aria-describedby]="ariaDescribedBy()"
+      optionLabel="label"
+      optionValue="value"
+      optionDisabled="disabled"
+      [style]="width() ? { width: width() } : { width: '100%' }"
+      [styleClass]="computedSelectStyleClass()"
+    >
+      <ng-template #item let-option>
+        <div class="dl-select-option">
+          @if (option.icon) {
+            <i [class]="option.icon + ' dl-select-option-icon'" aria-hidden="true"></i>
           }
-          <span class="dl-select-selected-label">{{ selectedOption.label }}</span>
+          <span class="dl-select-option-label">{{ option.label }}</span>
         </div>
-      }
-    </ng-template>
-  </p-select>
+      </ng-template>
+
+      <ng-template #selectedItem let-selectedOption>
+        @if (selectedOption) {
+          <div class="dl-select-selected-item" [title]="selectedOption.label">
+            @if (selectedOption.icon) {
+              <i [class]="selectedOption.icon + ' dl-select-option-icon'" aria-hidden="true"></i>
+            }
+            <span class="dl-select-selected-label">{{ selectedOption.label }}</span>
+          </div>
+        }
+      </ng-template>
+    </p-select>
+  </div>
+
+  @if (hint() && !hasError()) {
+    <small [id]="hintId()" class="field-hint">{{ hint() }}</small>
+  }
+
+  @if (hasError()) {
+    <small [id]="errorId()" class="error-message" role="alert">
+      {{ activeErrorMessage() }}
+    </small>
+  }
 </div>

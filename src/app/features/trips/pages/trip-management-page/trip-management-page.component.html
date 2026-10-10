@@ -1,0 +1,343 @@
+<div class="trip-page-container">
+  <!-- PAGE HEADER -->
+  <app-page-header
+    [title]="'trips.title' | translate"
+    [subtitle]="'trips.subtitle' | translate"
+    [breadcrumbs]="breadcrumbs()"
+  >
+    <div actions class="header-action-buttons">
+      @if (activeTab() === 'trips') {
+        <app-button
+          [label]="'trips.buttons.createTrip' | translate"
+          icon="pi pi-plus"
+          variant="primary"
+          *appHasPermission="'TRIP_MANAGE'"
+          (clicked)="openCreateTripDialog()"
+        />
+      } @else {
+        <app-button
+          [label]="'trips.buttons.generateTrips' | translate"
+          icon="pi pi-bolt"
+          variant="secondary"
+          *appHasPermission="'TRIP_MANAGE'"
+          (clicked)="openGenerateDialog()"
+        />
+
+        <app-button
+          [label]="'trips.buttons.createTripRun' | translate"
+          icon="pi pi-plus"
+          variant="primary"
+          *appHasPermission="'TRIP_MANAGE'"
+          (clicked)="openCreateTripRunDialog()"
+        />
+      }
+    </div>
+  </app-page-header>
+
+  <!-- NAVIGATION TABS -->
+  <div class="tabs-bar">
+    <button
+      type="button"
+      class="nav-tab"
+      [class.active]="activeTab() === 'trips'"
+      (click)="setTab('trips')"
+    >
+      <i class="pi pi-compass"></i>
+      <span>{{ 'trips.tabs.trips' | translate }}</span>
+      <span class="count-badge">{{ tripsTotal() }}</span>
+    </button>
+
+    <button
+      type="button"
+      class="nav-tab"
+      [class.active]="activeTab() === 'tripRuns'"
+      (click)="setTab('tripRuns')"
+    >
+      <i class="pi pi-calendar"></i>
+      <span>{{ 'trips.tabs.tripRuns' | translate }}</span>
+      <span class="count-badge">{{ tripRunsTotal() }}</span>
+    </button>
+  </div>
+
+  <!-- TAB 1: TRIPS TABLE -->
+  @if (activeTab() === 'trips') {
+    <div class="saas-card table-card">
+      <app-data-table
+        [columns]="tripColumns()"
+        [data]="tripsList()"
+        [totalRecords]="tripsTotal()"
+        [loading]="tripsLoading()"
+        [pageSize]="tripsSize()"
+        [first]="tripsPage() * tripsSize()"
+        [filters]="tripFilters()"
+        [searchable]="true"
+        [searchPlaceholder]="'trips.searchPlaceholder.trips' | translate"
+        [emptyMessage]="'trips.emptyMessage.trips' | translate"
+        (lazyLoad)="onTripLazyLoad($event)"
+        (searchChange)="onTripSearch($event)"
+        (filterChange)="onTripFilterChange($event)"
+      >
+        <!-- Mã chuyến -->
+        <ng-template appTableCell="code" let-row>
+          <span class="route-code-tag">{{ row.code }}</span>
+        </ng-template>
+
+        <!-- Khởi hành -->
+        <ng-template appTableCell="departureTime" let-row>
+          <div class="time-cell">
+            <span class="font-bold text-primary">{{ formatDateTime(row.departureTime) }}</span>
+            <small class="text-muted">{{ 'trips.labels.arrival' | translate:{ time: formatDateTime(row.estimatedArrivalTime) } }}</small>
+          </div>
+        </ng-template>
+
+        <!-- Tuyến đường -->
+        <ng-template appTableCell="route" let-row>
+          <div class="route-cell">
+            <span class="font-medium">{{ row.routeName || row.routeCode }}</span>
+            @if (row.distanceKm) {
+              <small class="text-muted">
+                {{ 'trips.labels.duration' | translate:{ distance: row.distanceKm, duration: row.estimatedDurationMinutes } }}
+              </small>
+            }
+          </div>
+        </ng-template>
+
+        <!-- Phương tiện -->
+        <ng-template appTableCell="vehicle" let-row>
+          <div class="vehicle-cell">
+            <span class="font-bold">{{ row.vehiclePlateNumber }}</span>
+            <small class="text-muted">{{ 'trips.labels.seats' | translate:{ type: row.vehicleType, count: row.totalSeats } }}</small>
+          </div>
+        </ng-template>
+
+        <!-- Tài xế & Phụ xe -->
+        <ng-template appTableCell="drivers" let-row>
+          <div class="drivers-cell">
+            <div class="driver-row">
+              <span class="role-tag primary">{{ 'trips.labels.mainDriver' | translate }}</span>
+              <span class="driver-name">{{ row.driverName }}</span>
+            </div>
+            <div class="driver-row">
+              <span class="role-tag assistant">{{ 'trips.labels.assistantDriver' | translate }}</span>
+              <span class="driver-name">{{ row.assistantDriverName }}</span>
+            </div>
+          </div>
+        </ng-template>
+
+        <!-- Giá vé -->
+        <ng-template appTableCell="basePrice" let-row>
+          <span class="font-semibold text-emerald-600">{{ formatCurrency(row.basePrice) }}</span>
+        </ng-template>
+
+        <!-- Trạng thái -->
+        <ng-template appTableCell="status" let-row>
+          <app-status-badge
+            [status]="row.status"
+            [label]="getTripStatusLabel(row.status)"
+            [severity]="getTripStatusSeverity(row.status)"
+          />
+        </ng-template>
+
+        <!-- Thao tác -->
+        <ng-template appTableCell="actions" let-row>
+          <div class="row-actions">
+            <!-- Đổi trạng thái -->
+            <app-button
+              *appHasPermission="'TRIP_MANAGE'"
+              variant="text"
+              size="small"
+              icon="pi pi-sync"
+              styleClass="action-btn"
+              [tooltip]="'trips.actions.changeStatus' | translate"
+              tooltipPosition="top"
+              [disabled]="row.status === 'COMPLETED' || row.status === 'CANCELLED'"
+              (clicked)="openTripStatusDialog(row)"
+            />
+
+            <!-- Sửa chuyến -->
+            <app-button
+              *appHasPermission="'TRIP_MANAGE'"
+              variant="text"
+              size="small"
+              icon="pi pi-pencil"
+              styleClass="action-btn"
+              [tooltip]="'trips.actions.editTrip' | translate"
+              tooltipPosition="top"
+              [disabled]="row.status === 'COMPLETED' || row.status === 'CANCELLED'"
+              (clicked)="openEditTripDialog(row)"
+            />
+          </div>
+        </ng-template>
+      </app-data-table>
+    </div>
+  }
+
+  <!-- TAB 2: TRIP RUNS TABLE -->
+  @if (activeTab() === 'tripRuns') {
+    <div class="saas-card table-card">
+      <app-data-table
+        [columns]="tripRunColumns()"
+        [data]="tripRunsList()"
+        [totalRecords]="tripRunsTotal()"
+        [loading]="tripRunsLoading()"
+        [pageSize]="tripRunsSize()"
+        [first]="tripRunsPage() * tripRunsSize()"
+        [filters]="tripRunFilters()"
+        [searchable]="true"
+        [searchPlaceholder]="'trips.searchPlaceholder.tripRuns' | translate"
+        [emptyMessage]="'trips.emptyMessage.tripRuns' | translate"
+        (lazyLoad)="onTripRunLazyLoad($event)"
+        (searchChange)="onTripRunSearch($event)"
+        (filterChange)="onTripRunFilterChange($event)"
+      >
+        <!-- Mã lịch -->
+        <ng-template appTableCell="code" let-row>
+          <span class="route-code-tag">{{ row.code }}</span>
+        </ng-template>
+
+        <!-- Tuyến đường -->
+        <ng-template appTableCell="route" let-row>
+          <div class="route-cell">
+            <span class="font-medium">{{ row.routeName || row.routeCode }}</span>
+            @if (row.estimatedDurationMinutes) {
+              <small class="text-muted">
+                {{ 'trips.labels.durationOnly' | translate:{ duration: row.estimatedDurationMinutes } }}
+              </small>
+            }
+          </div>
+        </ng-template>
+
+        <!-- Giờ chạy -->
+        <ng-template appTableCell="departureTime" let-row>
+          <span class="font-bold text-primary">{{ row.departureTime?.substring(0, 5) }}</span>
+        </ng-template>
+
+        <!-- Ngày chạy -->
+        <ng-template appTableCell="daysOfWeek" let-row>
+          <span class="days-summary">{{ formatDaysSummary(row.daysOfWeek) }}</span>
+        </ng-template>
+
+        <!-- Hiệu lực -->
+        <ng-template appTableCell="dates" let-row>
+          <div class="dates-cell">
+            <span>{{ 'trips.labels.validFrom' | translate:{ date: row.startDate } }}</span>
+            <span class="text-muted">{{ row.endDate ? ('trips.labels.validTo' | translate:{ date: row.endDate }) : ('trips.labels.indefinite' | translate) }}</span>
+          </div>
+        </ng-template>
+
+        <!-- Trạng thái -->
+        <ng-template appTableCell="status" let-row>
+          <app-status-badge
+            [status]="row.status"
+            [label]="row.status === 'ACTIVE' ? ('trips.statuses.active' | translate) : ('trips.statuses.inactive' | translate)"
+            [severity]="row.status === 'ACTIVE' ? 'success' : 'warn'"
+          />
+        </ng-template>
+
+        <!-- Thao tác -->
+        <ng-template appTableCell="actions" let-row>
+          <div class="row-actions">
+            <!-- Sinh chuyến từ lịch này -->
+            <app-button
+              *appHasPermission="'TRIP_MANAGE'"
+              variant="text"
+              size="small"
+              icon="pi pi-bolt"
+              styleClass="action-btn config-btn"
+              [tooltip]="'trips.actions.generateFromSchedule' | translate"
+              tooltipPosition="top"
+              [disabled]="row.status !== 'ACTIVE'"
+              (clicked)="openGenerateDialog(row)"
+            />
+
+            <!-- Bật/Tắt -->
+            <app-button
+              *appHasPermission="'TRIP_MANAGE'"
+              variant="text"
+              size="small"
+              [icon]="row.status === 'ACTIVE' ? 'pi pi-pause' : 'pi pi-play'"
+              [styleClass]="row.status === 'ACTIVE' ? 'action-btn danger-btn' : 'action-btn success-btn'"
+              [tooltip]="(row.status === 'ACTIVE' ? 'trips.actions.pauseSchedule' : 'trips.actions.activateSchedule') | translate"
+              tooltipPosition="top"
+              (clicked)="toggleTripRunStatus(row)"
+            />
+
+            <!-- Sửa -->
+            <app-button
+              *appHasPermission="'TRIP_MANAGE'"
+              variant="text"
+              size="small"
+              icon="pi pi-pencil"
+              styleClass="action-btn"
+              [tooltip]="'trips.actions.editSchedule' | translate"
+              tooltipPosition="top"
+              (clicked)="openEditTripRunDialog(row)"
+            />
+
+            <!-- Xóa -->
+            <app-button
+              *appHasPermission="'TRIP_MANAGE'"
+              variant="text"
+              size="small"
+              icon="pi pi-trash"
+              styleClass="action-btn danger-btn"
+              [tooltip]="'trips.actions.deleteSchedule' | translate"
+              tooltipPosition="top"
+              (clicked)="confirmDeleteTripRun(row)"
+            />
+          </div>
+        </ng-template>
+      </app-data-table>
+    </div>
+  }
+
+  <!-- DIALOGS -->
+  <app-trip-run-form-dialog
+    [visible]="showTripRunDialog()"
+    [tripRun]="selectedTripRun()"
+    [submitting]="tripRunSubmitting()"
+    [routeOptions]="routeOptions()"
+    [vehicleOptions]="vehicleOptions()"
+    [driverOptions]="driverOptions()"
+    (visibleChange)="showTripRunDialog.set($event)"
+    (save)="onSaveTripRun($event)"
+  />
+
+  <app-generate-trips-dialog
+    [visible]="showGenerateDialog()"
+    [tripRun]="generateTargetTripRun()"
+    (visibleChange)="showGenerateDialog.set($event)"
+    (generated)="onGeneratedSuccess()"
+  />
+
+  <app-trip-form-dialog
+    [visible]="showTripDialog()"
+    [trip]="selectedTrip()"
+    [submitting]="tripSubmitting()"
+    [routeOptions]="routeOptions()"
+    [vehicleOptions]="vehicleOptions()"
+    [driverOptions]="driverOptions()"
+    (visibleChange)="showTripDialog.set($event)"
+    (save)="onSaveTrip($event)"
+  />
+
+  <app-trip-status-dialog
+    [visible]="showTripStatusDialog()"
+    [trip]="targetStatusTrip()"
+    [submitting]="tripStatusSubmitting()"
+    (visibleChange)="showTripStatusDialog.set($event)"
+    (save)="onSaveTripStatus($event)"
+  />
+
+  <!-- CONFIRM DELETE MODAL -->
+  <app-confirm-modal
+    [isOpen]="showDeleteModal()"
+    [title]="'trips.confirmDelete.title' | translate"
+    [message]="'trips.confirmDelete.message' | translate:{ name: deleteTargetTripRun()?.name || '' }"
+    [danger]="true"
+    [loading]="tripRunSubmitting()"
+    (isOpenChange)="showDeleteModal.set($event)"
+    (confirm)="onExecuteDeleteTripRun()"
+    (cancel)="showDeleteModal.set(false)"
+  />
+</div>

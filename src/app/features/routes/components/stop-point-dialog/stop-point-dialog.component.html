@@ -36,18 +36,14 @@
     </div>
 
     <!-- TỈNH / KHU VỰC -->
-    <app-form-field
+    <app-select
+      formControlName="locationId"
       [label]="'routes.stopPointForm.locationLabel' | translate"
       [required]="true"
-      [control]="form.get('locationId')"
-    >
-      <app-select
-        formControlName="locationId"
-        [options]="locationOptions"
-        [placeholder]="'common.actions.select' | translate"
-        width="100%"
-      />
-    </app-form-field>
+      [options]="locationOptions"
+      [placeholder]="'common.actions.select' | translate"
+      width="100%"
+    />
 
     <!-- ĐỊA CHỈ -->
     <app-input

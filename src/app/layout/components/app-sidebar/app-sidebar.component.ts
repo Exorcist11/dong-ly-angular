@@ -44,10 +44,16 @@ export const MENU_CONFIG: NavGroup[] = [
         permission: 'USER_READ',
       },
       {
-        labelKey: 'navigation.items.tripsAndRoutes',
+        labelKey: 'navigation.items.routes',
         route: '/routes',
         icon: 'pi pi-map',
         permission: 'ROUTE_READ',
+      },
+      {
+        labelKey: 'navigation.items.trips',
+        route: '/trips',
+        icon: 'pi pi-compass',
+        permission: 'TRIP_READ',
       },
       {
         labelKey: 'navigation.items.vehicles',

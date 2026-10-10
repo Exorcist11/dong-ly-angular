@@ -1,0 +1,117 @@
+<app-dialog
+  [visible]="visible"
+  [header]="tripRun ? ('trips.generate.titleWithRun' | translate:{ name: tripRun.name }) : ('trips.generate.title' | translate)"
+  size="xl"
+  [submitLoading]="isExecuting()"
+  [submitDisabled]="isExecuting() || !previewData() || previewData()?.willCreateCount === 0"
+  [submitLabel]="previewData() && previewData()!.willCreateCount > 0 ? ('trips.generate.submitWithCount' | translate:{ count: previewData()!.willCreateCount }) : ('trips.generate.submitDefault' | translate)"
+  submitIcon="pi pi-bolt"
+  [cancelLabel]="'common.actions.close' | translate"
+  (visibleChange)="onClose()"
+  (submitted)="onExecute()"
+  (cancelled)="onClose()"
+>
+  <div class="generate-dialog-body">
+    <div class="notice-box">
+      <i class="pi pi-info-circle text-primary text-xl"></i>
+      <div>
+        <p class="font-medium text-sm">{{ 'trips.generate.noticeTitle' | translate }}</p>
+        <p class="text-xs text-muted">
+          {{ 'trips.generate.noticeDesc' | translate }}
+        </p>
+      </div>
+    </div>
+
+    <form [formGroup]="form" class="date-range-form" (ngSubmit)="onPreview()">
+      <div class="form-row">
+        <app-form-field
+          [label]="'trips.generate.fromDate' | translate"
+          [required]="true"
+          [control]="form.get('fromDate')"
+        >
+          <app-input type="date" formControlName="fromDate" />
+        </app-form-field>
+
+        <app-form-field
+          [label]="'trips.generate.toDate' | translate"
+          [required]="true"
+          [control]="form.get('toDate')"
+        >
+          <app-input type="date" formControlName="toDate" />
+        </app-form-field>
+
+        <div class="action-col">
+          <app-button
+            type="button"
+            variant="secondary"
+            [loading]="isPreviewing()"
+            [disabled]="isPreviewing() || form.invalid"
+            icon="pi pi-search"
+            [label]="'trips.generate.previewBtn' | translate"
+            (clicked)="onPreview()"
+          />
+        </div>
+      </div>
+    </form>
+
+    <!-- Preview Results Section -->
+    @if (previewData(); as preview) {
+      <div class="preview-section">
+        <div class="stats-summary">
+          <div class="stat-pill total">
+            <span class="label">{{ 'trips.generate.totalDates' | translate }}</span>
+            <span class="val font-semibold">{{ preview.totalDatesChecked }}</span>
+          </div>
+          <div class="stat-pill create">
+            <span class="label">{{ 'trips.generate.willCreate' | translate }}</span>
+            <span class="val font-bold text-success">+{{ preview.willCreateCount }}</span>
+          </div>
+          <div class="stat-pill skip">
+            <span class="label">{{ 'trips.generate.alreadyExists' | translate }}</span>
+            <span class="val font-bold text-warn">{{ preview.alreadyExistsCount }}</span>
+          </div>
+        </div>
+
+        <div class="preview-table-wrapper">
+          <table class="preview-table">
+            <thead>
+              <tr>
+                <th>{{ 'trips.generate.tableDate' | translate }}</th>
+                <th>{{ 'trips.generate.tableDay' | translate }}</th>
+                <th>{{ 'trips.generate.tableTime' | translate }}</th>
+                <th>{{ 'trips.generate.tableRoute' | translate }}</th>
+                <th>{{ 'trips.generate.tableVehicle' | translate }}</th>
+                <th>{{ 'trips.generate.tableDrivers' | translate }}</th>
+                <th>{{ 'trips.generate.tableStatus' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of preview.items; track item.targetDate + item.tripRunId) {
+                <tr [class.skipped-row]="item.alreadyExists">
+                  <td class="font-medium">{{ formatDate(item.targetDate) }}</td>
+                  <td>{{ getDayLabel(item.dayOfWeek) }}</td>
+                  <td>{{ formatTime(item.departureTime) }}</td>
+                  <td>{{ item.routeName || item.routeCode }}</td>
+                  <td>{{ item.vehiclePlateNumber || ('trips.labels.unassigned' | translate) }}</td>
+                  <td>
+                    <div class="driver-info">
+                      <span>{{ item.driverName || ('trips.labels.unassigned' | translate) }}</span>
+                      <small class="text-muted">{{ item.assistantDriverName || '' }}</small>
+                    </div>
+                  </td>
+                  <td>
+                    @if (item.alreadyExists) {
+                      <span class="badge badge-warn">{{ 'trips.generate.badgeSkipped' | translate }}</span>
+                    } @else {
+                      <span class="badge badge-success">{{ 'trips.generate.badgeValid' | translate }}</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  </div>
+</app-dialog>

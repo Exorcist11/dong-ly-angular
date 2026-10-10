@@ -49,18 +49,14 @@
     </div>
 
     <div class="form-row two-cols">
-      <app-form-field
+      <app-select
+        formControlName="licenseClass"
         [label]="'fleet.drivers.form.licenseClassLabel' | translate"
         [required]="true"
-        [control]="form.get('licenseClass')"
-      >
-        <app-select
-          formControlName="licenseClass"
-          [options]="licenseClassOptions"
-          [placeholder]="'fleet.drivers.form.licenseClassPlaceholder' | translate"
-          width="100%"
-        />
-      </app-form-field>
+        [options]="licenseClassOptions"
+        [placeholder]="'fleet.drivers.form.licenseClassPlaceholder' | translate"
+        width="100%"
+      />
 
       <app-input
         type="date"

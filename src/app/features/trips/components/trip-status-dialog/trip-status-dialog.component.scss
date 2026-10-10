@@ -1,0 +1,33 @@
+.status-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 0.5rem 0;
+}
+
+.current-status-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-surface-sunken, #f4f1ec);
+  border: 1px solid var(--color-border, #d9d4cc);
+  border-radius: 8px;
+  font-size: 0.875rem;
+
+  .label {
+    color: var(--color-text-secondary, #3a3733);
+  }
+}
+
+.alert-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-surface-sunken, #f4f1ec);
+  border: 1px solid var(--color-border, #d9d4cc);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #3a3733);
+}

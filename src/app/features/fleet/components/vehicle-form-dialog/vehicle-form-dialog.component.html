@@ -21,18 +21,14 @@
         [errorMessage]="form.get('plateNumber')?.touched && form.get('plateNumber')?.invalid ? ('fleet.vehicles.form.plateNumberPatternError' | translate) : ''"
       />
 
-      <app-form-field
+      <app-select
+        formControlName="vehicleType"
         [label]="'fleet.vehicles.form.vehicleTypeLabel' | translate"
         [required]="true"
-        [control]="form.get('vehicleType')"
-      >
-        <app-select
-          formControlName="vehicleType"
-          [options]="vehicleTypeOptions"
-          [placeholder]="'fleet.vehicles.form.vehicleTypePlaceholder' | translate"
-          width="100%"
-        />
-      </app-form-field>
+        [options]="vehicleTypeOptions"
+        [placeholder]="'fleet.vehicles.form.vehicleTypePlaceholder' | translate"
+        width="100%"
+      />
     </div>
 
     <div class="form-row two-cols">
@@ -59,18 +55,14 @@
         [placeholder]="'fleet.vehicles.form.manufactureYearPlaceholder' | translate"
       />
 
-      <app-form-field
+      <app-select
+        formControlName="totalFloors"
         [label]="'fleet.vehicles.form.totalFloorsLabel' | translate"
         [required]="true"
-        [control]="form.get('totalFloors')"
-      >
-        <app-select
-          formControlName="totalFloors"
-          [options]="floorOptions"
-          [placeholder]="'fleet.vehicles.form.totalFloorsPlaceholder' | translate"
-          width="100%"
-        />
-      </app-form-field>
+        [options]="floorOptions"
+        [placeholder]="'fleet.vehicles.form.totalFloorsPlaceholder' | translate"
+        width="100%"
+      />
     </div>
 
     <div class="form-row two-cols">

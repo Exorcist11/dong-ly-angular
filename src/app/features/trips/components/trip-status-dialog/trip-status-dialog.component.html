@@ -1,0 +1,41 @@
+<app-dialog
+  [visible]="visible"
+  [header]="'trips.statusDialog.title' | translate:{ code: (trip ? trip.code : '') }"
+  size="md"
+  [submitLoading]="submitting"
+  [submitDisabled]="submitting || statusOptions.length === 0"
+  [submitLabel]="'trips.statusDialog.submitBtn' | translate"
+  submitIcon="pi pi-check"
+  [cancelLabel]="'common.actions.cancel' | translate"
+  (visibleChange)="onClose()"
+  (submitted)="onSubmit()"
+  (cancelled)="onClose()"
+>
+  <form [formGroup]="form" class="status-form" (ngSubmit)="onSubmit()">
+    @if (statusOptions.length === 0) {
+      <div class="alert-box">
+        <i class="pi pi-info-circle"></i>
+        <span>{{ 'trips.statusDialog.terminalStateAlert' | translate:{ status: (trip?.status ?? '') } }}</span>
+      </div>
+    } @else {
+      <div class="current-status-box">
+        <span class="label">{{ 'trips.statusDialog.currentStatusLabel' | translate }}</span>
+        <span class="font-bold text-primary">{{ trip?.status }}</span>
+      </div>
+
+      <app-select
+        formControlName="status"
+        [label]="'trips.statusDialog.selectStatusLabel' | translate"
+        [required]="true"
+        [options]="statusOptions"
+        [placeholder]="'trips.statusDialog.selectStatusPlaceholder' | translate"
+      />
+
+      <app-input
+        formControlName="note"
+        [label]="'trips.statusDialog.noteLabel' | translate"
+        [placeholder]="'trips.statusDialog.notePlaceholder' | translate"
+      />
+    }
+  </form>
+</app-dialog>

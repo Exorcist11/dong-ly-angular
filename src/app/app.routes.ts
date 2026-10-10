@@ -59,6 +59,15 @@ export const routes: Routes = [
             (m) => m.FleetListPageComponent
           ),
       },
+      {
+        path: 'trips',
+        canActivate: [permissionGuard],
+        data: { permission: 'TRIP_READ' },
+        loadComponent: () =>
+          import('./features/trips/pages/trip-management-page/trip-management-page.component').then(
+            (m) => m.TripManagementPageComponent
+          ),
+      },
     ],
   },
   {
