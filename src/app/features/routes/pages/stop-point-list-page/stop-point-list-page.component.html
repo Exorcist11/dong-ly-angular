@@ -1,0 +1,114 @@
+<div class="route-page-container">
+  <!-- PAGE HEADER -->
+  <app-page-header
+    [title]="'routes.stopsTitle' | translate"
+    [subtitle]="'routes.stopsSubtitle' | translate"
+    [breadcrumbs]="breadcrumbs()"
+  >
+    <div actions class="header-action-buttons">
+      <app-button
+        *appHasPermission="'ROUTE_MANAGE'"
+        [label]="'routes.buttons.addStopPoint' | translate"
+        variant="primary"
+        icon="pi pi-plus"
+        (clicked)="openCreateStopPointDialog()"
+      />
+    </div>
+  </app-page-header>
+
+  <!-- STOP POINTS TABLE CARD -->
+  <div class="saas-card table-card">
+    <app-data-table
+      [data]="stopPoints()"
+      [columns]="stopPointColumns()"
+      [totalRecords]="totalStopPoints()"
+      [loading]="stopPointLoading()"
+      [pageSize]="stopPointPageSize()"
+      [first]="stopPointPage() * stopPointPageSize()"
+      [searchable]="true"
+      searchPlaceholder="Tìm kiếm tên điểm, mã, địa chỉ..."
+      [filters]="stopPointFilterConfigs()"
+      (lazyLoad)="onStopPointChangeLazy($event)"
+      (searchChange)="onStopPointSearch($event)"
+      (filterChange)="onStopPointFilterChange($event)"
+    >
+      <!-- CỘT CODE -->
+      <ng-template appTableCell="code" let-item>
+        <span class="route-code-tag">{{ item.code }}</span>
+      </ng-template>
+
+      <!-- CỘT NAME -->
+      <ng-template appTableCell="name" let-item>
+        <span class="route-name-text">{{ item.name }}</span>
+      </ng-template>
+
+      <!-- CỘT LOCATION -->
+      <ng-template appTableCell="locationName" let-item>
+        <span class="loc-text">{{ item.locationName }}</span>
+      </ng-template>
+
+      <!-- CỘT ADDRESS -->
+      <ng-template appTableCell="address" let-item>
+        <span class="address-text">{{ item.address }}</span>
+      </ng-template>
+
+      <!-- CỘT PHONE -->
+      <ng-template appTableCell="contactPhone" let-item>
+        <span>{{ item.contactPhone || '—' }}</span>
+      </ng-template>
+
+      <!-- CỘT STATUS -->
+      <ng-template appTableCell="status" let-item>
+        <app-status-badge [status]="item.status" />
+      </ng-template>
+
+      <!-- CỘT ACTIONS -->
+      <ng-template appTableCell="actions" let-item>
+        <div class="row-actions">
+          <!-- CHỈNH SỬA ĐIỂM -->
+          <app-button
+            *appHasPermission="'ROUTE_MANAGE'"
+            icon="pi pi-pencil"
+            variant="text"
+            size="small"
+            styleClass="action-btn"
+            [tooltip]="'common.actions.edit' | translate"
+            tooltipPosition="top"
+            (clicked)="openEditStopPointDialog(item)"
+          />
+
+          <!-- KÍCH HOẠT / NGỪNG HOẠT ĐỘNG -->
+          <app-button
+            *appHasPermission="'ROUTE_MANAGE'"
+            [icon]="item.status === 'ACTIVE' ? 'pi pi-ban' : 'pi pi-check-circle'"
+            variant="text"
+            size="small"
+            [styleClass]="item.status === 'ACTIVE' ? 'action-btn danger-btn' : 'action-btn success-btn'"
+            [tooltip]="(item.status === 'ACTIVE' ? 'routes.confirmations.deactivate' : 'routes.confirmations.activate') | translate"
+            tooltipPosition="top"
+            (clicked)="confirmToggleStopPointStatus(item)"
+          />
+        </div>
+      </ng-template>
+    </app-data-table>
+  </div>
+
+  <!-- DIALOG FORM ĐIỂM ĐÓN/TRẢ -->
+  <app-stop-point-dialog
+    [visible]="showStopPointDialog()"
+    [stopPoint]="editingStopPoint()"
+    [locations]="locations()"
+    [submitting]="stopPointDialogSubmitting()"
+    (visibleChange)="showStopPointDialog.set($event)"
+    (save)="saveStopPoint($event)"
+  />
+
+  <!-- MODAL XÁC NHẬN TRẠNG THÁI -->
+  <app-confirm-modal
+    [isOpen]="showConfirmModal()"
+    [title]="confirmModalTitle()"
+    [message]="confirmModalMessage()"
+    (isOpenChange)="showConfirmModal.set($event)"
+    (confirm)="confirmModalAction()()"
+  />
+</div>

@@ -1,14 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { LayoutService } from '../../layout.service';
 import { AppUserMenuComponent } from '../app-user-menu/app-user-menu.component';
 import { Tag } from 'primeng/tag';
 import { Tooltip } from 'primeng/tooltip';
 import { Drawer } from 'primeng/drawer';
 import { AuthService } from '../../../core/auth/auth.service';
-
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
+import { filter } from 'rxjs';
 
 export interface NavItem {
   labelKey: string;
@@ -16,6 +16,7 @@ export interface NavItem {
   icon: string;
   isUpcoming?: boolean;
   permission?: string;
+  children?: NavItem[];
 }
 
 export interface NavGroup {
@@ -44,22 +45,61 @@ export const MENU_CONFIG: NavGroup[] = [
         permission: 'USER_READ',
       },
       {
-        labelKey: 'navigation.items.routes',
-        route: '/routes',
+        labelKey: 'navigation.items.routesGroup',
         icon: 'pi pi-map',
         permission: 'ROUTE_READ',
+        children: [
+          {
+            labelKey: 'navigation.items.routesList',
+            route: '/routes',
+            icon: 'pi pi-compass',
+            permission: 'ROUTE_READ',
+          },
+          {
+            labelKey: 'navigation.items.stopPoints',
+            route: '/routes/stops',
+            icon: 'pi pi-map-marker',
+            permission: 'ROUTE_READ',
+          },
+        ],
       },
       {
-        labelKey: 'navigation.items.trips',
-        route: '/trips',
+        labelKey: 'navigation.items.tripsGroup',
         icon: 'pi pi-compass',
         permission: 'TRIP_READ',
+        children: [
+          {
+            labelKey: 'navigation.items.tripList',
+            route: '/trips',
+            icon: 'pi pi-send',
+            permission: 'TRIP_READ',
+          },
+          {
+            labelKey: 'navigation.items.tripRuns',
+            route: '/trips/runs',
+            icon: 'pi pi-calendar',
+            permission: 'TRIP_READ',
+          },
+        ],
       },
       {
-        labelKey: 'navigation.items.vehicles',
-        route: '/vehicles',
+        labelKey: 'navigation.items.vehiclesGroup',
         icon: 'pi pi-truck',
         permission: 'FLEET_READ',
+        children: [
+          {
+            labelKey: 'navigation.items.vehicleList',
+            route: '/vehicles',
+            icon: 'pi pi-car',
+            permission: 'FLEET_READ',
+          },
+          {
+            labelKey: 'navigation.items.driverList',
+            route: '/vehicles/drivers',
+            icon: 'pi pi-id-card',
+            permission: 'FLEET_READ',
+          },
+        ],
       },
       {
         labelKey: 'navigation.items.bookings',
@@ -106,10 +146,73 @@ export const MENU_CONFIG: NavGroup[] = [
 export class AppSidebarComponent {
   readonly layoutService = inject(LayoutService);
   readonly authService = inject(AuthService);
+  readonly router = inject(Router);
 
   readonly menuGroups = MENU_CONFIG;
+  readonly expandedMenus = signal<Record<string, boolean>>({});
+
+  constructor() {
+    this.syncExpandedState(this.router.url);
+
+    this.router.events
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        this.syncExpandedState(event.urlAfterRedirects || event.url);
+      });
+  }
+
+  private syncExpandedState(currentUrl: string): void {
+    const nextState = { ...this.expandedMenus() };
+    for (const group of this.menuGroups) {
+      for (const item of group.items) {
+        if (item.children && item.children.length > 0) {
+          const isChildActive = item.children.some(
+            (child) => child.route && (currentUrl === child.route || currentUrl.startsWith(child.route + '/'))
+          );
+          if (isChildActive) {
+            nextState[item.labelKey] = true;
+          }
+        }
+      }
+    }
+    this.expandedMenus.set(nextState);
+  }
+
+  toggleSubmenu(item: NavItem): void {
+    if (this.layoutService.sidebarCollapsed()) {
+      // Khi đang thu nhỏ sidebar, nhấn vào mở rộng sidebar và mở submenu
+      this.layoutService.sidebarCollapsed.set(false);
+      this.expandedMenus.update((prev) => ({
+        ...prev,
+        [item.labelKey]: true,
+      }));
+      return;
+    }
+
+    this.expandedMenus.update((prev) => ({
+      ...prev,
+      [item.labelKey]: !prev[item.labelKey],
+    }));
+  }
+
+  isExpanded(item: NavItem): boolean {
+    return !!this.expandedMenus()[item.labelKey];
+  }
+
+  isParentActive(item: NavItem): boolean {
+    if (!item.children || item.children.length === 0) {
+      return false;
+    }
+    const currentUrl = this.router.url;
+    return item.children.some(
+      (child) => child.route && (currentUrl === child.route || currentUrl.startsWith(child.route + '/'))
+    );
+  }
 
   hasItemAccess(item: NavItem): boolean {
+    if (item.children && item.children.length > 0) {
+      return item.children.some((child) => this.hasItemAccess(child));
+    }
     if (!item.permission) {
       return true;
     }

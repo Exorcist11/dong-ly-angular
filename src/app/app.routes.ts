@@ -45,28 +45,79 @@ export const routes: Routes = [
         path: 'routes',
         canActivate: [permissionGuard],
         data: { permission: 'ROUTE_READ' },
-        loadComponent: () =>
-          import('./features/routes/pages/route-list-page/route-list-page.component').then(
-            (m) => m.RouteListPageComponent
-          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/routes/pages/route-list-page/route-list-page.component').then(
+                (m) => m.RouteListPageComponent
+              ),
+          },
+          {
+            path: 'stops',
+            loadComponent: () =>
+              import('./features/routes/pages/stop-point-list-page/stop-point-list-page.component').then(
+                (m) => m.StopPointListPageComponent
+              ),
+          },
+        ],
+      },
+      {
+        path: 'stops',
+        redirectTo: 'routes/stops',
+        pathMatch: 'full',
       },
       {
         path: 'vehicles',
         canActivate: [permissionGuard],
         data: { permission: 'FLEET_READ' },
-        loadComponent: () =>
-          import('./features/fleet/pages/fleet-list-page/fleet-list-page.component').then(
-            (m) => m.FleetListPageComponent
-          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/fleet/pages/fleet-list-page/fleet-list-page.component').then(
+                (m) => m.FleetListPageComponent
+              ),
+          },
+          {
+            path: 'drivers',
+            loadComponent: () =>
+              import('./features/fleet/pages/driver-list-page/driver-list-page.component').then(
+                (m) => m.DriverListPageComponent
+              ),
+          },
+        ],
+      },
+      {
+        path: 'drivers',
+        redirectTo: 'vehicles/drivers',
+        pathMatch: 'full',
       },
       {
         path: 'trips',
         canActivate: [permissionGuard],
         data: { permission: 'TRIP_READ' },
-        loadComponent: () =>
-          import('./features/trips/pages/trip-management-page/trip-management-page.component').then(
-            (m) => m.TripManagementPageComponent
-          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/trips/pages/trip-management-page/trip-management-page.component').then(
+                (m) => m.TripManagementPageComponent
+              ),
+          },
+          {
+            path: 'runs',
+            loadComponent: () =>
+              import('./features/trips/pages/trip-run-list-page/trip-run-list-page.component').then(
+                (m) => m.TripRunListPageComponent
+              ),
+          },
+        ],
+      },
+      {
+        path: 'trip-runs',
+        redirectTo: 'trips/runs',
+        pathMatch: 'full',
       },
     ],
   },

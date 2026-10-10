@@ -62,8 +62,49 @@
                       />
                     }
                   </div>
+                } @else if (item.children && item.children.length > 0) {
+                  <!-- Item with Submenu (Parent) -->
+                  <div class="menu-collapsible-wrapper">
+                    <button
+                      type="button"
+                      class="nav-item nav-parent"
+                      [class.expanded]="isExpanded(item)"
+                      [class.parent-active]="isParentActive(item)"
+                      (click)="toggleSubmenu(item)"
+                      [pTooltip]="layoutService.sidebarCollapsed() ? (item.labelKey | translate) : ''"
+                      tooltipPosition="right"
+                    >
+                      <i [class]="item.icon + ' item-icon'"></i>
+                      @if (!layoutService.sidebarCollapsed() || layoutService.mobileMenuOpen()) {
+                        <span class="item-label">{{ item.labelKey | translate }}</span>
+                        <i
+                          class="pi pi-chevron-down submenu-arrow"
+                          [class.rotated]="isExpanded(item)"
+                        ></i>
+                      }
+                    </button>
+
+                    @if (isExpanded(item) && (!layoutService.sidebarCollapsed() || layoutService.mobileMenuOpen())) {
+                      <div class="submenu-container">
+                        @for (subItem of item.children; track subItem.labelKey) {
+                          @if (hasItemAccess(subItem)) {
+                            <a
+                              [routerLink]="subItem.route"
+                              routerLinkActive="active-link"
+                              [routerLinkActiveOptions]="{ exact: true }"
+                              class="nav-item sub-nav-item"
+                              (click)="onNavigate()"
+                            >
+                              <i [class]="subItem.icon + ' sub-item-icon'"></i>
+                              <span class="item-label">{{ subItem.labelKey | translate }}</span>
+                            </a>
+                          }
+                        }
+                      </div>
+                    }
+                  </div>
                 } @else {
-                  <!-- Active Link Item -->
+                  <!-- Standard Single Route Link Item -->
                   <a
                     [routerLink]="item.route"
                     routerLinkActive="active-link"

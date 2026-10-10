@@ -9,8 +9,8 @@ import { RouteListPageComponent } from './route-list-page.component';
 import { RouteService } from '../../services/route.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { AuthService } from '../../../../core/auth/auth.service';
-import { PageResponse, ApiResponse } from '../../../../core/models/api-response.model';
-import { RouteSummary, StopPoint, LocationItem, RouteDetail } from '../../models/route.model';
+import { PageResponse } from '../../../../core/models/api-response.model';
+import { RouteSummary, LocationItem, RouteDetail } from '../../models/route.model';
 
 describe('RouteListPageComponent', () => {
   let component: RouteListPageComponent;
@@ -39,19 +39,6 @@ describe('RouteListPageComponent', () => {
     },
   ];
 
-  const mockStopPoints: StopPoint[] = [
-    {
-      id: 'sp-1',
-      code: 'BX_NUOC_NGAM',
-      name: 'Bến xe Nước Ngầm',
-      locationId: 'loc-1',
-      locationName: 'Hà Nội',
-      address: 'Km8 Đường Giải Phóng, Hoàng Mai, Hà Nội',
-      status: 'ACTIVE',
-      createdAt: '2026-01-01T00:00:00Z',
-    },
-  ];
-
   const mockRouteDetail: RouteDetail = {
     ...mockRoutes[0],
     description: 'Tuyến chính cao tốc Pháp Vân',
@@ -75,35 +62,14 @@ describe('RouteListPageComponent', () => {
     timestamp: '2026-03-01T00:00:00Z',
   };
 
-  const mockStopPointsPageResponse: PageResponse<StopPoint> = {
-    success: true,
-    message: 'OK',
-    data: {
-      items: mockStopPoints,
-      pagination: {
-        page: 0,
-        size: 10,
-        totalElements: 1,
-        totalPages: 1,
-        isFirst: true,
-        isLast: true,
-      },
-    },
-    timestamp: '2026-03-01T00:00:00Z',
-  };
-
   beforeEach(async () => {
     routeServiceMock = {
       getActiveLocations: vi.fn().mockReturnValue(of({ success: true, data: mockLocations })),
       searchRoutes: vi.fn().mockReturnValue(of(mockRoutesPageResponse)),
-      searchStopPoints: vi.fn().mockReturnValue(of(mockStopPointsPageResponse)),
       getRouteById: vi.fn().mockReturnValue(of({ success: true, data: mockRouteDetail })),
       createRoute: vi.fn().mockReturnValue(of({ success: true, data: mockRouteDetail })),
       updateRoute: vi.fn().mockReturnValue(of({ success: true, data: mockRouteDetail })),
       updateRouteStatus: vi.fn().mockReturnValue(of({ success: true, data: mockRouteDetail })),
-      createStopPoint: vi.fn().mockReturnValue(of({ success: true, data: mockStopPoints[0] })),
-      updateStopPoint: vi.fn().mockReturnValue(of({ success: true, data: mockStopPoints[0] })),
-      updateStopPointStatus: vi.fn().mockReturnValue(of({ success: true, data: mockStopPoints[0] })),
       updateRouteStops: vi.fn().mockReturnValue(of({ success: true, data: mockRouteDetail })),
     };
 
@@ -142,11 +108,10 @@ describe('RouteListPageComponent', () => {
     fixture.detectChanges();
   });
 
-  it('nên khởi tạo và tải danh sách tuyến đường và điểm dừng ban đầu', () => {
+  it('nên khởi tạo và tải danh sách tuyến đường ban đầu', () => {
     expect(component).toBeTruthy();
     expect(routeServiceMock.getActiveLocations).toHaveBeenCalled();
     expect(routeServiceMock.searchRoutes).toHaveBeenCalled();
-    expect(routeServiceMock.searchStopPoints).toHaveBeenCalled();
     expect(component.routes().length).toBe(1);
     expect(component.totalRoutes()).toBe(1);
   });
@@ -161,15 +126,6 @@ describe('RouteListPageComponent', () => {
     component.openEditRouteDialog(mockRoutes[0]);
     expect(component.showRouteDialog()).toBe(true);
     expect(component.editingRoute()).toEqual(mockRoutes[0]);
-  });
-
-  it('nên chuyển đổi tab sang stopPoints và mở dialog thêm điểm dừng', () => {
-    component.activeMainTab.set('stopPoints');
-    expect(component.activeMainTab()).toBe('stopPoints');
-
-    component.openCreateStopPointDialog();
-    expect(component.showStopPointDialog()).toBe(true);
-    expect(component.editingStopPoint()).toBeNull();
   });
 
   it('nên lưu tạo mới tuyến đường thành công và đóng dialog', () => {

@@ -6,225 +6,109 @@
     [breadcrumbs]="breadcrumbs()"
   >
     <div actions class="header-action-buttons">
-      @if (activeMainTab() === 'routes') {
-        <app-button
-          *appHasPermission="'ROUTE_MANAGE'"
-          [label]="'routes.buttons.addRoute' | translate"
-          variant="primary"
-          icon="pi pi-plus"
-          (clicked)="openCreateRouteDialog()"
-        />
-      } @else {
-        <app-button
-          *appHasPermission="'ROUTE_MANAGE'"
-          [label]="'routes.buttons.addStopPoint' | translate"
-          variant="primary"
-          icon="pi pi-plus"
-          (clicked)="openCreateStopPointDialog()"
-        />
-      }
+      <app-button
+        *appHasPermission="'ROUTE_MANAGE'"
+        [label]="'routes.buttons.addRoute' | translate"
+        variant="primary"
+        icon="pi pi-plus"
+        (clicked)="openCreateRouteDialog()"
+      />
     </div>
   </app-page-header>
 
-  <!-- NAVIGATION TABS -->
-  <div class="tabs-bar">
-    <button
-      type="button"
-      class="nav-tab"
-      [class.active]="activeMainTab() === 'routes'"
-      (click)="activeMainTab.set('routes')"
+  <!-- ROUTES TABLE CARD -->
+  <div class="saas-card table-card">
+    <app-data-table
+      [data]="routes()"
+      [columns]="routeColumns()"
+      [totalRecords]="totalRoutes()"
+      [loading]="routeLoading()"
+      [pageSize]="routePageSize()"
+      [first]="routePage() * routePageSize()"
+      [searchable]="true"
+      searchPlaceholder="Tìm kiếm mã tuyến, tên tuyến..."
+      [filters]="routeFilterConfigs()"
+      (lazyLoad)="onRouteChangeLazy($event)"
+      (searchChange)="onRouteSearch($event)"
+      (filterChange)="onRouteFilterChange($event)"
     >
-      <i class="pi pi-compass"></i>
-      <span>{{ 'routes.tabs.routes' | translate }}</span>
-      <span class="count-badge">{{ totalRoutes() }}</span>
-    </button>
+      <!-- CỘT CODE -->
+      <ng-template appTableCell="code" let-item>
+        <span class="route-code-tag">{{ item.code }}</span>
+      </ng-template>
 
-    <button
-      type="button"
-      class="nav-tab"
-      [class.active]="activeMainTab() === 'stopPoints'"
-      (click)="activeMainTab.set('stopPoints')"
-    >
-      <i class="pi pi-map-marker"></i>
-      <span>{{ 'routes.tabs.stopPoints' | translate }}</span>
-      <span class="count-badge">{{ totalStopPoints() }}</span>
-    </button>
+      <!-- CỘT NAME -->
+      <ng-template appTableCell="name" let-item>
+        <span class="route-name-text">{{ item.name }}</span>
+      </ng-template>
+
+      <!-- CỘT ORIGIN -->
+      <ng-template appTableCell="originLocation" let-item>
+        <span class="loc-text">{{ item.originLocation?.name }}</span>
+      </ng-template>
+
+      <!-- CỘT DESTINATION -->
+      <ng-template appTableCell="destinationLocation" let-item>
+        <span class="loc-text">{{ item.destinationLocation?.name }}</span>
+      </ng-template>
+
+      <!-- CỘT DISTANCE -->
+      <ng-template appTableCell="distanceKm" let-item>
+        <span>{{ item.distanceKm ? item.distanceKm + ' km' : '—' }}</span>
+      </ng-template>
+
+      <!-- CỘT TOTAL STOPS -->
+      <ng-template appTableCell="totalStops" let-item>
+        <span class="stops-count-badge">{{ item.totalStops }}</span>
+      </ng-template>
+
+      <!-- CỘT STATUS -->
+      <ng-template appTableCell="status" let-item>
+        <app-status-badge [status]="item.status" />
+      </ng-template>
+
+      <!-- CỘT ACTIONS -->
+      <ng-template appTableCell="actions" let-item>
+        <div class="row-actions">
+          <!-- CẤU HÌNH ĐIỂM DỪNG -->
+          <app-button
+            *appHasPermission="'ROUTE_MANAGE'"
+            icon="pi pi-list"
+            variant="text"
+            size="small"
+            styleClass="action-btn config-btn"
+            [tooltip]="'routes.buttons.configStops' | translate"
+            tooltipPosition="top"
+            (clicked)="openStopsConfigDialog(item)"
+          />
+
+          <!-- CHỈNH SỬA TUYẾN -->
+          <app-button
+            *appHasPermission="'ROUTE_MANAGE'"
+            icon="pi pi-pencil"
+            variant="text"
+            size="small"
+            styleClass="action-btn"
+            [tooltip]="'common.actions.edit' | translate"
+            tooltipPosition="top"
+            (clicked)="openEditRouteDialog(item)"
+          />
+
+          <!-- KÍCH HOẠT / NGỪNG HOẠT ĐỘNG -->
+          <app-button
+            *appHasPermission="'ROUTE_MANAGE'"
+            [icon]="item.status === 'ACTIVE' ? 'pi pi-ban' : 'pi pi-check-circle'"
+            variant="text"
+            size="small"
+            [styleClass]="item.status === 'ACTIVE' ? 'action-btn danger-btn' : 'action-btn success-btn'"
+            [tooltip]="(item.status === 'ACTIVE' ? 'routes.confirmations.deactivate' : 'routes.confirmations.activate') | translate"
+            tooltipPosition="top"
+            (clicked)="confirmToggleRouteStatus(item)"
+          />
+        </div>
+      </ng-template>
+    </app-data-table>
   </div>
-
-  <!-- TAB CONTENT: ROUTES -->
-  @if (activeMainTab() === 'routes') {
-    <div class="saas-card table-card">
-      <app-data-table
-        [data]="routes()"
-        [columns]="routeColumns()"
-        [totalRecords]="totalRoutes()"
-        [loading]="routeLoading()"
-        [pageSize]="routePageSize()"
-        [first]="routePage() * routePageSize()"
-        [searchable]="true"
-        searchPlaceholder="Tìm kiếm mã tuyến, tên tuyến..."
-        [filters]="routeFilterConfigs()"
-        (lazyLoad)="onRouteChangeLazy($event)"
-        (searchChange)="onRouteSearch($event)"
-        (filterChange)="onRouteFilterChange($event)"
-      >
-        <!-- CỘT CODE -->
-        <ng-template appTableCell="code" let-item>
-          <span class="route-code-tag">{{ item.code }}</span>
-        </ng-template>
-
-        <!-- CỘT NAME -->
-        <ng-template appTableCell="name" let-item>
-          <span class="route-name-text">{{ item.name }}</span>
-        </ng-template>
-
-        <!-- CỘT ORIGIN -->
-        <ng-template appTableCell="originLocation" let-item>
-          <span class="loc-text">{{ item.originLocation?.name }}</span>
-        </ng-template>
-
-        <!-- CỘT DESTINATION -->
-        <ng-template appTableCell="destinationLocation" let-item>
-          <span class="loc-text">{{ item.destinationLocation?.name }}</span>
-        </ng-template>
-
-        <!-- CỘT DISTANCE -->
-        <ng-template appTableCell="distanceKm" let-item>
-          <span>{{ item.distanceKm ? item.distanceKm + ' km' : '—' }}</span>
-        </ng-template>
-
-        <!-- CỘT TOTAL STOPS -->
-        <ng-template appTableCell="totalStops" let-item>
-          <span class="stops-count-badge">{{ item.totalStops }}</span>
-        </ng-template>
-
-        <!-- CỘT STATUS -->
-        <ng-template appTableCell="status" let-item>
-          <app-status-badge [status]="item.status" />
-        </ng-template>
-
-        <!-- CỘT ACTIONS -->
-        <ng-template appTableCell="actions" let-item>
-          <div class="row-actions">
-            <!-- CẤU HÌNH ĐIỂM DỪNG -->
-            <app-button
-              *appHasPermission="'ROUTE_MANAGE'"
-              icon="pi pi-list"
-              variant="text"
-              size="small"
-              styleClass="action-btn config-btn"
-              [tooltip]="'routes.buttons.configStops' | translate"
-              tooltipPosition="top"
-              (clicked)="openStopsConfigDialog(item)"
-            />
-
-            <!-- CHỈNH SỬA TUYẾN -->
-            <app-button
-              *appHasPermission="'ROUTE_MANAGE'"
-              icon="pi pi-pencil"
-              variant="text"
-              size="small"
-              styleClass="action-btn"
-              [tooltip]="'common.actions.edit' | translate"
-              tooltipPosition="top"
-              (clicked)="openEditRouteDialog(item)"
-            />
-
-            <!-- KÍCH HOẠT / NGỪNG HOẠT ĐỘNG -->
-            <app-button
-              *appHasPermission="'ROUTE_MANAGE'"
-              [icon]="item.status === 'ACTIVE' ? 'pi pi-ban' : 'pi pi-check-circle'"
-              variant="text"
-              size="small"
-              [styleClass]="item.status === 'ACTIVE' ? 'action-btn danger-btn' : 'action-btn success-btn'"
-              [tooltip]="(item.status === 'ACTIVE' ? 'routes.confirmations.deactivate' : 'routes.confirmations.activate') | translate"
-              tooltipPosition="top"
-              (clicked)="confirmToggleRouteStatus(item)"
-            />
-          </div>
-        </ng-template>
-      </app-data-table>
-    </div>
-  }
-
-  <!-- TAB CONTENT: STOP POINTS -->
-  @if (activeMainTab() === 'stopPoints') {
-    <div class="saas-card table-card">
-      <app-data-table
-        [data]="stopPoints()"
-        [columns]="stopPointColumns()"
-        [totalRecords]="totalStopPoints()"
-        [loading]="stopPointLoading()"
-        [pageSize]="stopPointPageSize()"
-        [first]="stopPointPage() * stopPointPageSize()"
-        [searchable]="true"
-        searchPlaceholder="Tìm kiếm tên điểm, mã, địa chỉ..."
-        [filters]="stopPointFilterConfigs()"
-        (lazyLoad)="onStopPointChangeLazy($event)"
-        (searchChange)="onStopPointSearch($event)"
-        (filterChange)="onStopPointFilterChange($event)"
-      >
-        <!-- CỘT CODE -->
-        <ng-template appTableCell="code" let-item>
-          <span class="route-code-tag">{{ item.code }}</span>
-        </ng-template>
-
-        <!-- CỘT NAME -->
-        <ng-template appTableCell="name" let-item>
-          <span class="route-name-text">{{ item.name }}</span>
-        </ng-template>
-
-        <!-- CỘT LOCATION -->
-        <ng-template appTableCell="locationName" let-item>
-          <span class="loc-text">{{ item.locationName }}</span>
-        </ng-template>
-
-        <!-- CỘT ADDRESS -->
-        <ng-template appTableCell="address" let-item>
-          <span class="address-text">{{ item.address }}</span>
-        </ng-template>
-
-        <!-- CỘT PHONE -->
-        <ng-template appTableCell="contactPhone" let-item>
-          <span>{{ item.contactPhone || '—' }}</span>
-        </ng-template>
-
-        <!-- CỘT STATUS -->
-        <ng-template appTableCell="status" let-item>
-          <app-status-badge [status]="item.status" />
-        </ng-template>
-
-        <!-- CỘT ACTIONS -->
-        <ng-template appTableCell="actions" let-item>
-          <div class="row-actions">
-            <!-- CHỈNH SỬA ĐIỂM -->
-            <app-button
-              *appHasPermission="'ROUTE_MANAGE'"
-              icon="pi pi-pencil"
-              variant="text"
-              size="small"
-              styleClass="action-btn"
-              [tooltip]="'common.actions.edit' | translate"
-              tooltipPosition="top"
-              (clicked)="openEditStopPointDialog(item)"
-            />
-
-            <!-- KÍCH HOẠT / NGỪNG HOẠT ĐỘNG -->
-            <app-button
-              *appHasPermission="'ROUTE_MANAGE'"
-              [icon]="item.status === 'ACTIVE' ? 'pi pi-ban' : 'pi pi-check-circle'"
-              variant="text"
-              size="small"
-              [styleClass]="item.status === 'ACTIVE' ? 'action-btn danger-btn' : 'action-btn success-btn'"
-              [tooltip]="(item.status === 'ACTIVE' ? 'routes.confirmations.deactivate' : 'routes.confirmations.activate') | translate"
-              tooltipPosition="top"
-              (clicked)="confirmToggleStopPointStatus(item)"
-            />
-          </div>
-        </ng-template>
-      </app-data-table>
-    </div>
-  }
 
   <!-- DIALOG FORM TUYẾN ĐƯỜNG -->
   <app-route-form-dialog
@@ -234,16 +118,6 @@
     [submitting]="routeDialogSubmitting()"
     (visibleChange)="showRouteDialog.set($event)"
     (save)="saveRoute($event)"
-  />
-
-  <!-- DIALOG FORM ĐIỂM ĐÓN/TRẢ -->
-  <app-stop-point-dialog
-    [visible]="showStopPointDialog()"
-    [stopPoint]="editingStopPoint()"
-    [locations]="locations()"
-    [submitting]="stopPointDialogSubmitting()"
-    (visibleChange)="showStopPointDialog.set($event)"
-    (save)="saveStopPoint($event)"
   />
 
   <!-- DIALOG CẤU HÌNH THỨ TỰ ĐIỂM DỪNG -->

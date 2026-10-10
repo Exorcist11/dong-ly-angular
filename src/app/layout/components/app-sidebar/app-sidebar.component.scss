@@ -118,6 +118,11 @@
   gap: 3px;
 }
 
+.menu-collapsible-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .nav-item {
   display: flex;
   align-items: center;
@@ -131,6 +136,11 @@
   font-weight: 500;
   position: relative;
   cursor: pointer;
+  background: transparent;
+  border: none;
+  width: 100%;
+  font-family: inherit;
+  text-align: left;
   transition: background-color var(--ease, 200ms ease), color var(--ease, 200ms ease);
 
   .item-icon {
@@ -171,6 +181,29 @@
     }
   }
 
+  &.nav-parent {
+    &.parent-active {
+      color: #FFFFFF;
+
+      .item-icon {
+        color: var(--primary, #D71920);
+      }
+    }
+
+    .submenu-arrow {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.45);
+      transition: transform var(--ease, 200ms ease), color var(--ease, 200ms ease);
+      margin-left: auto;
+      flex-shrink: 0;
+
+      &.rotated {
+        transform: rotate(-180deg);
+        color: #FFFFFF;
+      }
+    }
+  }
+
   &.upcoming-item {
     opacity: 0.6;
     cursor: not-allowed;
@@ -178,6 +211,67 @@
     &:hover {
       opacity: 0.8;
       background-color: rgba(255, 255, 255, 0.03);
+    }
+  }
+}
+
+.submenu-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 10px;
+  margin: 2px 0 6px 14px;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.12);
+  animation: submenuSlideDown 150ms ease-out;
+}
+
+@keyframes submenuSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sub-nav-item {
+  height: 38px;
+  padding: 0 10px;
+  font-size: 13px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.68);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .sub-item-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #FFFFFF;
+
+    .sub-item-icon {
+      color: #FFFFFF;
+    }
+  }
+
+  &.active-link {
+    background-color: rgba(215, 25, 32, 0.14);
+    color: #FFFFFF;
+    font-weight: 600;
+
+    .sub-item-icon {
+      color: var(--primary, #D71920);
+    }
+
+    &::before {
+      display: none;
     }
   }
 }

@@ -1,0 +1,123 @@
+<div class="fleet-page-container">
+  <!-- PAGE HEADER -->
+  <app-page-header
+    [title]="'fleet.driversTitle' | translate"
+    [subtitle]="'fleet.driversSubtitle' | translate"
+    [breadcrumbs]="breadcrumbs()"
+  >
+    <div actions class="header-action-buttons">
+      <app-button
+        *appHasPermission="'FLEET_MANAGE'"
+        variant="primary"
+        icon="pi pi-user-plus"
+        [label]="'fleet.buttons.addDriver' | translate"
+        (clicked)="openCreateDriverDialog()"
+      />
+    </div>
+  </app-page-header>
+
+  <!-- DRIVERS TABLE -->
+  <div class="saas-card table-card">
+    <app-data-table
+      [data]="drivers()"
+      [columns]="driverColumns()"
+      [totalRecords]="totalDrivers()"
+      [loading]="driverLoading()"
+      [pageSize]="driverPageSize()"
+      [first]="driverPage() * driverPageSize()"
+      [searchable]="true"
+      searchPlaceholder="Tìm kiếm tên tài xế, mã NV, số điện thoại..."
+      [filters]="driverFilterConfigs()"
+      (lazyLoad)="onDriverLazyLoad($event)"
+      (searchChange)="onDriverSearch($event)"
+      (filterChange)="onDriverFilterChange($event)"
+    >
+      <!-- CODE COLUMN -->
+      <ng-template appTableCell="code" let-item>
+        <span class="code-badge">{{ item.code }}</span>
+      </ng-template>
+
+      <!-- FULL NAME & AVATAR -->
+      <ng-template appTableCell="fullName" let-item>
+        <div class="driver-name-cell">
+          <div class="driver-avatar">
+            <i class="pi pi-user"></i>
+          </div>
+          <div class="driver-details">
+            <span class="driver-name">{{ item.fullName }}</span>
+            <span class="driver-id-number">{{ item.phone }}</span>
+          </div>
+        </div>
+      </ng-template>
+
+      <!-- PHONE -->
+      <ng-template appTableCell="phone" let-item>
+        <span class="phone-text">{{ item.phone }}</span>
+      </ng-template>
+
+      <!-- LICENSE -->
+      <ng-template appTableCell="license" let-item>
+        <div class="license-cell">
+          <span class="license-type">{{ item.licenseClass }}</span>
+          <span class="license-number">{{ item.licenseNumber }}</span>
+        </div>
+      </ng-template>
+
+      <!-- EXPIRY DATE -->
+      <ng-template appTableCell="expiry" let-item>
+        <span class="date-text">{{ item.licenseExpiryDate | date: 'dd/MM/yyyy' }}</span>
+      </ng-template>
+
+      <!-- STATUS -->
+      <ng-template appTableCell="status" let-item>
+        <app-status-badge [status]="item.status" />
+      </ng-template>
+
+      <!-- ACTIONS -->
+      <ng-template appTableCell="actions" let-item>
+        <div class="row-actions">
+          <app-button
+            *appHasPermission="'FLEET_MANAGE'"
+            icon="pi pi-pencil"
+            variant="text"
+            size="small"
+            styleClass="action-btn"
+            [tooltip]="'fleet.actions.edit' | translate"
+            tooltipPosition="top"
+            (clicked)="openEditDriverDialog(item)"
+          />
+          <app-button
+            *appHasPermission="'FLEET_MANAGE'"
+            icon="pi pi-trash"
+            variant="text"
+            size="small"
+            styleClass="action-btn danger-btn"
+            [tooltip]="'fleet.actions.delete' | translate"
+            tooltipPosition="top"
+            (clicked)="confirmDeleteDriver(item)"
+          />
+        </div>
+      </ng-template>
+    </app-data-table>
+  </div>
+
+  <!-- DRIVER FORM DIALOG -->
+  <app-driver-form-dialog
+    [visible]="showDriverDialog()"
+    [driver]="editingDriver()"
+    [submitting]="submittingDriver()"
+    (visibleChange)="showDriverDialog.set($event)"
+    (save)="onSaveDriver($event)"
+  />
+
+  <!-- CONFIRM DELETE MODAL -->
+  <app-confirm-modal
+    [isOpen]="showDeleteConfirm()"
+    [title]="'fleet.confirmDelete.title' | translate"
+    [message]="'fleet.confirmDelete.message' | translate: { name: deletingName() }"
+    [confirmText]="'fleet.confirmDelete.confirmBtn' | translate"
+    [loading]="deletingInProgress()"
+    (isOpenChange)="showDeleteConfirm.set($event)"
+    (confirm)="executeDelete()"
+  />
+</div>

@@ -29,11 +29,7 @@ import {
 } from '../../../../shared/models/table.model';
 import {
   ConfigureSeatLayoutRequest,
-  CreateDriverRequest,
   CreateVehicleRequest,
-  Driver,
-  DriverStatus,
-  UpdateDriverRequest,
   UpdateVehicleRequest,
   VehicleSeat,
   VehicleStatus,
@@ -43,7 +39,6 @@ import {
 import { FleetService } from '../../services/fleet.service';
 import { VehicleFormDialogComponent } from '../../components/vehicle-form-dialog/vehicle-form-dialog.component';
 import { SeatLayoutDialogComponent } from '../../components/seat-layout-dialog/seat-layout-dialog.component';
-import { DriverFormDialogComponent } from '../../components/driver-form-dialog/driver-form-dialog.component';
 
 @Component({
   selector: 'app-fleet-list-page',
@@ -60,7 +55,6 @@ import { DriverFormDialogComponent } from '../../components/driver-form-dialog/d
     HasPermissionDirective,
     VehicleFormDialogComponent,
     SeatLayoutDialogComponent,
-    DriverFormDialogComponent,
     TranslatePipe,
   ],
   templateUrl: './fleet-list-page.component.html',
@@ -72,20 +66,13 @@ export class FleetListPageComponent implements OnInit {
   private readonly notification = inject(NotificationService);
   private readonly i18n = inject(TranslationService);
 
-  // CURRENT TAB: 'vehicles' | 'drivers'
-  readonly activeMainTab = signal<'vehicles' | 'drivers'>('vehicles');
-
   // BREADCRUMBS
   readonly breadcrumbs = computed<BreadcrumbItem[]>(() => {
-    this.i18n.currentLang(); // Track reactive language changes
+    this.i18n.currentLang();
     return [
       { label: this.i18n.translate('navigation.items.dashboard'), url: '/dashboard' },
-      {
-        label:
-          this.activeMainTab() === 'vehicles'
-            ? this.i18n.translate('fleet.breadcrumbs.vehicles')
-            : this.i18n.translate('fleet.breadcrumbs.drivers'),
-      },
+      { label: this.i18n.translate('navigation.groups.operations') },
+      { label: this.i18n.translate('fleet.vehiclesTitle') },
     ];
   });
 
@@ -99,15 +86,6 @@ export class FleetListPageComponent implements OnInit {
   readonly vehicleTypeFilter = signal<VehicleType | ''>('');
   readonly vehicleStatusFilter = signal<VehicleStatus | ''>('');
 
-  // DRIVERS TABLE STATE
-  readonly drivers = signal<Driver[]>([]);
-  readonly totalDrivers = signal<number>(0);
-  readonly driverLoading = signal<boolean>(false);
-  readonly driverPage = signal<number>(0);
-  readonly driverPageSize = signal<number>(10);
-  readonly driverKeyword = signal<string>('');
-  readonly driverStatusFilter = signal<DriverStatus | ''>('');
-
   // DIALOGS & MODALS
   readonly showVehicleDialog = signal<boolean>(false);
   readonly editingVehicle = signal<VehicleSummary | null>(null);
@@ -118,17 +96,12 @@ export class FleetListPageComponent implements OnInit {
   readonly currentVehicleSeats = signal<VehicleSeat[]>([]);
   readonly submittingSeatLayout = signal<boolean>(false);
 
-  readonly showDriverDialog = signal<boolean>(false);
-  readonly editingDriver = signal<Driver | null>(null);
-  readonly submittingDriver = signal<boolean>(false);
-
   readonly showDeleteConfirm = signal<boolean>(false);
-  readonly deleteItemType = signal<'vehicle' | 'driver'>('vehicle');
   readonly deletingId = signal<string | null>(null);
   readonly deletingName = signal<string>('');
   readonly deletingInProgress = signal<boolean>(false);
 
-  // REACTIVE TABLE COLUMNS & FILTERS
+  // TABLE CONFIGS
   readonly vehicleColumns = computed<TableColumn[]>(() => {
     this.i18n.currentLang();
     return [
@@ -169,50 +142,9 @@ export class FleetListPageComponent implements OnInit {
     ];
   });
 
-  readonly driverColumns = computed<TableColumn[]>(() => {
-    this.i18n.currentLang();
-    return [
-      { field: 'code', header: this.i18n.translate('fleet.drivers.columns.code'), sortable: true },
-      { field: 'fullName', header: this.i18n.translate('fleet.drivers.columns.fullName'), sortable: true },
-      { field: 'phone', header: this.i18n.translate('fleet.drivers.columns.phone') },
-      { field: 'license', header: this.i18n.translate('fleet.drivers.columns.license') },
-      { field: 'expiry', header: this.i18n.translate('fleet.drivers.columns.expiry') },
-      { field: 'status', header: this.i18n.translate('fleet.drivers.columns.status'), sortable: true },
-      { field: 'actions', header: this.i18n.translate('fleet.drivers.columns.actions') },
-    ];
-  });
-
-  readonly driverFilterConfigs = computed<TableFilterConfig[]>(() => {
-    this.i18n.currentLang();
-    return [
-      {
-        key: 'status',
-        label: this.i18n.translate('fleet.drivers.filters.statusLabel'),
-        placeholder: this.i18n.translate('fleet.drivers.filters.allStatuses'),
-        options: [
-          { label: this.i18n.translate('fleet.drivers.filters.allStatuses'), value: '' },
-          { label: this.i18n.translate('fleet.drivers.statuses.active'), value: 'ACTIVE' },
-          { label: this.i18n.translate('fleet.drivers.statuses.onLeave'), value: 'ON_LEAVE' },
-          { label: this.i18n.translate('fleet.drivers.statuses.inactive'), value: 'INACTIVE' },
-        ],
-      },
-    ];
-  });
-
   ngOnInit(): void {
     this.loadVehicles();
   }
-
-  onTabChange(tab: 'vehicles' | 'drivers'): void {
-    this.activeMainTab.set(tab);
-    if (tab === 'vehicles') {
-      this.loadVehicles();
-    } else {
-      this.loadDrivers();
-    }
-  }
-
-  // ==================== VEHICLES MANAGEMENT ====================
 
   loadVehicles(): void {
     this.vehicleLoading.set(true);
@@ -301,13 +233,11 @@ export class FleetListPageComponent implements OnInit {
     });
   }
 
-  // ==================== SEAT LAYOUT ====================
-
   openSeatLayoutDialog(vehicle: VehicleSummary): void {
     this.configuringVehicle.set(vehicle);
-    this.fleetService.getSeatLayout(vehicle.id).subscribe({
-      next: (res) => {
-        this.currentVehicleSeats.set(res.data.seats);
+    this.fleetService.getVehicleSeats(vehicle.id).subscribe({
+      next: (seats) => {
+        this.currentVehicleSeats.set(seats);
         this.showSeatLayoutDialog.set(true);
       },
       error: (err) => {
@@ -318,12 +248,12 @@ export class FleetListPageComponent implements OnInit {
     });
   }
 
-  onSaveSeatLayout(payload: ConfigureSeatLayoutRequest): void {
+  onSaveSeatLayout(seats: ConfigureSeatLayoutRequest): void {
     const vehicle = this.configuringVehicle();
     if (!vehicle) return;
 
     this.submittingSeatLayout.set(true);
-    this.fleetService.configureSeatLayout(vehicle.id, payload).subscribe({
+    this.fleetService.configureSeatLayout(vehicle.id, seats).subscribe({
       next: () => {
         this.submittingSeatLayout.set(false);
         this.showSeatLayoutDialog.set(false);
@@ -341,105 +271,9 @@ export class FleetListPageComponent implements OnInit {
     });
   }
 
-  // ==================== DRIVERS MANAGEMENT ====================
-
-  loadDrivers(): void {
-    this.driverLoading.set(true);
-    this.fleetService
-      .searchDrivers(
-        this.driverPage(),
-        this.driverPageSize(),
-        'createdAt,desc',
-        this.driverKeyword(),
-        (this.driverStatusFilter() as DriverStatus) || undefined
-      )
-      .subscribe({
-        next: (res) => {
-          this.drivers.set(res.data.items);
-          this.totalDrivers.set(res.data.pagination.totalElements);
-          this.driverLoading.set(false);
-        },
-        error: (err) => {
-          this.driverLoading.set(false);
-          this.notification.error(
-            err.error?.message || this.i18n.translate('fleet.notifications.error')
-          );
-        },
-      });
-  }
-
-  onDriverLazyLoad(event: TableLazyLoadEvent): void {
-    const pageIndex = Math.floor(event.first / event.rows);
-    this.driverPage.set(pageIndex);
-    this.driverPageSize.set(event.rows);
-    this.loadDrivers();
-  }
-
-  onDriverSearch(query: string): void {
-    this.driverKeyword.set(query);
-    this.driverPage.set(0);
-    this.loadDrivers();
-  }
-
-  onDriverFilterChange(event: TableFilterChangeEvent): void {
-    if (event.key === 'status') {
-      this.driverStatusFilter.set(event.value as DriverStatus);
-    }
-    this.driverPage.set(0);
-    this.loadDrivers();
-  }
-
-  openCreateDriverDialog(): void {
-    this.editingDriver.set(null);
-    this.showDriverDialog.set(true);
-  }
-
-  openEditDriverDialog(driver: Driver): void {
-    this.editingDriver.set(driver);
-    this.showDriverDialog.set(true);
-  }
-
-  onSaveDriver(payload: CreateDriverRequest | UpdateDriverRequest): void {
-    this.submittingDriver.set(true);
-    const editing = this.editingDriver();
-
-    const request$ = editing
-      ? this.fleetService.updateDriver(editing.id, payload as UpdateDriverRequest)
-      : this.fleetService.createDriver(payload as CreateDriverRequest);
-
-    request$.subscribe({
-      next: () => {
-        this.submittingDriver.set(false);
-        this.showDriverDialog.set(false);
-        this.notification.success(
-          editing
-            ? this.i18n.translate('fleet.notifications.updateDriverSuccess')
-            : this.i18n.translate('fleet.notifications.createDriverSuccess')
-        );
-        this.loadDrivers();
-      },
-      error: (err) => {
-        this.submittingDriver.set(false);
-        this.notification.error(
-          err.error?.message || this.i18n.translate('fleet.notifications.error')
-        );
-      },
-    });
-  }
-
-  // ==================== DELETE DIALOG ====================
-
   confirmDeleteVehicle(vehicle: VehicleSummary): void {
-    this.deleteItemType.set('vehicle');
     this.deletingId.set(vehicle.id);
     this.deletingName.set(`${vehicle.plateNumber}`);
-    this.showDeleteConfirm.set(true);
-  }
-
-  confirmDeleteDriver(driver: Driver): void {
-    this.deleteItemType.set('driver');
-    this.deletingId.set(driver.id);
-    this.deletingName.set(`${driver.code} - ${driver.fullName}`);
     this.showDeleteConfirm.set(true);
   }
 
@@ -448,25 +282,12 @@ export class FleetListPageComponent implements OnInit {
     if (!id) return;
 
     this.deletingInProgress.set(true);
-    const isVehicle = this.deleteItemType() === 'vehicle';
-    const delete$ = isVehicle
-      ? this.fleetService.deleteVehicle(id)
-      : this.fleetService.deleteDriver(id);
-
-    delete$.subscribe({
+    this.fleetService.deleteVehicle(id).subscribe({
       next: () => {
         this.deletingInProgress.set(false);
         this.showDeleteConfirm.set(false);
-        this.notification.success(
-          isVehicle
-            ? this.i18n.translate('fleet.notifications.deleteVehicleSuccess')
-            : this.i18n.translate('fleet.notifications.deleteDriverSuccess')
-        );
-        if (isVehicle) {
-          this.loadVehicles();
-        } else {
-          this.loadDrivers();
-        }
+        this.notification.success(this.i18n.translate('fleet.notifications.deleteVehicleSuccess'));
+        this.loadVehicles();
       },
       error: (err) => {
         this.deletingInProgress.set(false);

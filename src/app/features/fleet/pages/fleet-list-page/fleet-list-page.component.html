@@ -1,240 +1,119 @@
 <div class="fleet-page-container">
   <!-- PAGE HEADER -->
   <app-page-header
-    [title]="'fleet.title' | translate"
-    [subtitle]="'fleet.subtitle' | translate"
+    [title]="'fleet.vehiclesTitle' | translate"
+    [subtitle]="'fleet.vehiclesSubtitle' | translate"
     [breadcrumbs]="breadcrumbs()"
   >
     <div actions class="header-action-buttons">
-      @if (activeMainTab() === 'vehicles') {
-        <app-button
-          *appHasPermission="'FLEET_MANAGE'"
-          variant="primary"
-          icon="pi pi-plus"
-          [label]="'fleet.buttons.addVehicle' | translate"
-          (clicked)="openCreateVehicleDialog()"
-        />
-      } @else {
-        <app-button
-          *appHasPermission="'FLEET_MANAGE'"
-          variant="primary"
-          icon="pi pi-user-plus"
-          [label]="'fleet.buttons.addDriver' | translate"
-          (clicked)="openCreateDriverDialog()"
-        />
-      }
+      <app-button
+        *appHasPermission="'FLEET_MANAGE'"
+        variant="primary"
+        icon="pi pi-plus"
+        [label]="'fleet.buttons.addVehicle' | translate"
+        (clicked)="openCreateVehicleDialog()"
+      />
     </div>
   </app-page-header>
 
-  <!-- NAVIGATION TABS -->
-  <div class="tabs-bar">
-    <button
-      type="button"
-      class="nav-tab"
-      [class.active]="activeMainTab() === 'vehicles'"
-      (click)="onTabChange('vehicles')"
+  <!-- VEHICLES TABLE -->
+  <div class="saas-card table-card">
+    <app-data-table
+      [data]="vehicles()"
+      [columns]="vehicleColumns()"
+      [totalRecords]="totalVehicles()"
+      [loading]="vehicleLoading()"
+      [pageSize]="vehiclePageSize()"
+      [first]="vehiclePage() * vehiclePageSize()"
+      [searchable]="true"
+      [searchPlaceholder]="'fleet.vehicles.searchPlaceholder' | translate"
+      [filters]="vehicleFilterConfigs()"
+      (lazyLoad)="onVehicleLazyLoad($event)"
+      (searchChange)="onVehicleSearch($event)"
+      (filterChange)="onVehicleFilterChange($event)"
     >
-      <i class="pi pi-truck"></i>
-      <span>{{ 'fleet.tabs.vehicles' | translate }}</span>
-      <span class="count-badge">{{ totalVehicles() }}</span>
-    </button>
-    <button
-      type="button"
-      class="nav-tab"
-      [class.active]="activeMainTab() === 'drivers'"
-      (click)="onTabChange('drivers')"
-    >
-      <i class="pi pi-id-card"></i>
-      <span>{{ 'fleet.tabs.drivers' | translate }}</span>
-      <span class="count-badge">{{ totalDrivers() }}</span>
-    </button>
+      <!-- PLATE NUMBER -->
+      <ng-template appTableCell="plateNumber" let-item>
+        <span class="plate-badge">{{ item.plateNumber }}</span>
+      </ng-template>
+
+      <!-- VEHICLE TYPE -->
+      <ng-template appTableCell="vehicleType" let-item>
+        <span
+          class="badge-tag"
+          [class.tag-luxury]="item.vehicleType === 'LIMOUSINE'"
+          [class.tag-sleeper]="item.vehicleType === 'SLEEPER'"
+          [class.tag-seater]="item.vehicleType === 'SEATER'"
+        >
+          <i
+            class="pi"
+            [class.pi-star-fill]="item.vehicleType === 'LIMOUSINE'"
+            [class.pi-moon]="item.vehicleType === 'SLEEPER'"
+            [class.pi-users]="item.vehicleType === 'SEATER'"
+          ></i>
+          {{ 'fleet.vehicles.types.' + (item.vehicleType | lowercase) | translate }}
+        </span>
+      </ng-template>
+
+      <!-- BRAND & MODEL -->
+      <ng-template appTableCell="brand" let-item>
+        <div class="vehicle-brand-col">
+          <strong>{{ item.brand }}</strong>
+          <span class="model-text">{{ item.model }} ({{ item.manufactureYear }})</span>
+        </div>
+      </ng-template>
+
+      <!-- SEAT INFO -->
+      <ng-template appTableCell="seatInfo" let-item>
+        <div class="seat-info-col">
+          <strong>{{ item.totalSeats }} {{ 'fleet.vehicles.columns.availableSeats' | translate }}</strong>
+          <span class="grid-spec">{{ item.totalFloors }} {{ 'fleet.vehicles.columns.floors' | translate }} • {{ 'fleet.vehicles.columns.grid' | translate }}: {{ item.seatRows }}x{{ item.seatColumns }}</span>
+        </div>
+      </ng-template>
+
+      <!-- STATUS -->
+      <ng-template appTableCell="status" let-item>
+        <app-status-badge [status]="item.status" />
+      </ng-template>
+
+      <!-- ACTIONS -->
+      <ng-template appTableCell="actions" let-item>
+        <div class="row-actions">
+          <app-button
+            *appHasPermission="'FLEET_MANAGE'"
+            icon="pi pi-th-large"
+            variant="outlined"
+            size="small"
+            styleClass="action-btn"
+            [label]="'fleet.actions.seatLayout' | translate"
+            (clicked)="openSeatLayoutDialog(item)"
+          />
+          <app-button
+            *appHasPermission="'FLEET_MANAGE'"
+            icon="pi pi-pencil"
+            variant="text"
+            size="small"
+            styleClass="action-btn"
+            [tooltip]="'fleet.actions.edit' | translate"
+            tooltipPosition="top"
+            (clicked)="openEditVehicleDialog(item)"
+          />
+          <app-button
+            *appHasPermission="'FLEET_MANAGE'"
+            icon="pi pi-trash"
+            variant="text"
+            size="small"
+            styleClass="action-btn danger-btn"
+            [tooltip]="'fleet.actions.delete' | translate"
+            tooltipPosition="top"
+            (clicked)="confirmDeleteVehicle(item)"
+          />
+        </div>
+      </ng-template>
+    </app-data-table>
   </div>
 
-  <!-- TAB 1: VEHICLES TABLE -->
-  @if (activeMainTab() === 'vehicles') {
-    <div class="saas-card table-card">
-      <app-data-table
-        [data]="vehicles()"
-        [columns]="vehicleColumns()"
-        [totalRecords]="totalVehicles()"
-        [loading]="vehicleLoading()"
-        [pageSize]="vehiclePageSize()"
-        [first]="vehiclePage() * vehiclePageSize()"
-        [searchable]="true"
-        [searchPlaceholder]="'fleet.vehicles.searchPlaceholder' | translate"
-        [emptyTitle]="'fleet.empty.vehiclesTitle' | translate"
-        [emptyMessage]="'fleet.empty.vehiclesMessage' | translate"
-        [filters]="vehicleFilterConfigs()"
-        (lazyLoad)="onVehicleLazyLoad($event)"
-        (searchChange)="onVehicleSearch($event)"
-        (filterChange)="onVehicleFilterChange($event)"
-      >
-        <!-- Custom Cell: Biển số xe -->
-        <ng-template appTableCell="plateNumber" let-vehicle>
-          <div class="plate-badge">
-            <span class="plate-text">{{ vehicle.plateNumber }}</span>
-          </div>
-        </ng-template>
-
-        <!-- Custom Cell: Loại phương tiện -->
-        <ng-template appTableCell="vehicleType" let-vehicle>
-          @switch (vehicle.vehicleType) {
-            @case ('LIMOUSINE') {
-              <span class="badge-tag tag-luxury"><i class="pi pi-star-fill"></i> {{ 'fleet.vehicles.types.limousine' | translate }}</span>
-            }
-            @case ('SLEEPER') {
-              <span class="badge-tag tag-sleeper"><i class="pi pi-moon"></i> {{ 'fleet.vehicles.types.sleeper' | translate }}</span>
-            }
-            @default {
-              <span class="badge-tag tag-seater"><i class="pi pi-circle"></i> {{ 'fleet.vehicles.types.seater' | translate }}</span>
-            }
-          }
-        </ng-template>
-
-        <!-- Custom Cell: Hãng & Dòng xe -->
-        <ng-template appTableCell="brand" let-vehicle>
-          <div class="vehicle-brand-col">
-            <strong>{{ vehicle.brand }}</strong>
-            <span class="model-text">{{ vehicle.model || '—' }} ({{ vehicle.manufactureYear || '—' }})</span>
-          </div>
-        </ng-template>
-
-        <!-- Custom Cell: Sơ đồ ghế -->
-        <ng-template appTableCell="seatInfo" let-vehicle>
-          <div class="seat-info-col">
-            <span class="seat-count"><strong>{{ vehicle.totalSeats }}</strong> {{ 'fleet.vehicles.seatInfo.available' | translate }}</span>
-            <span class="grid-spec">{{ vehicle.totalFloors }} {{ 'fleet.vehicles.seatInfo.floors' | translate }} • {{ 'fleet.vehicles.seatInfo.grid' | translate }} {{ vehicle.totalRows }}x{{ vehicle.totalColumns }}</span>
-          </div>
-        </ng-template>
-
-        <!-- Custom Cell: Trạng thái xe -->
-        <ng-template appTableCell="status" let-vehicle>
-          @switch (vehicle.status) {
-            @case ('ACTIVE') {
-              <app-status-badge status="ACTIVE" [label]="'fleet.vehicles.statuses.active' | translate" />
-            }
-            @case ('MAINTENANCE') {
-              <app-status-badge status="LOCKED" [label]="'fleet.vehicles.statuses.maintenance' | translate" />
-            }
-            @default {
-              <app-status-badge status="INACTIVE" [label]="'fleet.vehicles.statuses.inactive' | translate" />
-            }
-          }
-        </ng-template>
-
-        <!-- Custom Cell: Thao tác Xe -->
-        <ng-template appTableCell="actions" let-vehicle>
-          <div class="row-actions">
-            <app-button
-              *appHasPermission="'FLEET_READ'"
-              variant="outlined"
-              size="small"
-              icon="pi pi-th-large"
-              [label]="'fleet.actions.seatLayout' | translate"
-              (clicked)="openSeatLayoutDialog(vehicle)"
-            />
-            <app-button
-              *appHasPermission="'FLEET_MANAGE'"
-              variant="text"
-              size="small"
-              icon="pi pi-pencil"
-              [ariaLabel]="'common.actions.edit' | translate"
-              (clicked)="openEditVehicleDialog(vehicle)"
-            />
-            <app-button
-              *appHasPermission="'FLEET_MANAGE'"
-              variant="text"
-              size="small"
-              icon="pi pi-trash"
-              class="danger-btn"
-              [ariaLabel]="'common.actions.delete' | translate"
-              (clicked)="confirmDeleteVehicle(vehicle)"
-            />
-          </div>
-        </ng-template>
-      </app-data-table>
-    </div>
-  }
-
-  <!-- TAB 2: DRIVERS TABLE -->
-  @if (activeMainTab() === 'drivers') {
-    <div class="saas-card table-card">
-      <app-data-table
-        [data]="drivers()"
-        [columns]="driverColumns()"
-        [totalRecords]="totalDrivers()"
-        [loading]="driverLoading()"
-        [pageSize]="driverPageSize()"
-        [first]="driverPage() * driverPageSize()"
-        [searchable]="true"
-        [searchPlaceholder]="'fleet.drivers.searchPlaceholder' | translate"
-        [emptyTitle]="'fleet.empty.driversTitle' | translate"
-        [emptyMessage]="'fleet.empty.driversMessage' | translate"
-        [filters]="driverFilterConfigs()"
-        (lazyLoad)="onDriverLazyLoad($event)"
-        (searchChange)="onDriverSearch($event)"
-        (filterChange)="onDriverFilterChange($event)"
-      >
-        <!-- Custom Cell: Mã tài xế -->
-        <ng-template appTableCell="code" let-driver>
-          <span class="driver-code-tag">{{ driver.code }}</span>
-        </ng-template>
-
-        <!-- Custom Cell: GPLX & Hạng -->
-        <ng-template appTableCell="license" let-driver>
-          <div class="license-info">
-            <span class="license-class-badge">Hạng {{ driver.licenseClass }}</span>
-            <span class="license-num">{{ driver.licenseNumber }}</span>
-          </div>
-        </ng-template>
-
-        <!-- Custom Cell: Hạn bằng lái -->
-        <ng-template appTableCell="expiry" let-driver>
-          <span class="expiry-date">{{ driver.licenseExpiryDate || '—' }}</span>
-        </ng-template>
-
-        <!-- Custom Cell: Trạng thái tài xế -->
-        <ng-template appTableCell="status" let-driver>
-          @switch (driver.status) {
-            @case ('ACTIVE') {
-              <app-status-badge status="ACTIVE" [label]="'fleet.drivers.statuses.active' | translate" />
-            }
-            @case ('ON_LEAVE') {
-              <app-status-badge status="LOCKED" [label]="'fleet.drivers.statuses.onLeave' | translate" />
-            }
-            @default {
-              <app-status-badge status="INACTIVE" [label]="'fleet.drivers.statuses.inactive' | translate" />
-            }
-          }
-        </ng-template>
-
-        <!-- Custom Cell: Thao tác -->
-        <ng-template appTableCell="actions" let-driver>
-          <div class="row-actions">
-            <app-button
-              *appHasPermission="'FLEET_MANAGE'"
-              variant="text"
-              size="small"
-              icon="pi pi-pencil"
-              [ariaLabel]="'common.actions.edit' | translate"
-              (clicked)="openEditDriverDialog(driver)"
-            />
-            <app-button
-              *appHasPermission="'FLEET_MANAGE'"
-              variant="text"
-              size="small"
-              icon="pi pi-trash"
-              class="danger-btn"
-              [ariaLabel]="'common.actions.delete' | translate"
-              (clicked)="confirmDeleteDriver(driver)"
-            />
-          </div>
-        </ng-template>
-      </app-data-table>
-    </div>
-  }
-
-  <!-- VEHICLE DIALOG -->
+  <!-- VEHICLE FORM DIALOG -->
   <app-vehicle-form-dialog
     [visible]="showVehicleDialog()"
     [vehicle]="editingVehicle()"
@@ -243,35 +122,24 @@
     (save)="onSaveVehicle($event)"
   />
 
-  <!-- SEAT LAYOUT DIALOG -->
+  <!-- SEAT LAYOUT MATRIX DIALOG -->
   <app-seat-layout-dialog
     [visible]="showSeatLayoutDialog()"
     [vehicle]="configuringVehicle()"
-    [initialSeats]="currentVehicleSeats()"
+    [seats]="currentVehicleSeats()"
     [submitting]="submittingSeatLayout()"
     (visibleChange)="showSeatLayoutDialog.set($event)"
-    (saveLayout)="onSaveSeatLayout($event)"
-  />
-
-  <!-- DRIVER DIALOG -->
-  <app-driver-form-dialog
-    [visible]="showDriverDialog()"
-    [driver]="editingDriver()"
-    [submitting]="submittingDriver()"
-    (visibleChange)="showDriverDialog.set($event)"
-    (save)="onSaveDriver($event)"
+    (save)="onSaveSeatLayout($event)"
   />
 
   <!-- CONFIRM DELETE MODAL -->
   <app-confirm-modal
     [isOpen]="showDeleteConfirm()"
     [title]="'fleet.confirmDelete.title' | translate"
-    [message]="'fleet.confirmDelete.message' | translate:{ name: deletingName() }"
-    [confirmText]="'fleet.confirmDelete.confirmBtn' | translate"
-    [cancelText]="'common.actions.cancel' | translate"
-    [danger]="true"
+    [message]="'fleet.confirmDelete.message' | translate: { name: deletingName() }"
+    [confirmButtonText]="'fleet.confirmDelete.confirmBtn' | translate"
     [loading]="deletingInProgress()"
+    (isOpenChange)="showDeleteConfirm.set($event)"
     (confirm)="executeDelete()"
-    (cancel)="showDeleteConfirm.set(false)"
   />
 </div>

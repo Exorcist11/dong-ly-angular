@@ -11,65 +11,6 @@
   flex-shrink: 0;
 }
 
-.tabs-bar {
-  display: flex;
-  gap: 8px;
-  border-bottom: 1px solid var(--color-border, #d9d4cc);
-  padding-bottom: 8px;
-
-  .nav-tab {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    font-size: 13.5px;
-    font-weight: 600;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--color-text-secondary, #3a3733);
-    cursor: pointer;
-    transition: all var(--ease, 200ms ease);
-
-    i {
-      font-size: 14px;
-    }
-
-    .count-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1px 7px;
-      border-radius: 9999px;
-      font-size: 11.5px;
-      font-weight: 700;
-      background: var(--color-surface-sunken, #f4f1ec);
-      color: var(--color-text-secondary, #3a3733);
-      transition: all var(--ease, 200ms ease);
-    }
-
-    &:hover {
-      background: var(--color-surface-hover, #f8f5f0);
-      color: var(--color-text-primary, #16161a);
-    }
-
-    &.active {
-      background: var(--color-primary, #d71920);
-      color: #ffffff;
-      box-shadow: 0 2px 4px rgba(215, 25, 32, 0.2);
-
-      i {
-        color: #ffffff;
-      }
-
-      .count-badge {
-        background: rgba(255, 255, 255, 0.25);
-        color: #ffffff;
-      }
-    }
-  }
-}
-
 .table-card {
   background: var(--color-surface, #ffffff);
   border: 1px solid var(--color-border, #d9d4cc);
@@ -77,24 +18,43 @@
   overflow: hidden;
 }
 
-.route-code-tag {
-  display: inline-block;
-  padding: 3px 8px;
-  background: var(--color-surface-sunken, #f4f1ec);
-  color: var(--color-text-primary, #16161a);
-  border-radius: 6px;
+.code-badge {
   font-family: monospace;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--color-text-primary, #16161a);
+  background: var(--color-surface-sunken, #f4f1ec);
+  padding: 3px 8px;
+  border-radius: 6px;
   font-size: 12px;
 }
 
 .time-cell,
 .route-cell,
-.vehicle-cell,
-.dates-cell {
+.vehicle-cell {
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+
+.time-main {
+  font-weight: 600;
+  color: var(--color-text-primary, #16161a);
+}
+
+.time-sub {
+  font-size: 11.5px;
+  color: var(--color-text-muted, #8a857d);
+}
+
+.route-name {
+  font-weight: 500;
+  color: var(--color-text-primary, #16161a);
+}
+
+.plate-number {
+  font-weight: 600;
+  font-family: monospace;
+  color: var(--color-text-primary, #16161a);
 }
 
 .drivers-cell {
@@ -130,15 +90,17 @@
       font-weight: 500;
     }
   }
+
+  .empty-driver {
+    font-size: 12px;
+    font-style: italic;
+    color: var(--color-text-muted, #8a857d);
+  }
 }
 
-.days-summary {
-  font-size: 13px;
-  padding: 2px 8px;
-  background-color: var(--color-surface-sunken, #f4f1ec);
-  border-radius: 6px;
-  display: inline-block;
-  color: var(--color-text-secondary, #3a3733);
+.price-text {
+  font-weight: 600;
+  color: var(--color-text-primary, #16161a);
 }
 
 .row-actions {
@@ -146,31 +108,4 @@
   align-items: center;
   justify-content: center;
   gap: 2px;
-
-  :host ::ng-deep .action-btn {
-    width: 32px;
-    height: 32px;
-    padding: 0;
-
-    &.config-btn:hover {
-      color: var(--color-primary, #d71920) !important;
-      background-color: var(--color-primary-subtle, rgba(215, 25, 32, 0.08)) !important;
-    }
-
-    &.danger-btn {
-      color: var(--color-danger, #d71920);
-
-      &:hover {
-        background-color: rgba(215, 25, 32, 0.1) !important;
-      }
-    }
-
-    &.success-btn {
-      color: var(--color-success, #2e9e5b);
-
-      &:hover {
-        background-color: rgba(46, 158, 91, 0.1) !important;
-      }
-    }
-  }
 }

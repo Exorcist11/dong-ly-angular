@@ -112,9 +112,18 @@ export const EN_TRANSLATIONS: Record<string, any> = {
       dashboard: 'Dashboard',
       users: 'User Management',
       routes: 'Routes & Stops',
+      routesGroup: 'Routes & Stops',
+      routesList: 'Routes',
+      stopPoints: 'Bus Stops & Stations',
       trips: 'Trips & Schedules',
+      tripsGroup: 'Trips & Schedules',
+      tripList: 'Trips',
+      tripRuns: 'Trip Schedules',
       tripsAndRoutes: 'Trips & Routes',
       vehicles: 'Fleet & Vehicles',
+      vehiclesGroup: 'Fleet & Vehicles',
+      vehicleList: 'Vehicles & Seats',
+      driverList: 'Driver Crew',
       bookings: 'Tickets & Bookings',
       rolesAndPermissions: 'Roles & Permissions',
       settings: 'System Settings',
@@ -542,8 +551,10 @@ export const EN_TRANSLATIONS: Record<string, any> = {
     },
   },
   routes: {
-    title: 'Route & Stops Management',
+    title: 'Route Management',
     subtitle: 'Manage fixed interprovincial bus routes and configure stop points order',
+    stopsTitle: 'Bus Stops & Stations',
+    stopsSubtitle: 'Manage bus stations, ticket offices, and pickup/dropoff points',
     breadcrumbs: {
       routes: 'Routes',
       stopPoints: 'Pickup & Dropoff Points',
@@ -574,6 +585,10 @@ export const EN_TRANSLATIONS: Record<string, any> = {
       locationLabel: 'Province / Area',
       allLocations: 'All areas',
       allStatuses: 'All statuses',
+    },
+    statuses: {
+      active: 'Active',
+      inactive: 'Inactive',
     },
     stopsConfig: {
       title: 'Configure Stops — Route {{name}}',
@@ -660,6 +675,10 @@ export const EN_TRANSLATIONS: Record<string, any> = {
   fleet: {
     title: 'Fleet & Vehicles Management',
     subtitle: 'Manage bus fleet, configure seat matrices and driver records for Dong Ly Transport',
+    vehiclesTitle: 'Vehicles & Seats',
+    vehiclesSubtitle: 'Manage coach buses, seating configuration and technical statuses',
+    driversTitle: 'Driver Crew',
+    driversSubtitle: 'Manage drivers, co-drivers, licenses and trip assignments',
     breadcrumbs: {
       vehicles: 'Vehicles & Seats',
       drivers: 'Drivers Directory',
@@ -834,8 +853,10 @@ export const EN_TRANSLATIONS: Record<string, any> = {
     },
   },
   trips: {
-    title: 'Trips & Schedule Dispatch',
-    subtitle: 'Manage recurring schedules, dispatch vehicles, assign drivers, and monitor actual trips',
+    title: 'Trip Operations',
+    subtitle: 'Manage actual trips, dispatch vehicles, assign drivers, and monitor operational statuses',
+    runsTitle: 'Trip Schedule Management',
+    runsSubtitle: 'Configure recurring route runs, schedules, frequencies, and departure times',
     tabs: {
       trips: 'Actual Trips',
       tripRuns: 'Recurring Trip Schedules',
@@ -925,6 +946,19 @@ export const EN_TRANSLATIONS: Record<string, any> = {
       activateSchedule: 'Activate Schedule',
       editSchedule: 'Edit Schedule Configuration',
       deleteSchedule: 'Delete Schedule',
+    },
+    tooltips: {
+      generateForSchedule: 'Auto-generate trips for this schedule',
+      editSchedule: 'Edit trip schedule',
+      pauseSchedule: 'Pause trip schedule',
+      activateSchedule: 'Activate trip schedule',
+      deleteSchedule: 'Delete trip schedule',
+      editTrip: 'Edit trip',
+      updateTripStatus: 'Update trip status',
+    },
+    deleteModal: {
+      title: 'Confirm Schedule Deletion',
+      message: 'Are you sure you want to delete this trip schedule? This operation cannot be undone.',
     },
     confirmDelete: {
       title: 'Confirm Schedule Deletion',

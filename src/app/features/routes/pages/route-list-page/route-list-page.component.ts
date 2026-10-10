@@ -24,22 +24,18 @@ import {
   TableFilterConfig,
   TableLazyLoadEvent,
 } from '../../../../shared/models/table.model';
-import { SelectOption } from '../../../../shared/models/select-option.model';
 import {
   CommonStatus,
   CreateRouteRequest,
-  CreateStopPointRequest,
   LocationItem,
   RouteDetail,
   RouteSummary,
   StopPoint,
   UpdateRouteRequest,
   UpdateRouteStopsRequest,
-  UpdateStopPointRequest,
 } from '../../models/route.model';
 import { RouteService } from '../../services/route.service';
 import { RouteFormDialogComponent } from '../../components/route-form-dialog/route-form-dialog.component';
-import { StopPointDialogComponent } from '../../components/stop-point-dialog/stop-point-dialog.component';
 import { RouteStopsDialogComponent } from '../../components/route-stops-dialog/route-stops-dialog.component';
 
 @Component({
@@ -57,7 +53,6 @@ import { RouteStopsDialogComponent } from '../../components/route-stops-dialog/r
     ConfirmModalComponent,
     HasPermissionDirective,
     RouteFormDialogComponent,
-    StopPointDialogComponent,
     RouteStopsDialogComponent,
   ],
   templateUrl: './route-list-page.component.html',
@@ -68,9 +63,6 @@ export class RouteListPageComponent implements OnInit {
   private readonly routeService = inject(RouteService);
   private readonly notification = inject(NotificationService);
   private readonly translationService = inject(TranslationService);
-
-  // CURRENT TAB: 'routes' | 'stopPoints'
-  readonly activeMainTab = signal<'routes' | 'stopPoints'>('routes');
 
   // MASTER DATA
   readonly locations = signal<LocationItem[]>([]);
@@ -85,24 +77,10 @@ export class RouteListPageComponent implements OnInit {
   readonly routeKeyword = signal<string>('');
   readonly routeStatusFilter = signal<CommonStatus | ''>('');
 
-  // STOP POINTS TABLE STATE
-  readonly stopPoints = signal<StopPoint[]>([]);
-  readonly totalStopPoints = signal<number>(0);
-  readonly stopPointLoading = signal<boolean>(false);
-  readonly stopPointPage = signal<number>(0);
-  readonly stopPointPageSize = signal<number>(10);
-  readonly stopPointKeyword = signal<string>('');
-  readonly stopPointLocationFilter = signal<string>('');
-  readonly stopPointStatusFilter = signal<CommonStatus | ''>('');
-
   // DIALOGS & MODALS
   readonly showRouteDialog = signal<boolean>(false);
   readonly editingRoute = signal<RouteSummary | null>(null);
   readonly routeDialogSubmitting = signal<boolean>(false);
-
-  readonly showStopPointDialog = signal<boolean>(false);
-  readonly editingStopPoint = signal<StopPoint | null>(null);
-  readonly stopPointDialogSubmitting = signal<boolean>(false);
 
   readonly showStopsConfigDialog = signal<boolean>(false);
   readonly configuringRoute = signal<RouteDetail | null>(null);
@@ -136,20 +114,6 @@ export class RouteListPageComponent implements OnInit {
     ];
   });
 
-  // COLUMNS STOP POINT
-  readonly stopPointColumns = computed<TableColumn<StopPoint>[]>(() => {
-    this.translationService.currentLang();
-    return [
-      { field: 'code', header: this.translationService.translate('routes.stopPointColumns.code'), width: '140px', sortable: true },
-      { field: 'name', header: this.translationService.translate('routes.stopPointColumns.name'), width: '220px', sortable: true },
-      { field: 'locationName', header: this.translationService.translate('routes.stopPointColumns.location'), width: '150px' },
-      { field: 'address', header: this.translationService.translate('routes.stopPointColumns.address'), width: '260px' },
-      { field: 'contactPhone', header: this.translationService.translate('routes.stopPointColumns.phone'), width: '130px' },
-      { field: 'status', header: this.translationService.translate('routes.stopPointColumns.status'), width: '120px' },
-      { field: 'actions', header: this.translationService.translate('routes.stopPointColumns.actions'), width: '140px', align: 'center' },
-    ];
-  });
-
   // FILTERS CONFIG
   readonly routeFilterConfigs = computed<TableFilterConfig[]>(() => {
     this.translationService.currentLang();
@@ -159,36 +123,10 @@ export class RouteListPageComponent implements OnInit {
         label: this.translationService.translate('routes.filters.statusLabel'),
         placeholder: this.translationService.translate('routes.filters.allStatuses'),
         options: [
-          { label: this.translationService.translate('common.status.active'), value: 'ACTIVE' },
-          { label: this.translationService.translate('common.status.inactive'), value: 'INACTIVE' },
+          { label: this.translationService.translate('routes.filters.allStatuses'), value: '' },
+          { label: this.translationService.translate('routes.statuses.active'), value: 'ACTIVE' },
+          { label: this.translationService.translate('routes.statuses.inactive'), value: 'INACTIVE' },
         ],
-        width: '180px',
-      },
-    ];
-  });
-
-  readonly stopPointFilterConfigs = computed<TableFilterConfig[]>(() => {
-    this.translationService.currentLang();
-    return [
-      {
-        key: 'locationId',
-        label: this.translationService.translate('routes.filters.locationLabel'),
-        placeholder: this.translationService.translate('routes.filters.allLocations'),
-        options: this.locations().map((loc) => ({
-          label: loc.name,
-          value: loc.id,
-        })),
-        width: '200px',
-      },
-      {
-        key: 'status',
-        label: this.translationService.translate('routes.filters.statusLabel'),
-        placeholder: this.translationService.translate('routes.filters.allStatuses'),
-        options: [
-          { label: this.translationService.translate('common.status.active'), value: 'ACTIVE' },
-          { label: this.translationService.translate('common.status.inactive'), value: 'INACTIVE' },
-        ],
-        width: '180px',
       },
     ];
   });
@@ -196,31 +134,26 @@ export class RouteListPageComponent implements OnInit {
   ngOnInit(): void {
     this.loadLocations();
     this.loadRoutes();
-    this.loadStopPoints();
   }
 
-  // --- DATA LOADING ---
   loadLocations(): void {
     this.routeService.getActiveLocations().subscribe({
-      next: (res) => {
-        this.locations.set(res.data);
-      },
+      next: (res) => this.locations.set(res.data),
+      error: () => {},
     });
   }
 
   loadRoutes(): void {
     this.routeLoading.set(true);
-    const statusParam = this.routeStatusFilter() ? (this.routeStatusFilter() as CommonStatus) : undefined;
-
     this.routeService
       .searchRoutes(
         this.routePage(),
         this.routePageSize(),
         'createdAt,desc',
-        this.routeKeyword(),
+        this.routeKeyword() || undefined,
         undefined,
         undefined,
-        statusParam
+        (this.routeStatusFilter() as CommonStatus) || undefined
       )
       .subscribe({
         next: (res) => {
@@ -228,44 +161,17 @@ export class RouteListPageComponent implements OnInit {
           this.totalRoutes.set(res.data.pagination.totalElements);
           this.routeLoading.set(false);
         },
-        error: () => {
+        error: (err) => {
           this.routeLoading.set(false);
-          this.notification.error(this.translationService.translate('routes.notifications.loadRoutesFailed'));
+          this.notification.error(
+            err.error?.message || this.translationService.translate('routes.notifications.loadRoutesFailed')
+          );
         },
       });
   }
 
-  loadStopPoints(): void {
-    this.stopPointLoading.set(true);
-    const statusParam = this.stopPointStatusFilter() ? (this.stopPointStatusFilter() as CommonStatus) : undefined;
-    const locationParam = this.stopPointLocationFilter() ? this.stopPointLocationFilter() : undefined;
-
-    this.routeService
-      .searchStopPoints(
-        this.stopPointPage(),
-        this.stopPointPageSize(),
-        'createdAt,desc',
-        this.stopPointKeyword(),
-        locationParam,
-        statusParam
-      )
-      .subscribe({
-        next: (res) => {
-          this.stopPoints.set(res.data.items);
-          this.totalStopPoints.set(res.data.pagination.totalElements);
-          this.allStopPoints.set(res.data.items);
-          this.stopPointLoading.set(false);
-        },
-        error: () => {
-          this.stopPointLoading.set(false);
-          this.notification.error(this.translationService.translate('routes.notifications.loadStopPointsFailed'));
-        },
-      });
-  }
-
-  // --- TABLE EVENTS FOR ROUTES ---
   onRouteChangeLazy(event: TableLazyLoadEvent): void {
-    const pageIndex = Math.floor(event.first / (event.rows || 10));
+    const pageIndex = Math.floor(event.first / event.rows);
     this.routePage.set(pageIndex);
     this.routePageSize.set(event.rows);
     this.loadRoutes();
@@ -277,39 +183,14 @@ export class RouteListPageComponent implements OnInit {
     this.loadRoutes();
   }
 
-  onRouteFilterChange(event: TableFilterChangeEvent<any>): void {
+  onRouteFilterChange(event: TableFilterChangeEvent): void {
     if (event.key === 'status') {
-      this.routeStatusFilter.set((event.value as CommonStatus) || '');
+      this.routeStatusFilter.set(event.value as CommonStatus);
       this.routePage.set(0);
       this.loadRoutes();
     }
   }
 
-  // --- TABLE EVENTS FOR STOP POINTS ---
-  onStopPointChangeLazy(event: TableLazyLoadEvent): void {
-    const pageIndex = Math.floor(event.first / (event.rows || 10));
-    this.stopPointPage.set(pageIndex);
-    this.stopPointPageSize.set(event.rows);
-    this.loadStopPoints();
-  }
-
-  onStopPointSearch(keyword: string): void {
-    this.stopPointKeyword.set(keyword);
-    this.stopPointPage.set(0);
-    this.loadStopPoints();
-  }
-
-  onStopPointFilterChange(event: TableFilterChangeEvent<any>): void {
-    if (event.key === 'locationId') {
-      this.stopPointLocationFilter.set((event.value as string) || '');
-    } else if (event.key === 'status') {
-      this.stopPointStatusFilter.set((event.value as CommonStatus) || '');
-    }
-    this.stopPointPage.set(0);
-    this.loadStopPoints();
-  }
-
-  // --- ROUTE ACTIONS ---
   openCreateRouteDialog(): void {
     this.editingRoute.set(null);
     this.showRouteDialog.set(true);
@@ -318,21 +199,6 @@ export class RouteListPageComponent implements OnInit {
   openEditRouteDialog(route: RouteSummary): void {
     this.editingRoute.set(route);
     this.showRouteDialog.set(true);
-  }
-
-  openStopsConfigDialog(route: RouteSummary): void {
-    this.routeLoading.set(true);
-    this.routeService.getRouteById(route.id).subscribe({
-      next: (res) => {
-        this.configuringRoute.set(res.data);
-        this.showStopsConfigDialog.set(true);
-        this.routeLoading.set(false);
-      },
-      error: () => {
-        this.routeLoading.set(false);
-        this.notification.error(this.translationService.translate('routes.notifications.loadStopsFailed'));
-      },
-    });
   }
 
   saveRoute(payload: CreateRouteRequest | UpdateRouteRequest): void {
@@ -349,7 +215,7 @@ export class RouteListPageComponent implements OnInit {
         },
         error: (err) => {
           this.routeDialogSubmitting.set(false);
-          this.notification.error(err.error?.message || this.translationService.translate('common.errors.unexpected'));
+          this.notification.error(err.error?.message || 'Có lỗi xảy ra');
         },
       });
     } else {
@@ -362,10 +228,24 @@ export class RouteListPageComponent implements OnInit {
         },
         error: (err) => {
           this.routeDialogSubmitting.set(false);
-          this.notification.error(err.error?.message || this.translationService.translate('common.errors.unexpected'));
+          this.notification.error(err.error?.message || 'Có lỗi xảy ra');
         },
       });
     }
+  }
+
+  openStopsConfigDialog(route: RouteSummary): void {
+    this.routeService.getRouteById(route.id).subscribe({
+      next: (res) => {
+        this.configuringRoute.set(res.data);
+        this.showStopsConfigDialog.set(true);
+      },
+      error: (err) => {
+        this.notification.error(
+          err.error?.message || this.translationService.translate('routes.notifications.loadStopsFailed')
+        );
+      },
+    });
   }
 
   saveStopsConfig(payload: UpdateRouteStopsRequest): void {
@@ -382,7 +262,7 @@ export class RouteListPageComponent implements OnInit {
       },
       error: (err) => {
         this.stopsConfigSubmitting.set(false);
-        this.notification.error(err.error?.message || this.translationService.translate('common.errors.unexpected'));
+        this.notification.error(err.error?.message || 'Có lỗi xảy ra');
       },
     });
   }
@@ -399,7 +279,10 @@ export class RouteListPageComponent implements OnInit {
       this.translationService.translate('routes.confirmations.toggleRouteStatusTitle', { action: actionTitle })
     );
     this.confirmModalMessage.set(
-      this.translationService.translate('routes.confirmations.toggleRouteStatusMsg', { action: actionVerb, name: route.name })
+      this.translationService.translate('routes.confirmations.toggleRouteStatusMsg', {
+        action: actionVerb,
+        name: route.name,
+      })
     );
     this.confirmModalAction.set(() => {
       this.routeService.updateRouteStatus(route.id, newStatus).subscribe({
@@ -409,80 +292,7 @@ export class RouteListPageComponent implements OnInit {
           this.loadRoutes();
         },
         error: (err) => {
-          this.notification.error(err.error?.message || this.translationService.translate('common.errors.unexpected'));
-        },
-      });
-    });
-    this.showConfirmModal.set(true);
-  }
-
-  // --- STOP POINT ACTIONS ---
-  openCreateStopPointDialog(): void {
-    this.editingStopPoint.set(null);
-    this.showStopPointDialog.set(true);
-  }
-
-  openEditStopPointDialog(stopPoint: StopPoint): void {
-    this.editingStopPoint.set(stopPoint);
-    this.showStopPointDialog.set(true);
-  }
-
-  saveStopPoint(payload: CreateStopPointRequest | UpdateStopPointRequest): void {
-    this.stopPointDialogSubmitting.set(true);
-    const editing = this.editingStopPoint();
-
-    if (editing) {
-      this.routeService.updateStopPoint(editing.id, payload as UpdateStopPointRequest).subscribe({
-        next: () => {
-          this.stopPointDialogSubmitting.set(false);
-          this.showStopPointDialog.set(false);
-          this.notification.success(this.translationService.translate('routes.notifications.updateStopPointSuccess'));
-          this.loadStopPoints();
-        },
-        error: (err) => {
-          this.stopPointDialogSubmitting.set(false);
-          this.notification.error(err.error?.message || this.translationService.translate('common.errors.unexpected'));
-        },
-      });
-    } else {
-      this.routeService.createStopPoint(payload as CreateStopPointRequest).subscribe({
-        next: () => {
-          this.stopPointDialogSubmitting.set(false);
-          this.showStopPointDialog.set(false);
-          this.notification.success(this.translationService.translate('routes.notifications.createStopPointSuccess'));
-          this.loadStopPoints();
-        },
-        error: (err) => {
-          this.stopPointDialogSubmitting.set(false);
-          this.notification.error(err.error?.message || this.translationService.translate('common.errors.unexpected'));
-        },
-      });
-    }
-  }
-
-  confirmToggleStopPointStatus(stopPoint: StopPoint): void {
-    const isActivating = stopPoint.status !== 'ACTIVE';
-    const newStatus: CommonStatus = isActivating ? 'ACTIVE' : 'INACTIVE';
-    const actionKey = isActivating ? 'routes.confirmations.activate' : 'routes.confirmations.deactivate';
-    const actionLowerKey = isActivating ? 'routes.confirmations.activateLower' : 'routes.confirmations.deactivateLower';
-    const actionTitle = this.translationService.translate(actionKey);
-    const actionVerb = this.translationService.translate(actionLowerKey);
-
-    this.confirmModalTitle.set(
-      this.translationService.translate('routes.confirmations.toggleStopPointStatusTitle', { action: actionTitle })
-    );
-    this.confirmModalMessage.set(
-      this.translationService.translate('routes.confirmations.toggleStopPointStatusMsg', { action: actionVerb, name: stopPoint.name })
-    );
-    this.confirmModalAction.set(() => {
-      this.routeService.updateStopPointStatus(stopPoint.id, newStatus).subscribe({
-        next: () => {
-          this.showConfirmModal.set(false);
-          this.notification.success(this.translationService.translate('routes.notifications.updateStopPointStatusSuccess'));
-          this.loadStopPoints();
-        },
-        error: (err) => {
-          this.notification.error(err.error?.message || this.translationService.translate('common.errors.unexpected'));
+          this.notification.error(err.error?.message || 'Có lỗi xảy ra');
         },
       });
     });

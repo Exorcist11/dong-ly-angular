@@ -112,9 +112,18 @@ export const VI_TRANSLATIONS: Record<string, any> = {
       dashboard: 'Bàn làm việc',
       users: 'Quản lý người dùng',
       routes: 'Tuyến đường & Điểm dừng',
+      routesGroup: 'Tuyến đường & Điểm dừng',
+      routesList: 'Tuyến đường',
+      stopPoints: 'Điểm đón & trả',
       trips: 'Lịch chạy & Chuyến xe',
+      tripsGroup: 'Lịch chạy & Chuyến xe',
+      tripList: 'Chuyến xe',
+      tripRuns: 'Lịch vòng chạy',
       tripsAndRoutes: 'Chuyến xe & Tuyến',
       vehicles: 'Phương tiện & Đội xe',
+      vehiclesGroup: 'Phương tiện & Đội xe',
+      vehicleList: 'Phương tiện & Ghế',
+      driverList: 'Đội ngũ tài xế',
       bookings: 'Vé & Giữ chỗ',
       rolesAndPermissions: 'Vai trò & Phân quyền',
       settings: 'Cài đặt hệ thống',
@@ -544,6 +553,8 @@ export const VI_TRANSLATIONS: Record<string, any> = {
   routes: {
     title: 'Quản lý tuyến đường',
     subtitle: 'Quản lý danh sách các tuyến vận tải hành khách cố định và cấu hình thứ tự trạm dừng',
+    stopsTitle: 'Quản lý điểm đón & trả',
+    stopsSubtitle: 'Quản lý danh mục bến xe, văn phòng và các điểm đón trả hành khách',
     breadcrumbs: {
       routes: 'Tuyến đường',
       stopPoints: 'Điểm đón/trả',
@@ -574,6 +585,10 @@ export const VI_TRANSLATIONS: Record<string, any> = {
       locationLabel: 'Tỉnh / Khu vực',
       allLocations: 'Tất cả khu vực',
       allStatuses: 'Tất cả trạng thái',
+    },
+    statuses: {
+      active: 'Đang hoạt động',
+      inactive: 'Tạm dừng',
     },
     stopsConfig: {
       title: 'Cấu hình điểm dừng — Tuyến {{name}}',
@@ -660,6 +675,10 @@ export const VI_TRANSLATIONS: Record<string, any> = {
   fleet: {
     title: 'Quản lý Phương tiện & Đội xe',
     subtitle: 'Quản trị danh sách phương tiện, cấu hình sơ đồ ghế và quản lý hồ sơ tài xế nhà xe Đông Lý',
+    vehiclesTitle: 'Quản lý Phương tiện & Ghế',
+    vehiclesSubtitle: 'Quản trị danh sách xe khách, cấu hình phân hạng ghế và sơ đồ khoang xe',
+    driversTitle: 'Quản lý Đội ngũ Tài xế',
+    driversSubtitle: 'Quản lý hồ sơ lái xe, phụ xe, giấy phép lái xe và phân công công tác',
     breadcrumbs: {
       vehicles: 'Phương tiện & Ghế',
       drivers: 'Danh mục tài xế',
@@ -834,8 +853,10 @@ export const VI_TRANSLATIONS: Record<string, any> = {
     },
   },
   trips: {
-    title: 'Điều hành Lịch chạy & Chuyến xe',
-    subtitle: 'Quản lý cấu hình lịch vòng chạy định kỳ, điều phối phương tiện, gán tài xế và theo dõi chuyến xe',
+    title: 'Điều hành Chuyến xe',
+    subtitle: 'Quản lý danh sách chuyến xe thực tế, điều phối phương tiện, gán tài xế và theo dõi trạng thái vận hành',
+    runsTitle: 'Quản lý Lịch vòng chạy',
+    runsSubtitle: 'Quản trị cấu hình lịch vòng chạy định kỳ, tần suất và khung giờ xuất bến',
     tabs: {
       trips: 'Danh sách Chuyến xe thực tế',
       tripRuns: 'Cấu hình Lịch vòng chạy (TripRun)',
@@ -925,6 +946,19 @@ export const VI_TRANSLATIONS: Record<string, any> = {
       activateSchedule: 'Kích hoạt lịch',
       editSchedule: 'Chỉnh sửa cấu hình',
       deleteSchedule: 'Xóa lịch vòng chạy',
+    },
+    tooltips: {
+      generateForSchedule: 'Sinh chuyến tự động cho lịch này',
+      editSchedule: 'Chỉnh sửa lịch vòng chạy',
+      pauseSchedule: 'Tạm dừng lịch vòng chạy',
+      activateSchedule: 'Kích hoạt lịch vòng chạy',
+      deleteSchedule: 'Xóa lịch vòng chạy',
+      editTrip: 'Chỉnh sửa chuyến xe',
+      updateTripStatus: 'Cập nhật trạng thái chuyến',
+    },
+    deleteModal: {
+      title: 'Xác nhận xóa Lịch vòng chạy',
+      message: 'Bạn có chắc chắn muốn xóa lịch vòng chạy này? Hành động này không thể hoàn tác.',
     },
     confirmDelete: {
       title: 'Xác nhận xóa lịch vòng chạy',

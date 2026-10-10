@@ -1,0 +1,153 @@
+<div class="trip-page-container">
+  <!-- PAGE HEADER -->
+  <app-page-header
+    [title]="'trips.runsTitle' | translate"
+    [subtitle]="'trips.runsSubtitle' | translate"
+    [breadcrumbs]="breadcrumbs()"
+  >
+    <div actions class="header-action-buttons">
+      <app-button
+        [label]="'trips.buttons.generateTrips' | translate"
+        icon="pi pi-bolt"
+        variant="secondary"
+        *appHasPermission="'TRIP_MANAGE'"
+        (clicked)="openGenerateDialog()"
+      />
+
+      <app-button
+        [label]="'trips.buttons.createTripRun' | translate"
+        icon="pi pi-plus"
+        variant="primary"
+        *appHasPermission="'TRIP_MANAGE'"
+        (clicked)="openCreateTripRunDialog()"
+      />
+    </div>
+  </app-page-header>
+
+  <!-- TRIP RUNS TABLE -->
+  <div class="saas-card table-card">
+    <app-data-table
+      [data]="tripRunsList()"
+      [columns]="tripRunColumns()"
+      [totalRecords]="tripRunsTotal()"
+      [loading]="tripRunsLoading()"
+      [pageSize]="tripRunsSize()"
+      [first]="tripRunsPage() * tripRunsSize()"
+      [searchable]="true"
+      [searchPlaceholder]="'trips.searchPlaceholder.tripRuns' | translate"
+      [filters]="tripRunFilters()"
+      (lazyLoad)="onTripRunLazyLoad($event)"
+      (searchChange)="onTripRunSearch($event)"
+      (filterChange)="onTripRunFilterChange($event)"
+    >
+      <!-- CODE COLUMN -->
+      <ng-template appTableCell="code" let-item>
+        <span class="code-badge">{{ item.code }}</span>
+      </ng-template>
+
+      <!-- NAME COLUMN -->
+      <ng-template appTableCell="name" let-item>
+        <div class="cell-stack">
+          <span class="name-text">{{ item.name }}</span>
+          @if (item.description) {
+            <span class="sub-text">{{ item.description }}</span>
+          }
+        </div>
+      </ng-template>
+
+      <!-- ROUTE COLUMN -->
+      <ng-template appTableCell="route" let-item>
+        <span class="route-name">{{ item.routeName || ('trips.columns.route' | translate) + ' #' + item.routeId }}</span>
+      </ng-template>
+
+      <!-- DEPARTURE TIME -->
+      <ng-template appTableCell="departureTime" let-item>
+        <span class="time-badge">{{ item.departureTime }}</span>
+      </ng-template>
+
+      <!-- DAYS OF WEEK -->
+      <ng-template appTableCell="daysOfWeek" let-item>
+        <span class="sub-text">{{ formatDaysSummary(item.daysOfWeek) }}</span>
+      </ng-template>
+
+      <!-- DATES -->
+      <ng-template appTableCell="dates" let-item>
+        <span class="sub-text">{{ item.startDate | date: 'dd/MM/yyyy' }} → {{ item.endDate | date: 'dd/MM/yyyy' }}</span>
+      </ng-template>
+
+      <!-- STATUS -->
+      <ng-template appTableCell="status" let-item>
+        <app-status-badge [status]="item.status" />
+      </ng-template>
+
+      <!-- ACTIONS -->
+      <ng-template appTableCell="actions" let-item>
+        <div class="row-actions">
+          <app-button
+            icon="pi pi-bolt"
+            variant="text"
+            size="small"
+            *appHasPermission="'TRIP_MANAGE'"
+            [tooltip]="'trips.tooltips.generateForSchedule' | translate"
+            tooltipPosition="top"
+            (clicked)="openGenerateDialog(item)"
+          />
+          <app-button
+            icon="pi pi-pencil"
+            variant="text"
+            size="small"
+            *appHasPermission="'TRIP_MANAGE'"
+            [tooltip]="'trips.tooltips.editSchedule' | translate"
+            tooltipPosition="top"
+            (clicked)="openEditTripRunDialog(item)"
+          />
+          <app-button
+            [icon]="item.status === 'ACTIVE' ? 'pi pi-pause' : 'pi pi-play'"
+            variant="text"
+            size="small"
+            *appHasPermission="'TRIP_MANAGE'"
+            [tooltip]="(item.status === 'ACTIVE' ? 'trips.tooltips.pauseSchedule' : 'trips.tooltips.activateSchedule') | translate"
+            tooltipPosition="top"
+            (clicked)="toggleTripRunStatus(item)"
+          />
+          <app-button
+            icon="pi pi-trash"
+            variant="text"
+            size="small"
+            styleClass="danger-btn"
+            *appHasPermission="'TRIP_MANAGE'"
+            [tooltip]="'trips.tooltips.deleteSchedule' | translate"
+            tooltipPosition="top"
+            (clicked)="confirmDeleteTripRun(item)"
+          />
+        </div>
+      </ng-template>
+    </app-data-table>
+  </div>
+
+  <!-- TRIP RUN FORM DIALOG -->
+  <app-trip-run-form-dialog
+    [visible]="showTripRunDialog()"
+    [tripRun]="selectedTripRun()"
+    [routeOptions]="routeOptions()"
+    [submitting]="tripRunSubmitting()"
+    (visibleChange)="showTripRunDialog.set($event)"
+    (save)="onSaveTripRun($event)"
+  />
+
+  <!-- GENERATE TRIPS DIALOG -->
+  <app-generate-trips-dialog
+    [visible]="showGenerateDialog()"
+    [tripRun]="generateTargetTripRun()"
+    (visibleChange)="showGenerateDialog.set($event)"
+  />
+
+  <!-- CONFIRM DELETE MODAL -->
+  <app-confirm-modal
+    [isOpen]="showDeleteModal()"
+    [title]="'trips.deleteModal.title' | translate"
+    [message]="'trips.deleteModal.message' | translate"
+    (isOpenChange)="showDeleteModal.set($event)"
+    (confirm)="onExecuteDeleteTripRun()"
+  />
+</div>
