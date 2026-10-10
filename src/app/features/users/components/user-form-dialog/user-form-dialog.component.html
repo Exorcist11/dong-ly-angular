@@ -11,105 +11,67 @@
 >
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form-content">
     <!-- USERNAME (Chỉ cho phép nhập khi tạo mới) -->
-    <app-form-field
+    <app-input
+      id="username"
+      formControlName="username"
       [label]="'users.dialog.usernameLabel' | translate"
-      forId="username"
+      type="text"
       [required]="true"
-      [control]="userForm.get('username')"
+      [placeholder]="'users.dialog.usernamePlaceholder' | translate"
       [errorMessages]="{
         pattern: ('users.dialog.usernamePatternError' | translate)
       }"
-    >
-      <input
-        id="username"
-        type="text"
-        pInputText
-        formControlName="username"
-        [placeholder]="'users.dialog.usernamePlaceholder' | translate"
-        class="dl-input"
-        [class.ng-invalid]="isFieldInvalid('username')"
-      />
-    </app-form-field>
+    />
 
     <!-- HỌ VÀ TÊN -->
-    <app-form-field
+    <app-input
+      id="fullName"
+      formControlName="fullName"
       [label]="'users.dialog.fullNameLabel' | translate"
-      forId="fullName"
+      type="text"
       [required]="true"
-      [control]="userForm.get('fullName')"
-    >
-      <input
-        id="fullName"
-        type="text"
-        pInputText
-        formControlName="fullName"
-        [placeholder]="'users.dialog.fullNamePlaceholder' | translate"
-        class="dl-input"
-        [class.ng-invalid]="isFieldInvalid('fullName')"
-      />
-    </app-form-field>
+      [placeholder]="'users.dialog.fullNamePlaceholder' | translate"
+    />
 
     <!-- EMAIL -->
-    <app-form-field
+    <app-input
+      id="email"
+      formControlName="email"
       [label]="'users.dialog.emailLabel' | translate"
-      forId="email"
+      type="email"
       [required]="true"
-      [control]="userForm.get('email')"
-    >
-      <input
-        id="email"
-        type="email"
-        pInputText
-        formControlName="email"
-        [placeholder]="'users.dialog.emailPlaceholder' | translate"
-        class="dl-input"
-        [class.ng-invalid]="isFieldInvalid('email')"
-      />
-    </app-form-field>
+      [placeholder]="'users.dialog.emailPlaceholder' | translate"
+    />
 
     <!-- MẬT KHẨU (Chỉ bắt buộc khi tạo mới) -->
     @if (!isEditMode) {
-      <app-form-field
+      <app-input
+        id="password"
+        formControlName="password"
         [label]="'users.dialog.passwordLabel' | translate"
-        forId="password"
+        type="password"
         [required]="true"
-        [control]="userForm.get('password')"
-      >
-        <p-password
-          id="password"
-          formControlName="password"
-          [toggleMask]="true"
-          [feedback]="true"
-          [promptLabel]="'users.dialog.passwordPrompt' | translate"
-          [weakLabel]="'users.dialog.passwordWeak' | translate"
-          [mediumLabel]="'users.dialog.passwordMedium' | translate"
-          [strongLabel]="'users.dialog.passwordStrong' | translate"
-          styleClass="w-full"
-          inputStyleClass="w-full dl-input"
-          [placeholder]="'users.dialog.passwordPlaceholder' | translate"
-        />
-      </app-form-field>
+        [toggleMask]="true"
+        [feedback]="true"
+        [promptLabel]="'users.dialog.passwordPrompt' | translate"
+        [weakLabel]="'users.dialog.passwordWeak' | translate"
+        [mediumLabel]="'users.dialog.passwordMedium' | translate"
+        [strongLabel]="'users.dialog.passwordStrong' | translate"
+        [placeholder]="'users.dialog.passwordPlaceholder' | translate"
+      />
     }
 
     <!-- SỐ ĐIỆN THOẠI -->
-    <app-form-field
+    <app-input
+      id="phone"
+      formControlName="phone"
       [label]="'users.dialog.phoneLabel' | translate"
-      forId="phone"
-      [control]="userForm.get('phone')"
+      type="tel"
+      [placeholder]="'users.dialog.phonePlaceholder' | translate"
       [errorMessages]="{
         pattern: ('users.dialog.phonePatternError' | translate)
       }"
-    >
-      <input
-        id="phone"
-        type="tel"
-        pInputText
-        formControlName="phone"
-        [placeholder]="'users.dialog.phonePlaceholder' | translate"
-        class="dl-input"
-        [class.ng-invalid]="isFieldInvalid('phone')"
-      />
-    </app-form-field>
+    />
 
     <!-- VAI TRÒ GÁN (ROLES) -->
     <app-form-field

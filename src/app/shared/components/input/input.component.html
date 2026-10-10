@@ -1,0 +1,76 @@
+<div class="dl-form-field" [class]="styleClass()" [class.has-error]="hasError()">
+  @if (label()) {
+    <div class="field-header">
+      <label [attr.for]="effectiveId()" class="field-label">
+        {{ label() }}
+        @if (required()) {
+          <span class="required-mark" aria-hidden="true">*</span>
+        }
+      </label>
+      <ng-content select="[labelSuffix]" />
+    </div>
+  }
+
+  <div class="control-wrapper">
+    @if (type() === 'password') {
+      <p-password
+        [id]="effectiveId()"
+        [ngModel]="internalValue()"
+        (ngModelChange)="onPasswordModelChange($event)"
+        (onBlur)="onInputBlur()"
+        (onFocus)="onInputFocus($event)"
+        [toggleMask]="toggleMask()"
+        [feedback]="feedback()"
+        [promptLabel]="promptLabel()"
+        [weakLabel]="weakLabel()"
+        [mediumLabel]="mediumLabel()"
+        [strongLabel]="strongLabel()"
+        styleClass="w-full"
+        [inputStyleClass]="passwordInputClass()"
+        [placeholder]="placeholder() ?? ''"
+        [disabled]="effectiveDisabled()"
+        [attr.maxlength]="maxlength()"
+        [autocomplete]="autocomplete()"
+        [attr.aria-required]="required()"
+        [attr.aria-invalid]="hasError()"
+        [attr.aria-describedby]="ariaDescribedBy()"
+      />
+    } @else {
+      <input
+        pInputText
+        [id]="effectiveId()"
+        [name]="name() ?? effectiveId()"
+        [type]="type()"
+        [value]="internalValue()"
+        (input)="onNativeInput($event)"
+        (blur)="onInputBlur($event)"
+        (focus)="onInputFocus($event)"
+        [placeholder]="placeholder() ?? ''"
+        [disabled]="effectiveDisabled()"
+        [readOnly]="readonly()"
+        [attr.autocomplete]="autocomplete()"
+        [attr.maxlength]="maxlength()"
+        [attr.minlength]="minlength()"
+        [attr.min]="min()"
+        [attr.max]="max()"
+        [attr.step]="step()"
+        [attr.aria-required]="required()"
+        [attr.aria-invalid]="hasError()"
+        [attr.aria-describedby]="ariaDescribedBy()"
+        class="dl-input"
+        [class.ng-invalid]="hasError()"
+        [ngClass]="inputStyleClass()"
+      />
+    }
+  </div>
+
+  @if (hint() && !hasError()) {
+    <small [id]="hintId()" class="field-hint">{{ hint() }}</small>
+  }
+
+  @if (hasError()) {
+    <small [id]="errorId()" class="error-message" role="alert">
+      {{ activeErrorMessage() }}
+    </small>
+  }
+</div>

@@ -17,10 +17,9 @@ import {
 } from '@angular/forms';
 import { Dialog } from 'primeng/dialog';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
-import { InputText } from 'primeng/inputtext';
-import { Password } from 'primeng/password';
 import { MultiSelect } from 'primeng/multiselect';
 import { FormFieldComponent } from '../../../../shared/components/form-field/form-field.component';
+import { InputComponent } from '../../../../shared/components/input/input.component';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { CreateUserRequest, Role, UpdateUserRequest, User } from '../../models/user.model';
 
@@ -33,10 +32,9 @@ import { CreateUserRequest, Role, UpdateUserRequest, User } from '../../models/u
     TranslatePipe,
     Dialog,
     ButtonComponent,
-    InputText,
-    Password,
     MultiSelect,
     FormFieldComponent,
+    InputComponent,
   ],
   templateUrl: './user-form-dialog.component.html',
   styleUrl: './user-form-dialog.component.scss',

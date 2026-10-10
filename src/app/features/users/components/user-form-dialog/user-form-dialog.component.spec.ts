@@ -98,4 +98,28 @@ describe('UserFormDialogComponent', () => {
     expect(emittedPayload.username).toBe('tranb');
     expect(emittedPayload.email).toBe('b@dongly.vn');
   });
+
+  it('nên hiển thị validation error trong app-input khi submit form không hợp lệ', () => {
+    component.user = null;
+    component.visible = true;
+    component.ngOnChanges({
+      visible: {
+        currentValue: true,
+        previousValue: false,
+        firstChange: true,
+        isFirstChange: () => true,
+      },
+    });
+    fixture.detectChanges();
+
+    component.onSubmit();
+    fixture.detectChanges();
+
+    const usernameError = fixture.nativeElement.querySelector('#username-error');
+    expect(usernameError).toBeTruthy();
+    expect(usernameError.textContent).toContain('Tên đăng nhập không được để trống.');
+
+    const passwordInput = fixture.nativeElement.querySelector('app-input#password');
+    expect(passwordInput).toBeTruthy();
+  });
 });

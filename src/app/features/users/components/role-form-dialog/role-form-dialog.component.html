@@ -20,46 +20,33 @@
     }
 
     <!-- Mã vai trò -->
-    <app-form-field
+    <app-input
+      id="roleCode"
+      formControlName="code"
       [label]="'roles.dialog.codeLabel' | translate"
-      forId="roleCode"
+      type="text"
       [required]="!isEditMode"
-      [control]="roleForm.get('code')"
       [hint]="'roles.dialog.codeHint' | translate"
+      [placeholder]="'roles.dialog.codePlaceholder' | translate"
       [errorMessages]="{
         pattern: ('roles.dialog.codePatternError' | translate)
       }"
+      (input)="onCodeInput($event)"
     >
       @if (isEditMode) {
         <span labelSuffix class="readonly-badge">{{ 'roles.dialog.codeReadonly' | translate }}</span>
       }
-      <input
-        pInputText
-        id="roleCode"
-        formControlName="code"
-        [placeholder]="'roles.dialog.codePlaceholder' | translate"
-        class="dl-input"
-        [class.ng-invalid]="roleForm.get('code')?.invalid && roleForm.get('code')?.touched"
-        (input)="onCodeInput($event)"
-      />
-    </app-form-field>
+    </app-input>
 
     <!-- Tên vai trò hiển thị -->
-    <app-form-field
+    <app-input
+      id="roleName"
+      formControlName="name"
       [label]="'roles.dialog.nameLabel' | translate"
-      forId="roleName"
+      type="text"
       [required]="true"
-      [control]="roleForm.get('name')"
-    >
-      <input
-        pInputText
-        id="roleName"
-        formControlName="name"
-        [placeholder]="'roles.dialog.namePlaceholder' | translate"
-        class="dl-input"
-        [class.ng-invalid]="roleForm.get('name')?.invalid && roleForm.get('name')?.touched"
-      />
-    </app-form-field>
+      [placeholder]="'roles.dialog.namePlaceholder' | translate"
+    />
 
     <!-- Mô tả vai trò -->
     <app-form-field
