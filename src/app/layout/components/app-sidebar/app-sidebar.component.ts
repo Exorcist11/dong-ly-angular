@@ -126,6 +126,8 @@ export const MENU_CONFIG: NavGroup[] = [
   },
 ];
 
+import { ButtonComponent } from '../../../shared/components/button/button.component';
+
 @Component({
   selector: 'app-sidebar',
   standalone: true,
@@ -134,6 +136,7 @@ export const MENU_CONFIG: NavGroup[] = [
     RouterLink,
     RouterLinkActive,
     AppUserMenuComponent,
+    ButtonComponent,
     Tag,
     Tooltip,
     Drawer,

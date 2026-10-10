@@ -23,8 +23,14 @@
 <ng-template #sidebarContent>
   <div class="sidebar-container">
     <!-- BRAND BLOCK -->
-    <div class="brand-block">
-      <div class="brand-logo-square">
+    <div class="brand-block" [class.collapsed-brand]="layoutService.sidebarCollapsed() && !layoutService.mobileMenuOpen()">
+      <div
+        class="brand-logo-square"
+        [class.clickable-logo]="layoutService.sidebarCollapsed() && !layoutService.mobileMenuOpen()"
+        (click)="(layoutService.sidebarCollapsed() && !layoutService.mobileMenuOpen()) ? layoutService.toggleSidebar() : null"
+        [pTooltip]="(layoutService.sidebarCollapsed() && !layoutService.mobileMenuOpen()) ? ('navigation.sidebar.expand' | translate) : undefined"
+        tooltipPosition="right"
+      >
         <span class="logo-text">ĐL</span>
       </div>
       @if (!layoutService.sidebarCollapsed() || layoutService.mobileMenuOpen()) {
@@ -32,6 +38,18 @@
           <span class="brand-name">ĐÔNG LÝ</span>
           <span class="brand-portal">Admin Portal</span>
         </div>
+
+        <app-button
+          variant="text"
+          [rounded]="true"
+          icon="pi pi-chevron-left"
+          size="small"
+          styleClass="sidebar-toggle-btn"
+          [tooltip]="'navigation.sidebar.collapse' | translate"
+          tooltipPosition="bottom"
+          [ariaLabel]="'navigation.sidebar.collapse' | translate"
+          (clicked)="layoutService.toggleSidebar()"
+        />
       }
     </div>
 
@@ -127,8 +145,23 @@
       }
     </nav>
 
-    <!-- USER CARD AT BOTTOM -->
+    <!-- BOTTOM FOOTER (COLLAPSE ACTION & USER MENU) -->
     <div class="sidebar-bottom">
+      <div class="sidebar-collapse-footer">
+        <app-button
+          variant="text"
+          [rounded]="false"
+          size="small"
+          [icon]="layoutService.sidebarCollapsed() ? 'pi pi-angle-double-right' : 'pi pi-angle-double-left'"
+          [label]="!layoutService.sidebarCollapsed() ? ('navigation.sidebar.collapse' | translate) : undefined"
+          [tooltip]="layoutService.sidebarCollapsed() ? ('navigation.sidebar.expand' | translate) : undefined"
+          tooltipPosition="right"
+          styleClass="sidebar-footer-toggle-btn"
+          [ariaLabel]="(layoutService.sidebarCollapsed() ? 'navigation.sidebar.expand' : 'navigation.sidebar.collapse') | translate"
+          (clicked)="layoutService.toggleSidebar()"
+        />
+      </div>
+
       <app-user-menu [collapsed]="layoutService.sidebarCollapsed() && !layoutService.mobileMenuOpen()" />
     </div>
   </div>

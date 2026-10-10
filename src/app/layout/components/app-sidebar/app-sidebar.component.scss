@@ -40,6 +40,14 @@
 
     .sidebar-bottom {
       padding: 12px 8px;
+      align-items: center;
+    }
+
+    :host ::ng-deep .sidebar-footer-toggle-btn {
+      width: 44px !important;
+      justify-content: center !important;
+      padding: 0 !important;
+      margin: 0 auto;
     }
   }
 }
@@ -55,10 +63,42 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 18px 20px;
+  padding: 16px 14px 16px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   height: 64px;
   flex-shrink: 0;
+  position: relative;
+
+  &.collapsed-brand {
+    justify-content: center;
+    padding: 16px 8px;
+  }
+}
+
+.clickable-logo {
+  cursor: pointer;
+  transition: transform var(--ease, 200ms ease), box-shadow var(--ease, 200ms ease);
+
+  &:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 18px rgba(215, 25, 32, 0.6);
+  }
+}
+
+:host ::ng-deep .sidebar-toggle-btn {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  border-radius: 8px !important;
+  transition: all var(--ease, 200ms ease) !important;
+  margin-left: auto;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #FFFFFF !important;
+  }
 }
 
 .brand-logo-square {
@@ -84,6 +124,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  flex: 1;
 }
 
 .brand-name {
@@ -330,9 +371,45 @@
 }
 
 .sidebar-bottom {
-  padding: 14px 12px;
+  padding: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar-collapse-footer {
+  width: 100%;
+}
+
+:host ::ng-deep .sidebar-footer-toggle-btn {
+  width: 100% !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  padding: 0 10px !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  transition: all var(--ease, 200ms ease) !important;
+
+  .p-button-icon {
+    font-size: 14px !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+    color: #FFFFFF !important;
+
+    .p-button-icon {
+      color: #FFFFFF !important;
+    }
+  }
 }
 
 :host ::ng-deep .app-sidebar-drawer {

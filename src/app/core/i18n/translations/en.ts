@@ -131,6 +131,11 @@ export const EN_TRANSLATIONS: Record<string, any> = {
       upcomingTooltip: 'Feature under development',
       mainNavAria: 'Main navigation bar',
     },
+    sidebar: {
+      collapse: 'Collapse menu',
+      expand: 'Expand menu',
+      toggle: 'Toggle navigation sidebar',
+    },
     topbar: {
       toggleSidebar: 'Toggle sidebar navigation',
       searchPlaceholder: 'Search trips, tickets, customers...',

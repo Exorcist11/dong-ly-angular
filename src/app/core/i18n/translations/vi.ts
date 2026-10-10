@@ -131,6 +131,11 @@ export const VI_TRANSLATIONS: Record<string, any> = {
       upcomingTooltip: 'Tính năng đang phát triển',
       mainNavAria: 'Thanh điều hướng chính',
     },
+    sidebar: {
+      collapse: 'Thu gọn menu',
+      expand: 'Mở rộng menu',
+      toggle: 'Thu gọn hoặc mở rộng thanh điều hướng',
+    },
     topbar: {
       toggleSidebar: 'Thu gọn hoặc mở rộng thanh điều hướng',
       searchPlaceholder: 'Tìm chuyến xe, vé, khách hàng...',

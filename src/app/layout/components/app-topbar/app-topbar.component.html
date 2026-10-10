@@ -1,12 +1,12 @@
 <header class="app-topbar" role="banner">
   <!-- LEFT SECTION -->
   <div class="topbar-left">
-    <!-- Collapse / Hamburger Button -->
+    <!-- Mobile-only Hamburger Button (Hidden on Desktop) -->
     <app-button
       variant="text"
       [rounded]="true"
       icon="pi pi-bars"
-      styleClass="topbar-icon-btn"
+      styleClass="topbar-icon-btn topbar-mobile-toggle"
       [ariaLabel]="'navigation.topbar.toggleSidebar' | translate"
       (clicked)="onToggleSidebar()"
     />
