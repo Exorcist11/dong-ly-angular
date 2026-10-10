@@ -13,7 +13,7 @@ import { Dialog } from 'primeng/dialog';
 import { Button } from 'primeng/button';
 import { Tag } from 'primeng/tag';
 import { Checkbox } from 'primeng/checkbox';
-import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { Role, User } from '../../models/user.model';
 
 @Component({

@@ -13,7 +13,7 @@ import { Tooltip } from 'primeng/tooltip';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { TranslationService } from '../../../../core/i18n/translation.service';
-import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { ConfirmModalComponent } from '../../../../shared/components/confirm-modal/confirm-modal.component';
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';

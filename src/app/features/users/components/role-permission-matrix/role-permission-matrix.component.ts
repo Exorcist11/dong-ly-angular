@@ -20,7 +20,7 @@ import { Tooltip } from 'primeng/tooltip';
 import { RoleService } from '../../services/role.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { TranslationService } from '../../../../core/i18n/translation.service';
-import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { Permission, PermissionCatalog, PermissionGroup } from '../../models/user.model';
 import { forkJoin, finalize } from 'rxjs';
 

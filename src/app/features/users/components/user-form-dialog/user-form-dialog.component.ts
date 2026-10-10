@@ -21,7 +21,7 @@ import { InputText } from 'primeng/inputtext';
 import { Password } from 'primeng/password';
 import { MultiSelect } from 'primeng/multiselect';
 import { FormFieldComponent } from '../../../../shared/components/form-field/form-field.component';
-import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { CreateUserRequest, Role, UpdateUserRequest, User } from '../../models/user.model';
 
 @Component({

@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LayoutService } from '../../../../layout/layout.service';
 import { TranslationService } from '../../../../core/i18n/translation.service';
-import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { KpiCardComponent } from '../../components/kpi-card/kpi-card.component';
 
 import { Card } from 'primeng/card';
