@@ -41,6 +41,7 @@ import {
   CrmTripSearchCriteria,
   CrmTripSearchResult,
   CrmTripSeatMap,
+  HoldSeatsRequest,
   HoldSeatsResponse,
   PassengerItemRequest,
   PaymentMethod,
@@ -172,21 +173,40 @@ export class CrmBookingPageComponent implements OnInit, OnDestroy {
     const stops = this.seatMapData()?.stops || [];
     return stops
       .filter((s) => s.stopType === 'PICKUP' || s.stopType === 'BOTH')
-      .map((s) => ({
-        label: `${s.stopName} (+${new Intl.NumberFormat('vi-VN').format(s.extraPrice)}đ)`,
-        value: s.routeStopId,
-      }));
+      .map((s) => {
+        const name = s.name || s.stopName || this.i18n.translate('bookings.passengers.pickupLabel');
+        const extra = Number(s.extraPrice) > 0
+          ? ` (+${new Intl.NumberFormat('vi-VN').format(Number(s.extraPrice))}đ)`
+          : '';
+        return {
+          label: `${name}${extra}`,
+          value: s.routeStopId,
+        };
+      });
   });
 
   readonly dropoffStopOptions = computed<SelectOption[]>(() => {
     const stops = this.seatMapData()?.stops || [];
     return stops
       .filter((s) => s.stopType === 'DROPOFF' || s.stopType === 'BOTH')
-      .map((s) => ({
-        label: `${s.stopName} (+${new Intl.NumberFormat('vi-VN').format(s.extraPrice)}đ)`,
-        value: s.routeStopId,
-      }));
+      .map((s) => {
+        const name = s.name || s.stopName || this.i18n.translate('bookings.passengers.dropoffLabel');
+        const extra = Number(s.extraPrice) > 0
+          ? ` (+${new Intl.NumberFormat('vi-VN').format(Number(s.extraPrice))}đ)`
+          : '';
+        return {
+          label: `${name}${extra}`,
+          value: s.routeStopId,
+        };
+      });
   });
+
+  getStopNameById(stopId: string | null | undefined): string {
+    if (!stopId) return '';
+    const stop = this.seatMapData()?.stops?.find((s) => s.routeStopId === stopId);
+    if (!stop) return '';
+    return stop.name || stop.stopName || '';
+  }
 
   readonly selectedSeatIds = computed<string[]>(() => {
     return this.selectedSeats().map((s) => s.seatId);
@@ -330,46 +350,13 @@ export class CrmBookingPageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isHoldingSeats.set(true);
+    // Tự động kế thừa ghi chú sang bước thanh toán nếu chưa có
+    if (!this.bookingFinalNote() && this.holdNote()) {
+      this.bookingFinalNote.set(this.holdNote());
+    }
 
-    const payload = {
-      tripId: trip.tripId,
-      seatIds: seats.map((s) => s.seatId),
-      pickupStopId: this.defaultPickupStopId() || undefined,
-      dropoffStopId: this.defaultDropoffStopId() || undefined,
-      note: this.holdNote() || undefined,
-    };
-
-    this.bookingService.holdSeats(payload).subscribe({
-      next: (res) => {
-        this.isHoldingSeats.set(false);
-        this.holdResult.set(res.data);
-        this.notification.success(res.message || this.i18n.translate('bookings.messages.holdSuccess'));
-
-        this.startCountdownTimer(res.data.expiresAt);
-
-        const passengers: PassengerFormData[] = (res.data.heldSeats || []).map((hs) => ({
-          seatId: hs.seatId,
-          seatCode: hs.seatNumber,
-          passengerName: this.customerName() || '',
-          passengerPhone: this.customerPhone() || '',
-          pickupStopId: this.defaultPickupStopId(),
-          dropoffStopId: this.defaultDropoffStopId(),
-        }));
-        this.passengerForms.set(passengers);
-
-        this.currentStep.set(2);
-      },
-      error: (err) => {
-        this.isHoldingSeats.set(false);
-        const msg =
-          err.error?.message || this.i18n.translate('bookings.messages.holdError');
-        this.notification.error(msg);
-
-        this.loadSeatMapData(trip.tripId);
-        this.selectedSeats.set([]);
-      },
-    });
+    // Chuyển sang Bước 2: Nhập thông tin người đặt
+    this.currentStep.set(2);
   }
 
   private startCountdownTimer(expiresAtIso: string): void {
@@ -400,7 +387,14 @@ export class CrmBookingPageComponent implements OnInit, OnDestroy {
   }
 
   proceedToPassengerStep(): void {
-    if (this.checkHoldExpiration()) return;
+    const trip = this.selectedTrip();
+    const seats = this.selectedSeats();
+
+    if (!trip || seats.length === 0) {
+      this.notification.warning(this.i18n.translate('bookings.messages.selectAtLeastOneSeat'));
+      this.currentStep.set(1);
+      return;
+    }
 
     const errors: { name?: string; phone?: string; email?: string } = {};
     const name = this.customerName().trim();
@@ -428,14 +422,67 @@ export class CrmBookingPageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const passengers = [...this.passengerForms()];
-    if (passengers.length > 0 && !passengers[0].passengerName) {
-      passengers[0].passengerName = name;
-      passengers[0].passengerPhone = phone;
-      this.passengerForms.set(passengers);
+    // Nếu đã giữ ghế trước đó và chưa hết hạn, cập nhật hành khách rồi đi tiếp
+    if (this.holdResult() && !this.isHoldExpired()) {
+      this.syncPassengerFormsFromCustomer();
+      this.currentStep.set(3);
+      return;
     }
 
-    this.currentStep.set(3);
+    this.isHoldingSeats.set(true);
+
+    const payload: HoldSeatsRequest = {
+      tripId: trip.tripId,
+      seatIds: seats.map((s) => s.seatId),
+      customerName: name,
+      customerPhone: phone,
+      pickupStopId: this.defaultPickupStopId() || undefined,
+      dropoffStopId: this.defaultDropoffStopId() || undefined,
+      note: this.holdNote().trim() || undefined,
+    };
+
+    this.bookingService.holdSeats(payload).subscribe({
+      next: (res) => {
+        this.isHoldingSeats.set(false);
+        this.holdResult.set(res.data);
+        this.notification.success(res.message || this.i18n.translate('bookings.messages.holdSuccess'));
+
+        this.startCountdownTimer(res.data.expiresAt);
+
+        const passengers: PassengerFormData[] = (res.data.heldSeats || []).map((hs, idx) => ({
+          seatId: hs.seatId,
+          seatCode: hs.seatNumber,
+          passengerName: idx === 0 ? name : '',
+          passengerPhone: idx === 0 ? phone : '',
+          pickupStopId: this.defaultPickupStopId(),
+          dropoffStopId: this.defaultDropoffStopId(),
+        }));
+        this.passengerForms.set(passengers);
+
+        this.currentStep.set(3);
+      },
+      error: (err) => {
+        this.isHoldingSeats.set(false);
+        const msg =
+          err.error?.message || this.i18n.translate('bookings.messages.holdError');
+        this.notification.error(msg);
+
+        this.loadSeatMapData(trip.tripId);
+      },
+    });
+  }
+
+  private syncPassengerFormsFromCustomer(): void {
+    const list = [...this.passengerForms()];
+    if (list.length > 0) {
+      if (!list[0].passengerName) list[0].passengerName = this.customerName().trim();
+      if (!list[0].passengerPhone) list[0].passengerPhone = this.customerPhone().trim();
+      list.forEach((p) => {
+        if (!p.pickupStopId) p.pickupStopId = this.defaultPickupStopId();
+        if (!p.dropoffStopId) p.dropoffStopId = this.defaultDropoffStopId();
+      });
+      this.passengerForms.set(list);
+    }
   }
 
   proceedToReviewStep(): void {
@@ -500,7 +547,7 @@ export class CrmBookingPageComponent implements OnInit, OnDestroy {
         transactionCode: this.paymentTransactionCode().trim() || undefined,
         note: this.paymentNote().trim() || undefined,
       },
-      note: this.bookingFinalNote().trim() || undefined,
+      note: this.bookingFinalNote().trim() || this.holdNote().trim() || undefined,
     };
 
     this.bookingService.confirmBooking(hold.bookingId, payload).subscribe({

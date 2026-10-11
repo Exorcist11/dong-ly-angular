@@ -326,11 +326,13 @@
               </div>
 
               <div class="mb-3">
-                <app-input
+                <app-textarea
                   [label]="'bookings.wizard.holdNote' | translate"
                   [placeholder]="'bookings.wizard.holdNotePlaceholder' | translate"
                   [ngModel]="holdNote()"
                   (ngModelChange)="holdNote.set($event)"
+                  [rows]="3"
+                  [autoResize]="true"
                 />
               </div>
 
@@ -345,9 +347,8 @@
                   [fullWidth]="true"
                   icon="pi pi-arrow-right"
                   iconPos="right"
-                  [label]="'bookings.wizard.holdAndContinue' | translate"
-                  [loading]="isHoldingSeats()"
-                  [disabled]="selectedSeats().length === 0 || isHoldingSeats()"
+                  [label]="'bookings.wizard.continueToCustomer' | translate"
+                  [disabled]="selectedSeats().length === 0"
                   (clicked)="proceedToCustomerStep()"
                 />
               </div>
@@ -405,10 +406,11 @@
             />
             <app-button
               variant="primary"
-              icon="pi pi-arrow-right"
+              icon="pi pi-lock"
               iconPos="right"
-              [label]="'bookings.wizard.continueToPassenger' | translate"
-              [disabled]="isHoldExpired()"
+              [label]="'bookings.wizard.holdAndContinue' | translate"
+              [loading]="isHoldingSeats()"
+              [disabled]="isHoldingSeats() || isHoldExpired()"
               (clicked)="proceedToPassengerStep()"
             />
           </div>
@@ -537,8 +539,20 @@
               <h5 class="sub-title">{{ 'bookings.review.passengerSection' | translate }}</h5>
               <div *ngFor="let p of passengerForms()" class="passenger-review-item">
                 <span class="seat-pill">{{ p.seatCode }}</span>
-                <span class="passenger-detail font-medium">{{ p.passengerName }} ({{ p.passengerPhone || ('bookings.review.noPhone' | translate) }})</span>
+                <div class="flex-1 min-w-0">
+                  <div class="passenger-detail font-medium">{{ p.passengerName }} ({{ p.passengerPhone || ('bookings.review.noPhone' | translate) }})</div>
+                  <div class="text-xs text-slate-500 mt-0.5" *ngIf="p.pickupStopId || p.dropoffStopId">
+                    <span *ngIf="p.pickupStopId"><i class="pi pi-map-marker text-sky-600 mr-1"></i>{{ 'bookings.passengers.pickupLabel' | translate }}: {{ getStopNameById(p.pickupStopId) }}</span>
+                    <span *ngIf="p.pickupStopId && p.dropoffStopId" class="mx-2">•</span>
+                    <span *ngIf="p.dropoffStopId"><i class="pi pi-flag text-emerald-600 mr-1"></i>{{ 'bookings.passengers.dropoffLabel' | translate }}: {{ getStopNameById(p.dropoffStopId) }}</span>
+                  </div>
+                </div>
               </div>
+            </div>
+
+            <div class="summary-section mt-3" *ngIf="holdNote()">
+              <h5 class="sub-title">{{ 'bookings.wizard.holdNote' | translate }}</h5>
+              <p class="text-sm text-slate-700 bg-slate-50 p-2.5 rounded border border-slate-200 whitespace-pre-wrap">{{ holdNote() }}</p>
             </div>
           </div>
 
@@ -574,11 +588,13 @@
               </div>
 
               <div>
-                <app-input
+                <app-textarea
                   [label]="'bookings.payment.noteLabel' | translate"
                   [placeholder]="'bookings.payment.notePlaceholder' | translate"
                   [ngModel]="bookingFinalNote()"
                   (ngModelChange)="bookingFinalNote.set($event)"
+                  [rows]="2"
+                  [autoResize]="true"
                 />
               </div>
             </div>

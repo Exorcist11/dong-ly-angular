@@ -1197,6 +1197,7 @@ export const EN_TRANSLATIONS: Record<string, any> = {
       holdNotePlaceholder: 'Hotline / internal note...',
       holdNotice: 'Seats are locked securely for 10 minutes against double-booking.',
       holdAndContinue: 'Hold Seats & Continue',
+      continueToCustomer: 'Continue: Booker Info',
       backToSeat: 'Back to Seat Selection',
       continueToPassenger: 'Continue: Passenger Info',
       continueToPayment: 'Continue: Review & Payment',

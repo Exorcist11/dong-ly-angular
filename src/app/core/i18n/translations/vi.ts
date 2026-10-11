@@ -1198,6 +1198,7 @@ export const VI_TRANSLATIONS: Record<string, any> = {
       holdNotePlaceholder: 'Ghi chú hotline...',
       holdNotice: 'Ghế sẽ được khóa an toàn trong 10 phút chống mọi xung đột đặt trùng.',
       holdAndContinue: 'Giữ ghế & Tiếp tục',
+      continueToCustomer: 'Tiếp tục: Nhập người đặt',
       backToSeat: 'Quay lại chọn ghế',
       continueToPassenger: 'Tiếp tục: Nhập hành khách',
       continueToPayment: 'Tiếp tục: Xem lại & Thanh toán',

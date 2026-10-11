@@ -101,6 +101,8 @@ describe('CrmBookingService', () => {
     const payload: HoldSeatsRequest = {
       tripId: 'trip-uuid-123',
       seatIds: ['seat-1', 'seat-2'],
+      customerName: 'Nguyễn Văn A',
+      customerPhone: '0912345678',
       note: 'Khách hotline',
     };
 

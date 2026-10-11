@@ -73,7 +73,7 @@
             type="button"
             class="seat-item"
             [ngClass]="getSeatStatusClass(seat)"
-            [disabled]="!seat.isBookable || seat.occupancyStatus !== 'AVAILABLE' || loading()"
+            [disabled]="!isSeatBookable(seat) || loading()"
             [pTooltip]="getSeatTooltip(seat)"
             tooltipPosition="top"
             (click)="toggleSeat(seat)"

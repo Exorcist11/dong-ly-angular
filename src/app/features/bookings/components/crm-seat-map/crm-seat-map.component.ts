@@ -100,8 +100,14 @@ export class CrmSeatMapComponent {
     return this.selectedSeatIds().includes(seatId);
   }
 
+  isSeatBookable(seat: CrmSeatMapItem): boolean {
+    const bookable = seat.bookable ?? seat.isBookable;
+    const isAvailable = seat.occupancyStatus === 'AVAILABLE';
+    return bookable !== undefined ? Boolean(bookable) && isAvailable : isAvailable;
+  }
+
   toggleSeat(seat: CrmSeatMapItem): void {
-    if (!seat.isBookable || seat.occupancyStatus !== 'AVAILABLE') {
+    if (!this.isSeatBookable(seat)) {
       return;
     }
 

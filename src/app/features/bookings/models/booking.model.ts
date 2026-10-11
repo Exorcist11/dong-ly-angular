@@ -54,13 +54,15 @@ export interface CrmSeatMapItem {
   extraPrice: number;
   calculatedPrice: number;
   occupancyStatus: SeatOccupancyStatus;
-  isBookable: boolean;
+  isBookable?: boolean;
+  bookable?: boolean;
 }
 
 export interface CrmRouteStopItem {
   routeStopId: string;
   stopPointId: string;
-  stopName: string;
+  name?: string;
+  stopName?: string;
   address: string;
   sequence: number;
   stopType: 'PICKUP' | 'DROPOFF' | 'BOTH';
@@ -87,6 +89,8 @@ export interface CrmTripSeatMap {
 export interface HoldSeatsRequest {
   tripId: string;
   seatIds: string[];
+  customerPhone: string;
+  customerName: string;
   pickupStopId?: string;
   dropoffStopId?: string;
   note?: string;
