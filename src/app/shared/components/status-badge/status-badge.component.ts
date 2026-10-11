@@ -22,6 +22,8 @@ const DEFAULT_STATUS_MAP: Record<string, StatusConfig> = {
   CUSTOM: { key: 'common.status.custom', severity: 'secondary' },
   DRAFT: { key: 'common.status.draft', severity: 'secondary' },
   EXPIRED: { key: 'common.status.expired', severity: 'warn' },
+  CONFIRMED: { key: 'common.status.confirmed', severity: 'success' },
+  HELD: { key: 'common.status.held', severity: 'warn' },
 };
 
 @Component({

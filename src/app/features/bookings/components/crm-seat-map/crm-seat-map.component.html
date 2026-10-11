@@ -10,7 +10,7 @@
         (click)="selectFloor(f)"
       >
         <i class="pi pi-layers mr-1.5"></i>
-        Tầng {{ f }}
+        {{ 'bookings.seatMap.floor' | translate : { floor: f } }}
       </button>
     </div>
 
@@ -19,7 +19,7 @@
         variant="secondary"
         size="small"
         icon="pi pi-refresh"
-        label="Làm mới sơ đồ"
+        [label]="'bookings.seatMap.refreshBtn' | translate"
         [loading]="loading()"
         (clicked)="refreshRequested.emit()"
       />
@@ -30,23 +30,23 @@
   <div class="seat-legend">
     <div class="legend-item">
       <span class="legend-box available"></span>
-      <span class="legend-label">Ghế trống</span>
+      <span class="legend-label">{{ 'bookings.seatMap.legendAvailable' | translate }}</span>
     </div>
     <div class="legend-item">
       <span class="legend-box selected"></span>
-      <span class="legend-label">Đang chọn</span>
+      <span class="legend-label">{{ 'bookings.seatMap.legendSelected' | translate }}</span>
     </div>
     <div class="legend-item">
       <span class="legend-box held"></span>
-      <span class="legend-label">Đang giữ chỗ</span>
+      <span class="legend-label">{{ 'bookings.seatMap.legendHeld' | translate }}</span>
     </div>
     <div class="legend-item">
       <span class="legend-box booked"></span>
-      <span class="legend-label">Đã bán</span>
+      <span class="legend-label">{{ 'bookings.seatMap.legendBooked' | translate }}</span>
     </div>
     <div class="legend-item">
       <span class="legend-box locked"></span>
-      <span class="legend-label">Khóa</span>
+      <span class="legend-label">{{ 'bookings.seatMap.legendLocked' | translate }}</span>
     </div>
   </div>
 
@@ -54,12 +54,12 @@
   <div class="bus-cabin">
     <!-- Đầu xe (Bác tài) -->
     <div class="cabin-front">
-      <div class="steering-wheel" pTooltip="Khu vực tài xế" tooltipPosition="top">
+      <div class="steering-wheel" [pTooltip]="'bookings.seatMap.driverArea' | translate" tooltipPosition="top">
         <i class="pi pi-compass"></i>
-        <span>Đầu xe</span>
+        <span>{{ 'bookings.seatMap.cabinFront' | translate }}</span>
       </div>
       <div class="cabin-entry">
-        <span>Cửa lên xuống</span>
+        <span>{{ 'bookings.seatMap.cabinEntry' | translate }}</span>
       </div>
     </div>
 
@@ -95,14 +95,14 @@
 
     <!-- Đuôi xe -->
     <div class="cabin-rear">
-      <span>Đuôi xe</span>
+      <span>{{ 'bookings.seatMap.cabinRear' | translate }}</span>
     </div>
   </div>
 
   <!-- Thanh tóm tắt ghế đã chọn -->
   <div class="selected-summary" *ngIf="selectedSeats().length > 0">
     <div class="summary-left">
-      <span class="text-sm font-medium text-slate-500">Đã chọn:</span>
+      <span class="text-sm font-medium text-slate-500">{{ 'bookings.seatMap.legendSelected' | translate }}:</span>
       <div class="seat-tags">
         <span *ngFor="let s of selectedSeats()" class="selected-tag">
           {{ s.seatCode }} ({{ s.calculatedPrice | currencyVnd }})
@@ -111,7 +111,7 @@
     </div>
 
     <div class="summary-right">
-      <span class="total-label">Tổng tiền tạm tính:</span>
+      <span class="total-label">{{ 'booking.seatSelection.totalPrice' | translate }}:</span>
       <span class="total-value">{{ totalPrice() | currencyVnd }}</span>
     </div>
   </div>

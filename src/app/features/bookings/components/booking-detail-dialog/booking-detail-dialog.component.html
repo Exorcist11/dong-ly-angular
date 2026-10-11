@@ -5,16 +5,16 @@
   [draggable]="false"
   [resizable]="false"
   [style]="{ width: '92vw', maxWidth: '780px' }"
-  [header]="'Chi tiết đơn đặt vé: ' + (booking()?.bookingCode || '')"
+  [header]="('bookings.detail.title' | translate) + ': ' + (booking()?.bookingCode || '')"
 >
   <div *ngIf="booking()" class="booking-detail-content">
     <!-- Header thông tin chính & Trạng thái -->
     <div class="detail-top-card">
       <div class="info-meta">
-        <span class="text-xs text-slate-500 uppercase tracking-wider">Mã đặt vé</span>
+        <span class="text-xs text-slate-500 uppercase tracking-wider">{{ 'bookings.detail.bookingCode' | translate }}</span>
         <h3 class="text-xl font-bold text-sky-800">{{ booking()?.bookingCode }}</h3>
         <span class="text-xs text-slate-400 mt-1 block">
-          Tạo lúc: {{ booking()?.createdAt | dateVi : true }} bởi <strong>{{ booking()?.createdBy || 'Hệ thống' }}</strong>
+          {{ 'bookings.detail.createdAt' | translate : { time: (booking()?.createdAt | dateVi : true), user: (booking()?.createdBy || ('bookings.detail.system' | translate)) } }}
         </span>
       </div>
 
@@ -29,23 +29,23 @@
     <!-- Khối 1: Thông tin chuyến xe & Lịch trình -->
     <div class="section-box mt-4">
       <h4 class="section-title">
-        <i class="pi pi-compass mr-2 text-sky-600"></i>Thông tin Chuyến xe & Phương tiện
+        <i class="pi pi-compass mr-2 text-sky-600"></i>{{ 'bookings.detail.tripAndVehicleTitle' | translate }}
       </h4>
       <div class="grid-2 mt-2">
         <div class="info-row">
-          <span class="lbl">Tuyến đường:</span>
+          <span class="lbl">{{ 'bookings.detail.route' | translate }}</span>
           <span class="val font-semibold">{{ booking()?.routeName }}</span>
         </div>
         <div class="info-row">
-          <span class="lbl">Mã chuyến:</span>
+          <span class="lbl">{{ 'bookings.detail.tripCode' | translate }}</span>
           <span class="val">{{ booking()?.tripCode }}</span>
         </div>
         <div class="info-row">
-          <span class="lbl">Xuất bến:</span>
+          <span class="lbl">{{ 'bookings.detail.departureTime' | translate }}</span>
           <span class="val font-semibold text-rose-700">{{ booking()?.departureTime | dateVi : true }}</span>
         </div>
         <div class="info-row">
-          <span class="lbl">Biển số xe:</span>
+          <span class="lbl">{{ 'bookings.detail.plateNumber' | translate }}</span>
           <span class="val font-semibold text-sky-700">{{ booking()?.vehiclePlateNumber }}</span>
         </div>
       </div>
@@ -54,23 +54,23 @@
     <!-- Khối 2: Thông tin Người liên hệ / Đặt vé -->
     <div class="section-box mt-4">
       <h4 class="section-title">
-        <i class="pi pi-user mr-2 text-sky-600"></i>Thông tin Người đặt vé
+        <i class="pi pi-user mr-2 text-sky-600"></i>{{ 'bookings.detail.customerTitle' | translate }}
       </h4>
       <div class="grid-2 mt-2">
         <div class="info-row">
-          <span class="lbl">Họ và tên:</span>
+          <span class="lbl">{{ 'bookings.detail.fullName' | translate }}</span>
           <span class="val font-semibold">{{ booking()?.customerName }}</span>
         </div>
         <div class="info-row">
-          <span class="lbl">Số điện thoại:</span>
+          <span class="lbl">{{ 'bookings.detail.phone' | translate }}</span>
           <span class="val font-mono">{{ booking()?.customerPhone }}</span>
         </div>
         <div class="info-row" *ngIf="booking()?.customerEmail">
-          <span class="lbl">Email:</span>
+          <span class="lbl">{{ 'bookings.detail.email' | translate }}</span>
           <span class="val">{{ booking()?.customerEmail }}</span>
         </div>
         <div class="info-row">
-          <span class="lbl">Kênh đặt vé:</span>
+          <span class="lbl">{{ 'bookings.detail.channel' | translate }}</span>
           <span class="val">{{ booking()?.channel }}</span>
         </div>
       </div>
@@ -79,7 +79,7 @@
     <!-- Khối 3: Danh sách Vé điện tử / Ghế -->
     <div class="section-box mt-4">
       <h4 class="section-title">
-        <i class="pi pi-ticket mr-2 text-sky-600"></i>Danh sách Chi tiết Vé / Ghế ({{ booking()?.items?.length || 0 }} vé)
+        <i class="pi pi-ticket mr-2 text-sky-600"></i>{{ 'bookings.detail.ticketListTitle' | translate : { count: booking()?.items?.length || 0 } }}
       </h4>
       <div class="ticket-items-list mt-3 space-y-2">
         <div *ngFor="let item of booking()?.items" class="ticket-item-row">
@@ -88,9 +88,9 @@
             <div>
               <strong class="text-slate-800 text-sm block">{{ item.passengerName }}</strong>
               <span class="text-xs text-slate-500">
-                SĐT: {{ item.passengerPhone || 'Không có' }}
-                {{ item.pickupStopName ? ' | Đón: ' + item.pickupStopName : '' }}
-                {{ item.dropoffStopName ? ' | Trả: ' + item.dropoffStopName : '' }}
+                {{ 'bookings.detail.phoneShort' | translate }} {{ item.passengerPhone || ('bookings.detail.none' | translate) }}
+                {{ item.pickupStopName ? ' | ' + ('bookings.detail.pickup' | translate) + ' ' + item.pickupStopName : '' }}
+                {{ item.dropoffStopName ? ' | ' + ('bookings.detail.dropoff' | translate) + ' ' + item.dropoffStopName : '' }}
               </span>
             </div>
           </div>
@@ -104,7 +104,7 @@
 
     <!-- Ghi chú nếu có -->
     <div *ngIf="booking()?.note" class="note-box mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-xs">
-      <strong>Ghi chú:</strong> {{ booking()?.note }}
+      <strong>{{ 'bookings.detail.note' | translate }}</strong> {{ booking()?.note }}
     </div>
 
     <!-- Footer Actions -->
@@ -114,7 +114,7 @@
           *ngIf="canCancel() && (booking()?.status === 'CONFIRMED' || booking()?.status === 'HELD')"
           variant="danger"
           icon="pi pi-ban"
-          label="Hủy đơn đặt vé"
+          [label]="'bookings.buttons.cancelBooking' | translate"
           [loading]="loading()"
           (clicked)="onCancelClick()"
         />
@@ -123,7 +123,7 @@
       <div class="flex gap-2">
         <app-button
           variant="secondary"
-          label="Đóng"
+          [label]="'common.actions.close' | translate"
           (clicked)="close()"
         />
       </div>

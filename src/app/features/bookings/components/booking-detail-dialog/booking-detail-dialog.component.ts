@@ -11,6 +11,7 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
 import { CurrencyVndPipe } from '../../../../shared/pipes/currency-vnd.pipe';
 import { DateViPipe } from '../../../../shared/pipes/date-vi.pipe';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { BookingResponse } from '../../models/booking.model';
 
 @Component({
@@ -23,6 +24,7 @@ import { BookingResponse } from '../../models/booking.model';
     StatusBadgeComponent,
     CurrencyVndPipe,
     DateViPipe,
+    TranslatePipe,
   ],
   templateUrl: './booking-detail-dialog.component.html',
   styleUrl: './booking-detail-dialog.component.scss',

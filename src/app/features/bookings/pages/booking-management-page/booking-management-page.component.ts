@@ -26,6 +26,8 @@ import { DataTableComponent } from '../../../../shared/components/data-table/dat
 import { TableCellDirective } from '../../../../shared/components/data-table/table-cell.directive';
 import { CurrencyVndPipe } from '../../../../shared/pipes/currency-vnd.pipe';
 import { DateViPipe } from '../../../../shared/pipes/date-vi.pipe';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
+import { TranslationService } from '../../../../core/i18n/translation.service';
 import { TableColumn, TableLazyLoadEvent } from '../../../../shared/models/table.model';
 import { SelectOption } from '../../../../shared/models/select-option.model';
 
@@ -80,6 +82,7 @@ export interface PassengerFormData {
     TableCellDirective,
     CurrencyVndPipe,
     DateViPipe,
+    TranslatePipe,
     CrmSeatMapComponent,
     BookingDetailDialogComponent,
   ],
@@ -92,17 +95,21 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
   private readonly routeService = inject(RouteService);
   private readonly notification = inject(NotificationService);
   private readonly authService = inject(AuthService);
+  private readonly i18n = inject(TranslationService);
   private readonly router = inject(Router);
 
   // QUYỀN HẠN
   readonly canManage = computed(() => this.authService.hasPermission('BOOKING_MANAGE'));
 
   // BREADCRUMBS
-  readonly breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Trang chủ', url: '/dashboard' },
-    { label: 'Vận hành' },
-    { label: 'Quản lý & Đặt vé CRM' },
-  ];
+  readonly breadcrumbs = computed<BreadcrumbItem[]>(() => {
+    this.i18n.currentLang();
+    return [
+      { label: this.i18n.translate('navigation.home'), url: '/dashboard' },
+      { label: this.i18n.translate('navigation.groups.operations') },
+      { label: this.i18n.translate('bookings.title') },
+    ];
+  });
 
   // TAB HIỆN TẠI (ĐẶT VÉ MỚI HOẶC DANH SÁCH BOOKINGS)
   readonly activeTab = signal<ActiveTabType>('CREATE_BOOKING');
@@ -187,30 +194,39 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
   readonly cancelLoading = signal<boolean>(false);
 
   // Cấu hình bảng dữ liệu Bookings
-  readonly bookingColumns: TableColumn<BookingResponse>[] = [
-    { field: 'bookingCode', header: 'Mã đặt vé', width: '150px' },
-    { field: 'customerName', header: 'Khách hàng', width: '200px' },
-    { field: 'routeName', header: 'Tuyến & Chuyến xe', width: '220px' },
-    { field: 'departureTime', header: 'Xuất bến', width: '160px' },
-    { field: 'totalAmount', header: 'Tổng tiền', width: '140px', align: 'right' },
-    { field: 'status', header: 'Trạng thái', width: '130px', align: 'center' },
-    { field: 'actions', header: 'Thao tác', width: '120px', align: 'center' },
-  ];
+  readonly bookingColumns = computed<TableColumn<BookingResponse>[]>(() => {
+    this.i18n.currentLang();
+    return [
+      { field: 'bookingCode', header: this.i18n.translate('bookings.columns.bookingCode'), width: '150px' },
+      { field: 'customerName', header: this.i18n.translate('bookings.columns.customer'), width: '200px' },
+      { field: 'routeName', header: this.i18n.translate('bookings.columns.routeAndTrip'), width: '220px' },
+      { field: 'departureTime', header: this.i18n.translate('bookings.columns.departureTime'), width: '160px' },
+      { field: 'totalAmount', header: this.i18n.translate('bookings.columns.totalAmount'), width: '140px', align: 'right' },
+      { field: 'status', header: this.i18n.translate('bookings.columns.status'), width: '130px', align: 'center' },
+      { field: 'actions', header: this.i18n.translate('bookings.columns.actions'), width: '120px', align: 'center' },
+    ];
+  });
 
-  readonly statusFilterOptions: SelectOption<BookingStatus>[] = [
-    { label: 'Tất cả trạng thái', value: undefined as any },
-    { label: 'Đã xác nhận (CONFIRMED)', value: 'CONFIRMED' },
-    { label: 'Đang giữ chỗ (HELD)', value: 'HELD' },
-    { label: 'Đã hủy (CANCELLED)', value: 'CANCELLED' },
-    { label: 'Hết hạn giữ (EXPIRED)', value: 'EXPIRED' },
-    { label: 'Hoàn thành (COMPLETED)', value: 'COMPLETED' },
-  ];
+  readonly statusFilterOptions = computed<SelectOption<BookingStatus>[]>(() => {
+    this.i18n.currentLang();
+    return [
+      { label: this.i18n.translate('common.status.all'), value: undefined as any },
+      { label: this.i18n.translate('bookings.status.confirmed'), value: 'CONFIRMED' },
+      { label: this.i18n.translate('bookings.status.held'), value: 'HELD' },
+      { label: this.i18n.translate('bookings.status.cancelled'), value: 'CANCELLED' },
+      { label: this.i18n.translate('bookings.status.expired'), value: 'EXPIRED' },
+      { label: this.i18n.translate('bookings.status.completed'), value: 'COMPLETED' },
+    ];
+  });
 
-  readonly paymentMethodOptions: SelectOption<PaymentMethod>[] = [
-    { label: 'Tiền mặt tại quầy (CASH)', value: 'CASH' },
-    { label: 'Chuyển khoản ngân hàng (BANK_TRANSFER)', value: 'BANK_TRANSFER' },
-    { label: 'Mã QR động (VIETQR)', value: 'VIETQR' },
-  ];
+  readonly paymentMethodOptions = computed<SelectOption<PaymentMethod>[]>(() => {
+    this.i18n.currentLang();
+    return [
+      { label: this.i18n.translate('bookings.paymentMethods.cash'), value: 'CASH' },
+      { label: this.i18n.translate('bookings.paymentMethods.bankTransfer'), value: 'BANK_TRANSFER' },
+      { label: this.i18n.translate('bookings.paymentMethods.vietQr'), value: 'VIETQR' },
+    ];
+  });
 
   readonly pickupStopOptions = computed<SelectOption[]>(() => {
     const stops = this.seatMapData()?.stops || [];
@@ -327,7 +343,7 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.bookingsLoading.set(false);
-        const msg = err.error?.message || 'Không thể tải danh sách đơn đặt vé.';
+        const msg = err.error?.message || this.i18n.translate('bookings.messages.loadBookingsError');
         this.notification.error(msg);
       },
     });
@@ -389,13 +405,15 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
     if (!booking) return;
 
     this.cancelLoading.set(true);
-    const reason = this.cancelReasonInput().trim() || 'Khách hàng yêu cầu hủy đơn';
+    const reason = this.cancelReasonInput().trim() || this.i18n.translate('bookings.cancelModal.reasonPlaceholder');
 
     this.bookingService.cancelBooking(booking.id, reason).subscribe({
       next: (res) => {
         this.cancelLoading.set(false);
         this.cancelModalVisible.set(false);
-        this.notification.success(`Đã hủy thành công đơn đặt vé ${booking.bookingCode}`);
+        this.notification.success(
+          this.i18n.translate('bookings.messages.cancelSuccess', { code: booking.bookingCode })
+        );
 
         // Đóng dialog chi tiết nếu đang mở
         this.detailDialogVisible.set(false);
@@ -406,7 +424,7 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.cancelLoading.set(false);
-        const msg = err.error?.message || 'Không thể hủy đơn đặt vé. Vui lòng kiểm tra lại điều kiện nghiệp vụ.';
+        const msg = err.error?.message || this.i18n.translate('bookings.messages.cancelError');
         this.notification.error(msg);
       },
     });
@@ -416,7 +434,7 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
   searchTrips(): void {
     const date = this.selectedDate();
     if (!date) {
-      this.notification.warning('Vui lòng chọn ngày khởi hành');
+      this.notification.warning(this.i18n.translate('bookings.messages.selectDateWarning'));
       return;
     }
 
@@ -442,7 +460,7 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.tripsLoading.set(false);
-        const msg = err.error?.message || 'Không thể tải danh sách chuyến xe. Vui lòng thử lại.';
+        const msg = err.error?.message || this.i18n.translate('bookings.messages.loadTripsError');
         this.tripsError.set(msg);
         this.notification.error(msg);
       },
@@ -485,7 +503,7 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.seatMapLoading.set(false);
-        const msg = err.error?.message || 'Không thể tải sơ đồ ghế của chuyến xe.';
+        const msg = err.error?.message || this.i18n.translate('bookings.messages.loadSeatMapError');
         this.seatMapError.set(msg);
         this.notification.error(msg);
       },
@@ -501,7 +519,7 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
     const seats = this.selectedSeats();
 
     if (!trip || seats.length === 0) {
-      this.notification.warning('Vui lòng chọn ít nhất 1 ghế trống.');
+      this.notification.warning(this.i18n.translate('bookings.messages.selectAtLeastOneSeat'));
       return;
     }
 
@@ -519,7 +537,7 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.isHoldingSeats.set(false);
         this.holdResult.set(res.data);
-        this.notification.success(res.message || 'Giữ ghế thành công trong 10 phút!');
+        this.notification.success(res.message || this.i18n.translate('bookings.messages.holdSuccess'));
 
         this.startCountdownTimer(res.data.expiresAt);
 
@@ -538,8 +556,7 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.isHoldingSeats.set(false);
         const msg =
-          err.error?.message ||
-          'Một hoặc nhiều ghế bạn chọn không còn khả dụng hoặc đã bị nhân viên khác giữ!';
+          err.error?.message || this.i18n.translate('bookings.messages.holdError');
         this.notification.error(msg);
 
         this.loadSeatMapData(trip.tripId);
@@ -560,7 +577,7 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
       if (diffSec <= 0) {
         this.isHoldExpired.set(true);
         this.stopCountdownTimer();
-        this.notification.error('Đã hết hạn giữ ghế (10 phút)! Ghế đã được tự động giải phóng.');
+        this.notification.error(this.i18n.translate('bookings.messages.holdExpired'));
       }
     };
 
@@ -584,23 +601,23 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
     const email = this.customerEmail().trim();
 
     if (!name) {
-      errors.name = 'Vui lòng nhập họ tên người đặt vé';
+      errors.name = this.i18n.translate('bookings.validation.customerNameRequired');
     }
     const phoneRegex = /^(0[3|5|7|8|9])[0-9]{8}$/;
     if (!phone) {
-      errors.phone = 'Vui lòng nhập số điện thoại';
+      errors.phone = this.i18n.translate('bookings.validation.phoneRequired');
     } else if (!phoneRegex.test(phone)) {
-      errors.phone = 'Số điện thoại không đúng định dạng (VD: 0912345678)';
+      errors.phone = this.i18n.translate('bookings.validation.phoneInvalid');
     }
 
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      errors.email = 'Email không hợp lệ';
+      errors.email = this.i18n.translate('bookings.validation.emailInvalid');
     }
 
     this.customerFormErrors.set(errors);
 
     if (Object.keys(errors).length > 0) {
-      this.notification.warning('Vui lòng kiểm tra lại thông tin khách hàng');
+      this.notification.warning(this.i18n.translate('bookings.messages.checkCustomerInfo'));
       return;
     }
 
@@ -624,11 +641,11 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
     passengers.forEach((p, index) => {
       const pErrors: { name?: string; phone?: string } = {};
       if (!p.passengerName || !p.passengerName.trim()) {
-        pErrors.name = 'Vui lòng nhập tên hành khách';
+        pErrors.name = this.i18n.translate('bookings.validation.passengerNameRequired');
         hasError = true;
       }
       if (p.passengerPhone && !/^(0[3|5|7|8|9])[0-9]{8}$/.test(p.passengerPhone.trim())) {
-        pErrors.phone = 'Số điện thoại không hợp lệ';
+        pErrors.phone = this.i18n.translate('bookings.validation.passengerPhoneInvalid');
         hasError = true;
       }
       if (Object.keys(pErrors).length > 0) {
@@ -639,7 +656,7 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
     this.passengerFormErrors.set(errors);
 
     if (hasError) {
-      this.notification.warning('Vui lòng nhập đầy đủ họ tên cho tất cả hành khách');
+      this.notification.warning(this.i18n.translate('bookings.messages.passengerNameRequiredAll'));
       return;
     }
 
@@ -651,7 +668,7 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
 
     const hold = this.holdResult();
     if (!hold) {
-      this.notification.error('Không tìm thấy thông tin giữ ghế. Vui lòng thao tác lại.');
+      this.notification.error(this.i18n.translate('bookings.messages.holdNotFound'));
       return;
     }
 
@@ -684,7 +701,7 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
         this.isConfirmingBooking.set(false);
         this.stopCountdownTimer();
         this.confirmedBooking.set(res.data);
-        this.notification.success('Tạo đơn đặt vé và phát hành vé thành công!');
+        this.notification.success(this.i18n.translate('bookings.messages.bookingSuccess'));
         this.currentStep.set(5);
 
         // Cập nhật lại danh sách chuyến xe và danh sách booking
@@ -695,7 +712,7 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
         this.isConfirmingBooking.set(false);
         const msg =
           err.error?.message ||
-          'Không thể xác nhận đơn đặt vé. Vui lòng kiểm tra lại thời hạn hoặc liên hệ quản trị viên.';
+          this.i18n.translate('bookings.messages.confirmError');
         this.notification.error(msg);
 
         if (err.status === 410 || msg.includes('hết hạn')) {
@@ -714,7 +731,7 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
 
     this.bookingService.cancelHold(hold.bookingId).subscribe({
       next: () => {
-        this.notification.info('Đã hủy giữ ghế và hoàn trả ghế trống.');
+        this.notification.info(this.i18n.translate('bookings.messages.cancelHoldSuccess'));
         this.closeWizard();
         this.searchTrips();
       },
@@ -726,7 +743,7 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
 
   private checkHoldExpiration(): boolean {
     if (this.isHoldExpired() || this.remainingSeconds() <= 0) {
-      this.notification.error('Thời hạn 10 phút giữ ghế đã kết thúc. Vui lòng chọn lại ghế!');
+      this.notification.error(this.i18n.translate('bookings.messages.holdExpiredReselect'));
       this.currentStep.set(1);
       if (this.selectedTrip()) {
         this.loadSeatMapData(this.selectedTrip()!.tripId);

@@ -1,9 +1,9 @@
 <div class="booking-page-container">
   <!-- Page Header -->
   <app-page-header
-    title="Đặt vé & Giữ chỗ CRM"
-    subtitle="Tìm kiếm chuyến xe khả dụng, kiểm tra sơ đồ ghế thời gian thực và thực hiện quy trình đặt vé nhiều bước"
-    [breadcrumbs]="breadcrumbs"
+    [title]="'bookings.title' | translate"
+    [subtitle]="'bookings.subtitle' | translate"
+    [breadcrumbs]="breadcrumbs()"
   />
 
   <!-- Tabs Header Navigation -->
@@ -15,7 +15,7 @@
       (click)="switchTab('CREATE_BOOKING')"
     >
       <i class="pi pi-compass"></i>
-      <span>Tìm chuyến & Đặt vé mới</span>
+      <span>{{ 'bookings.tabs.searchAndCreate' | translate }}</span>
     </button>
     <button
       type="button"
@@ -24,7 +24,7 @@
       (click)="switchTab('MANAGE_BOOKINGS')"
     >
       <i class="pi pi-list"></i>
-      <span>Danh sách đơn đặt vé</span>
+      <span>{{ 'bookings.tabs.manageList' | translate }}</span>
       <span *ngIf="bookingsTotal() > 0" class="tab-badge">{{ bookingsTotal() }}</span>
     </button>
   </div>
@@ -37,7 +37,7 @@
       <!-- Ngày khởi hành -->
       <div class="filter-item">
         <label for="crm-filter-date" class="filter-label">
-          Ngày khởi hành <span class="text-rose-500">*</span>
+          {{ 'bookings.filters.departureDate' | translate }} <span class="text-rose-500">*</span>
         </label>
         <input
           id="crm-filter-date"
@@ -51,8 +51,8 @@
       <!-- Tuyến đường -->
       <div class="filter-item">
         <app-select
-          label="Tuyến đường"
-          placeholder="Tất cả các tuyến"
+          [label]="'bookings.filters.route' | translate"
+          [placeholder]="'bookings.filters.allRoutes' | translate"
           [options]="routeOptions()"
           [ngModel]="selectedRouteId()"
           (selectionChange)="selectedRouteId.set($event)"
@@ -64,8 +64,8 @@
       <!-- Điểm khởi hành (Tỉnh/Thành) -->
       <div class="filter-item">
         <app-select
-          label="Điểm đi (Tỉnh/Thành)"
-          placeholder="Tất cả điểm đi"
+          [label]="'bookings.filters.origin' | translate"
+          [placeholder]="'bookings.filters.allOrigins' | translate"
           [options]="locationOptions()"
           [ngModel]="selectedOriginId()"
           (selectionChange)="selectedOriginId.set($event)"
@@ -76,8 +76,8 @@
       <!-- Điểm đến (Tỉnh/Thành) -->
       <div class="filter-item">
         <app-select
-          label="Điểm đến (Tỉnh/Thành)"
-          placeholder="Tất cả điểm đến"
+          [label]="'bookings.filters.destination' | translate"
+          [placeholder]="'bookings.filters.allDestinations' | translate"
           [options]="locationOptions()"
           [ngModel]="selectedDestinationId()"
           (selectionChange)="selectedDestinationId.set($event)"
@@ -88,8 +88,8 @@
       <!-- Từ khóa (Biển số xe / Mã chuyến) -->
       <div class="filter-item">
         <app-input
-          label="Tìm kiếm nhanh"
-          placeholder="Biển số xe, mã chuyến..."
+          [label]="'bookings.filters.quickSearch' | translate"
+          [placeholder]="'bookings.filters.quickSearchPlaceholder' | translate"
           [ngModel]="searchKeyword()"
           (ngModelChange)="searchKeyword.set($event)"
           icon="pi pi-search"
@@ -101,13 +101,13 @@
       <app-button
         variant="secondary"
         icon="pi pi-refresh"
-        label="Đặt lại bộ lọc"
+        [label]="'common.actions.resetFilters' | translate"
         (clicked)="resetFilters()"
       />
       <app-button
         variant="primary"
         icon="pi pi-search"
-        label="Tìm chuyến xe"
+        [label]="'bookings.buttons.searchTrips' | translate"
         [loading]="tripsLoading()"
         (clicked)="searchTrips()"
       />
@@ -118,7 +118,7 @@
   <div class="trips-result-section">
     <!-- Loading State -->
     <div *ngIf="tripsLoading()" class="state-container">
-      <app-loading-spinner message="Đang tìm kiếm chuyến xe khả dụng..." />
+      <app-loading-spinner [message]="'bookings.states.searchingTrips' | translate" />
     </div>
 
     <!-- Error State -->
@@ -126,13 +126,13 @@
       <div class="error-banner">
         <i class="pi pi-exclamation-triangle text-rose-500 text-2xl mr-3"></i>
         <div class="flex-1">
-          <h4 class="font-semibold text-rose-900">Không thể tải dữ liệu</h4>
+          <h4 class="font-semibold text-rose-900">{{ 'bookings.states.loadTripsErrorTitle' | translate }}</h4>
           <p class="text-rose-700 text-sm mt-1">{{ tripsError() }}</p>
         </div>
         <app-button
           variant="secondary"
           size="small"
-          label="Thử lại"
+          [label]="'common.actions.retry' | translate"
           icon="pi pi-replay"
           (clicked)="searchTrips()"
         />
@@ -146,8 +146,8 @@
     >
       <app-empty-state
         icon="pi pi-calendar-times"
-        title="Không tìm thấy chuyến xe phù hợp"
-        description="Không có chuyến xe nào mở bán trong ngày đã chọn hoặc không khớp với tiêu chí tìm kiếm. Vui lòng chọn ngày khác hoặc thử lại."
+        [title]="'bookings.states.noTripsFoundTitle' | translate"
+        [description]="'bookings.states.noTripsFoundDesc' | translate"
       />
     </div>
 
@@ -187,14 +187,14 @@
           <div class="details-list">
             <div class="detail-item">
               <i class="pi pi-truck text-slate-400"></i>
-              <span>Xe: <strong>{{ trip.vehiclePlateNumber }}</strong> ({{ trip.vehicleTypeName }})</span>
+              <span>{{ 'bookings.tripCard.vehicle' | translate }} <strong>{{ trip.vehiclePlateNumber }}</strong> ({{ trip.vehicleTypeName }})</span>
             </div>
             <div class="detail-item">
               <i class="pi pi-ticket text-slate-400"></i>
-              <span>Ghế trống: <strong class="text-emerald-600">{{ trip.availableSeats }}</strong> / {{ trip.totalSeats }}</span>
+              <span>{{ 'bookings.tripCard.availableSeats' | translate }} <strong class="text-emerald-600">{{ trip.availableSeats }}</strong> / {{ trip.totalSeats }}</span>
             </div>
             <div class="detail-item price-item">
-              <span class="price-label">Giá vé gốc:</span>
+              <span class="price-label">{{ 'bookings.tripCard.basePrice' | translate }}</span>
               <span class="price-value">{{ trip.basePrice | currencyVnd }}</span>
             </div>
           </div>
@@ -206,7 +206,7 @@
             variant="primary"
             [fullWidth]="true"
             icon="pi pi-ticket"
-            label="Chọn ghế & Đặt vé"
+            [label]="'bookings.buttons.selectSeatAndBook' | translate"
             [disabled]="trip.availableSeats === 0 || trip.status !== 'READY'"
             (clicked)="openBookingWizard(trip)"
           />
@@ -223,8 +223,8 @@
         <!-- Tìm kiếm từ khóa -->
         <div class="filter-item">
           <app-input
-            label="Tìm kiếm đơn vé"
-            placeholder="Mã vé, tên hoặc SĐT khách..."
+            [label]="'bookings.manage.searchLabel' | translate"
+            [placeholder]="'bookings.manage.searchPlaceholder' | translate"
             [ngModel]="filterBookingKeyword()"
             (ngModelChange)="onSearchBookingKeywordChange($event)"
             icon="pi pi-search"
@@ -234,9 +234,9 @@
         <!-- Trạng thái đơn -->
         <div class="filter-item">
           <app-select
-            label="Trạng thái"
-            placeholder="Tất cả trạng thái"
-            [options]="statusFilterOptions"
+            [label]="'common.status.label' | translate"
+            [placeholder]="'common.status.all' | translate"
+            [options]="statusFilterOptions()"
             [ngModel]="filterBookingStatus()"
             (selectionChange)="filterBookingStatus.set($event); bookingsPage.set(0); loadBookingsList()"
             [clearable]="true"
@@ -245,7 +245,7 @@
 
         <!-- Từ ngày -->
         <div class="filter-item">
-          <label for="filter-booking-from" class="filter-label">Từ ngày</label>
+          <label for="filter-booking-from" class="filter-label">{{ 'bookings.manage.fromDate' | translate }}</label>
           <input
             id="filter-booking-from"
             type="date"
@@ -257,7 +257,7 @@
 
         <!-- Đến ngày -->
         <div class="filter-item">
-          <label for="filter-booking-to" class="filter-label">Đến ngày</label>
+          <label for="filter-booking-to" class="filter-label">{{ 'bookings.manage.toDate' | translate }}</label>
           <input
             id="filter-booking-to"
             type="date"
@@ -272,13 +272,13 @@
         <app-button
           variant="secondary"
           icon="pi pi-refresh"
-          label="Đặt lại bộ lọc"
+          [label]="'common.actions.resetFilters' | translate"
           (clicked)="resetBookingFilters()"
         />
         <app-button
           variant="primary"
           icon="pi pi-search"
-          label="Lọc đơn vé"
+          [label]="'bookings.manage.filterButton' | translate"
           [loading]="bookingsLoading()"
           (clicked)="loadBookingsList()"
         />
@@ -288,7 +288,7 @@
     <!-- Table danh sách Bookings -->
     <div class="bookings-table-container mt-4">
       <app-data-table
-        [columns]="bookingColumns"
+        [columns]="bookingColumns()"
         [data]="bookingsList()"
         [totalRecords]="bookingsTotal()"
         [loading]="bookingsLoading()"
@@ -296,8 +296,8 @@
         [first]="bookingsPage() * bookingsSize()"
         [lazy]="true"
         (lazyLoad)="onBookingsTableLazyLoad($event)"
-        emptyTitle="Chưa có đơn đặt vé nào"
-        emptyMessage="Không tìm thấy đơn đặt vé nào phù hợp với bộ lọc hiện tại."
+        [emptyTitle]="'bookings.manage.emptyTitle' | translate"
+        [emptyMessage]="'bookings.manage.emptyMessage' | translate"
       >
         <!-- Template cột bookingCode -->
         <ng-template appTableCell="bookingCode" let-row>
@@ -322,7 +322,7 @@
         <ng-template appTableCell="routeName" let-row>
           <div class="flex flex-col">
             <span class="font-medium text-slate-800">{{ row.routeName }}</span>
-            <span class="text-xs text-slate-500" *ngIf="row.licensePlate">Biển số: {{ row.licensePlate }}</span>
+            <span class="text-xs text-slate-500" *ngIf="row.licensePlate">{{ 'bookings.columns.licensePlate' | translate }} {{ row.licensePlate }}</span>
           </div>
         </ng-template>
 
@@ -376,7 +376,7 @@
     [dismissableMask]="!isHoldingSeats() && !isConfirmingBooking()"
     [closeOnEscape]="!isHoldingSeats() && !isConfirmingBooking()"
     [style]="{ width: '92vw', maxWidth: '960px' }"
-    [header]="'Quy trình đặt vé: ' + (selectedTrip()?.routeName || '')"
+    [header]="('bookings.wizard.title' | translate) + ': ' + (selectedTrip()?.routeName || '')"
     (onHide)="closeWizard()"
   >
     <div class="wizard-container">
@@ -384,31 +384,31 @@
       <div class="wizard-stepper">
         <div class="step-item" [class.active]="currentStep() === 1" [class.done]="currentStep() > 1">
           <div class="step-circle">1</div>
-          <span class="step-title">Chọn & Giữ ghế</span>
+          <span class="step-title">{{ 'bookings.wizard.step1' | translate }}</span>
         </div>
         <div class="step-line" [class.done]="currentStep() > 1"></div>
 
         <div class="step-item" [class.active]="currentStep() === 2" [class.done]="currentStep() > 2">
           <div class="step-circle">2</div>
-          <span class="step-title">Người đặt</span>
+          <span class="step-title">{{ 'bookings.wizard.step2' | translate }}</span>
         </div>
         <div class="step-line" [class.done]="currentStep() > 2"></div>
 
         <div class="step-item" [class.active]="currentStep() === 3" [class.done]="currentStep() > 3">
           <div class="step-circle">3</div>
-          <span class="step-title">Hành khách & Đón/Trả</span>
+          <span class="step-title">{{ 'bookings.wizard.step3' | translate }}</span>
         </div>
         <div class="step-line" [class.done]="currentStep() > 3"></div>
 
         <div class="step-item" [class.active]="currentStep() === 4" [class.done]="currentStep() > 4">
           <div class="step-circle">4</div>
-          <span class="step-title">Thanh toán</span>
+          <span class="step-title">{{ 'bookings.wizard.step4' | translate }}</span>
         </div>
         <div class="step-line" [class.done]="currentStep() > 4"></div>
 
         <div class="step-item" [class.active]="currentStep() === 5" [class.done]="currentStep() === 5">
           <div class="step-circle"><i class="pi pi-check"></i></div>
-          <span class="step-title">Vé điện tử</span>
+          <span class="step-title">{{ 'bookings.wizard.step5' | translate }}</span>
         </div>
       </div>
 
@@ -417,9 +417,9 @@
         <div class="countdown-info">
           <i class="pi pi-clock text-xl mr-2"></i>
           <div>
-            <span class="font-bold">Mã giữ chỗ: {{ holdResult()?.bookingCode }}</span>
+            <span class="font-bold">{{ 'bookings.wizard.holdCode' | translate }} {{ holdResult()?.bookingCode }}</span>
             <span class="mx-2">|</span>
-            <span>Thời gian giữ ghế còn lại: </span>
+            <span>{{ 'bookings.wizard.holdRemainingTime' | translate }} </span>
             <strong class="text-rose-600 font-mono text-lg">{{ formattedCountdown() }}</strong>
           </div>
         </div>
@@ -427,7 +427,7 @@
           <app-button
             variant="text"
             size="small"
-            label="Hủy giữ ghế"
+            [label]="'bookings.wizard.cancelHoldBtn' | translate"
             icon="pi pi-times"
             (clicked)="cancelCurrentHold()"
           />
@@ -437,7 +437,7 @@
       <!-- ==================== NỘI DUNG BƯỚC 1: CHỌN GHẾ VÀ GIỮ CHỖ ==================== -->
       <div *ngIf="currentStep() === 1" class="wizard-step-content">
         <div *ngIf="seatMapLoading()" class="py-12 flex justify-center">
-          <app-loading-spinner message="Đang tải sơ đồ vị trí ghế thời gian thực..." />
+          <app-loading-spinner [message]="'bookings.seatMap.loading' | translate" />
         </div>
 
         <div *ngIf="!seatMapLoading() && seatMapError()" class="p-4 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-center">
@@ -446,7 +446,7 @@
             class="mt-3"
             variant="secondary"
             size="small"
-            label="Tải lại sơ đồ"
+            [label]="'bookings.seatMap.reload' | translate"
             (clicked)="loadSeatMapData(selectedTrip()!.tripId)"
           />
         </div>
@@ -464,13 +464,13 @@
 
           <div class="layout-right">
             <div class="reservation-box">
-              <h4 class="box-title">Thông tin giữ chỗ ban đầu</h4>
+              <h4 class="box-title">{{ 'bookings.wizard.initialHoldInfo' | translate }}</h4>
               <div class="info-group">
-                <span class="label">Khởi hành:</span>
+                <span class="label">{{ 'bookings.wizard.departure' | translate }}</span>
                 <span class="val font-semibold">{{ selectedTrip()?.departureTime | dateVi : true }}</span>
               </div>
               <div class="info-group">
-                <span class="label">Biển số:</span>
+                <span class="label">{{ 'bookings.wizard.licensePlate' | translate }}</span>
                 <span class="val text-sky-700 font-semibold">{{ selectedTrip()?.vehiclePlateNumber }}</span>
               </div>
 
@@ -478,8 +478,8 @@
 
               <div class="mb-3">
                 <app-select
-                  label="Điểm đón mặc định"
-                  placeholder="Chọn điểm đón"
+                  [label]="'bookings.wizard.defaultPickup' | translate"
+                  [placeholder]="'bookings.wizard.selectPickup' | translate"
                   [options]="pickupStopOptions()"
                   [ngModel]="defaultPickupStopId()"
                   (selectionChange)="defaultPickupStopId.set($event)"
@@ -489,8 +489,8 @@
 
               <div class="mb-3">
                 <app-select
-                  label="Điểm trả mặc định"
-                  placeholder="Chọn điểm trả"
+                  [label]="'bookings.wizard.defaultDropoff' | translate"
+                  [placeholder]="'bookings.wizard.selectDropoff' | translate"
                   [options]="dropoffStopOptions()"
                   [ngModel]="defaultDropoffStopId()"
                   (selectionChange)="defaultDropoffStopId.set($event)"
@@ -500,8 +500,8 @@
 
               <div class="mb-3">
                 <app-input
-                  label="Ghi chú giữ chỗ"
-                  placeholder="Ghi chú hotline..."
+                  [label]="'bookings.wizard.holdNote' | translate"
+                  [placeholder]="'bookings.wizard.holdNotePlaceholder' | translate"
                   [ngModel]="holdNote()"
                   (ngModelChange)="holdNote.set($event)"
                 />
@@ -509,7 +509,7 @@
 
               <div class="hold-notice">
                 <i class="pi pi-shield mr-1.5 text-amber-600"></i>
-                <span>Ghế sẽ được khóa an toàn trong <strong>10 phút</strong> chống mọi xung đột đặt trùng.</span>
+                <span>{{ 'bookings.wizard.holdNotice' | translate }}</span>
               </div>
 
               <div class="mt-4">
@@ -518,7 +518,7 @@
                   [fullWidth]="true"
                   icon="pi pi-arrow-right"
                   iconPos="right"
-                  label="Giữ ghế & Tiếp tục"
+                  [label]="'bookings.wizard.holdAndContinue' | translate"
                   [loading]="isHoldingSeats()"
                   [disabled]="selectedSeats().length === 0 || isHoldingSeats()"
                   (clicked)="proceedToCustomerStep()"
@@ -533,15 +533,15 @@
       <div *ngIf="currentStep() === 2" class="wizard-step-content">
         <div class="form-section-card max-w-xl mx-auto">
           <h4 class="section-title">
-            <i class="pi pi-user mr-2 text-sky-600"></i>Thông tin Người liên hệ / Đặt vé
+            <i class="pi pi-user mr-2 text-sky-600"></i>{{ 'bookings.customer.title' | translate }}
           </h4>
-          <p class="section-desc">Thông tin người đứng tên đặt vé và nhận thông báo mã vé qua SMS/Email.</p>
+          <p class="section-desc">{{ 'bookings.customer.desc' | translate }}</p>
 
           <div class="space-y-4 mt-4">
             <div>
               <app-input
-                label="Họ và tên khách hàng *"
-                placeholder="Ví dụ: Nguyễn Văn An"
+                [label]="'bookings.customer.nameLabel' | translate"
+                [placeholder]="'bookings.customer.namePlaceholder' | translate"
                 [ngModel]="customerName()"
                 (ngModelChange)="customerName.set($event)"
                 [errorMessage]="customerFormErrors().name"
@@ -550,8 +550,8 @@
 
             <div>
               <app-input
-                label="Số điện thoại di động *"
-                placeholder="Ví dụ: 0912345678"
+                [label]="'bookings.customer.phoneLabel' | translate"
+                [placeholder]="'bookings.customer.phonePlaceholder' | translate"
                 [ngModel]="customerPhone()"
                 (ngModelChange)="customerPhone.set($event)"
                 [errorMessage]="customerFormErrors().phone"
@@ -560,8 +560,8 @@
 
             <div>
               <app-input
-                label="Địa chỉ Email (tùy chọn)"
-                placeholder="nguyenvanan@gmail.com"
+                [label]="'bookings.customer.emailLabel' | translate"
+                [placeholder]="'bookings.customer.emailPlaceholder' | translate"
                 [ngModel]="customerEmail()"
                 (ngModelChange)="customerEmail.set($event)"
                 [errorMessage]="customerFormErrors().email"
@@ -573,14 +573,14 @@
             <app-button
               variant="secondary"
               icon="pi pi-arrow-left"
-              label="Quay lại chọn ghế"
+              [label]="'bookings.wizard.backToSeat' | translate"
               (clicked)="currentStep.set(1)"
             />
             <app-button
               variant="primary"
               icon="pi pi-arrow-right"
               iconPos="right"
-              label="Tiếp tục: Nhập hành khách"
+              [label]="'bookings.wizard.continueToPassenger' | translate"
               [disabled]="isHoldExpired()"
               (clicked)="proceedToPassengerStep()"
             />
@@ -592,22 +592,22 @@
       <div *ngIf="currentStep() === 3" class="wizard-step-content">
         <div class="form-section-card">
           <h4 class="section-title">
-            <i class="pi pi-users mr-2 text-sky-600"></i>Thông tin Hành khách & Điểm đón/trả theo từng ghế
+            <i class="pi pi-users mr-2 text-sky-600"></i>{{ 'bookings.passengers.title' | translate }}
           </h4>
-          <p class="section-desc">Cung cấp thông tin hành khách ngồi tương ứng với từng ghế đã giữ.</p>
+          <p class="section-desc">{{ 'bookings.passengers.desc' | translate }}</p>
 
           <div class="passengers-list mt-4 space-y-4">
             <div *ngFor="let p of passengerForms(); let idx = index" class="passenger-card">
               <div class="passenger-card-header">
-                <span class="seat-badge">Ghế {{ p.seatCode }}</span>
-                <span class="text-xs text-slate-500">Hành khách #{{ idx + 1 }}</span>
+                <span class="seat-badge">{{ 'bookings.passengers.seat' | translate }} {{ p.seatCode }}</span>
+                <span class="text-xs text-slate-500">{{ 'bookings.passengers.passengerNumber' | translate : { index: idx + 1 } }}</span>
               </div>
 
               <div class="passenger-grid mt-3">
                 <div>
                   <app-input
-                    label="Tên hành khách *"
-                    placeholder="Họ tên hành khách"
+                    [label]="'bookings.passengers.nameLabel' | translate"
+                    [placeholder]="'bookings.passengers.namePlaceholder' | translate"
                     [ngModel]="p.passengerName"
                     (ngModelChange)="updatePassengerName(idx, $event)"
                     [errorMessage]="passengerFormErrors()[idx]?.name"
@@ -615,8 +615,8 @@
                 </div>
                 <div>
                   <app-input
-                    label="Số điện thoại"
-                    placeholder="SĐT hành khách"
+                    [label]="'bookings.passengers.phoneLabel' | translate"
+                    [placeholder]="'bookings.passengers.phonePlaceholder' | translate"
                     [ngModel]="p.passengerPhone"
                     (ngModelChange)="updatePassengerPhone(idx, $event)"
                     [errorMessage]="passengerFormErrors()[idx]?.phone"
@@ -624,8 +624,8 @@
                 </div>
                 <div>
                   <app-select
-                    label="Điểm đón"
-                    placeholder="Chọn điểm đón"
+                    [label]="'bookings.passengers.pickupLabel' | translate"
+                    [placeholder]="'bookings.passengers.pickupPlaceholder' | translate"
                     [options]="pickupStopOptions()"
                     [ngModel]="p.pickupStopId"
                     (selectionChange)="updatePassengerPickup(idx, $event)"
@@ -634,8 +634,8 @@
                 </div>
                 <div>
                   <app-select
-                    label="Điểm trả"
-                    placeholder="Chọn điểm trả"
+                    [label]="'bookings.passengers.dropoffLabel' | translate"
+                    [placeholder]="'bookings.passengers.dropoffPlaceholder' | translate"
                     [options]="dropoffStopOptions()"
                     [ngModel]="p.dropoffStopId"
                     (selectionChange)="updatePassengerDropoff(idx, $event)"
@@ -650,14 +650,14 @@
             <app-button
               variant="secondary"
               icon="pi pi-arrow-left"
-              label="Quay lại"
+              [label]="'common.actions.back' | translate"
               (clicked)="currentStep.set(2)"
             />
             <app-button
               variant="primary"
               icon="pi pi-arrow-right"
               iconPos="right"
-              label="Tiếp tục: Xem lại & Thanh toán"
+              [label]="'bookings.wizard.continueToPayment' | translate"
               [disabled]="isHoldExpired()"
               (clicked)="proceedToReviewStep()"
             />
@@ -671,46 +671,46 @@
           <!-- Cột tóm tắt chuyến và hành khách -->
           <div class="review-summary-card">
             <h4 class="section-title">
-              <i class="pi pi-file-check mr-2 text-sky-600"></i>Xem lại chi tiết đơn đặt vé
+              <i class="pi pi-file-check mr-2 text-sky-600"></i>{{ 'bookings.review.title' | translate }}
             </h4>
 
             <div class="summary-section mt-3">
-              <h5 class="sub-title">1. Thông tin chuyến xe</h5>
+              <h5 class="sub-title">{{ 'bookings.review.tripSection' | translate }}</h5>
               <div class="info-row">
-                <span>Tuyến đường:</span>
+                <span>{{ 'bookings.review.routeLabel' | translate }}</span>
                 <strong>{{ selectedTrip()?.routeName }}</strong>
               </div>
               <div class="info-row">
-                <span>Xuất bến:</span>
+                <span>{{ 'bookings.review.departureLabel' | translate }}</span>
                 <strong>{{ selectedTrip()?.departureTime | dateVi : true }}</strong>
               </div>
               <div class="info-row">
-                <span>Biển số xe:</span>
+                <span>{{ 'bookings.review.plateLabel' | translate }}</span>
                 <strong>{{ selectedTrip()?.vehiclePlateNumber }} ({{ selectedTrip()?.vehicleTypeName }})</strong>
               </div>
             </div>
 
             <div class="summary-section mt-3">
-              <h5 class="sub-title">2. Khách hàng liên hệ</h5>
+              <h5 class="sub-title">{{ 'bookings.review.customerSection' | translate }}</h5>
               <div class="info-row">
-                <span>Họ tên:</span>
+                <span>{{ 'bookings.review.customerName' | translate }}</span>
                 <strong>{{ customerName() }}</strong>
               </div>
               <div class="info-row">
-                <span>Điện thoại:</span>
+                <span>{{ 'bookings.review.customerPhone' | translate }}</span>
                 <strong>{{ customerPhone() }}</strong>
               </div>
               <div class="info-row" *ngIf="customerEmail()">
-                <span>Email:</span>
+                <span>{{ 'bookings.review.customerEmail' | translate }}</span>
                 <strong>{{ customerEmail() }}</strong>
               </div>
             </div>
 
             <div class="summary-section mt-3">
-              <h5 class="sub-title">3. Danh sách ghế & hành khách</h5>
+              <h5 class="sub-title">{{ 'bookings.review.passengerSection' | translate }}</h5>
               <div *ngFor="let p of passengerForms()" class="passenger-review-item">
                 <span class="seat-pill">{{ p.seatCode }}</span>
-                <span class="passenger-detail font-medium">{{ p.passengerName }} ({{ p.passengerPhone || 'Không có SĐT' }})</span>
+                <span class="passenger-detail font-medium">{{ p.passengerName }} ({{ p.passengerPhone || ('bookings.review.noPhone' | translate) }})</span>
               </div>
             </div>
           </div>
@@ -718,20 +718,20 @@
           <!-- Cột xác nhận thanh toán -->
           <div class="payment-card">
             <h4 class="section-title">
-              <i class="pi pi-credit-card mr-2 text-emerald-600"></i>Thanh toán & Xuất vé
+              <i class="pi pi-credit-card mr-2 text-emerald-600"></i>{{ 'bookings.review.paymentTitle' | translate }}
             </h4>
 
             <div class="payment-amount-box mt-3">
-              <span class="label">Tổng tiền thanh toán:</span>
+              <span class="label">{{ 'bookings.review.totalPayment' | translate }}</span>
               <span class="amount">{{ totalConfirmedPrice() | currencyVnd }}</span>
-              <span class="text-xs text-slate-500 mt-1">Đã bao gồm giá vé gốc và phụ phí theo quy định backend</span>
+              <span class="text-xs text-slate-500 mt-1">{{ 'bookings.review.feeNote' | translate }}</span>
             </div>
 
             <div class="space-y-4 mt-4">
               <div>
                 <app-select
-                  label="Phương thức thanh toán *"
-                  [options]="paymentMethodOptions"
+                  [label]="'bookings.payment.methodLabel' | translate"
+                  [options]="paymentMethodOptions()"
                   [ngModel]="paymentMethod()"
                   (selectionChange)="paymentMethod.set($event!)"
                 />
@@ -739,8 +739,8 @@
 
               <div *ngIf="paymentMethod() !== 'CASH'">
                 <app-input
-                  label="Mã giao dịch / Tham chiếu"
-                  placeholder="Mã giao dịch ngân hàng / QR..."
+                  [label]="'bookings.payment.txCodeLabel' | translate"
+                  [placeholder]="'bookings.payment.txCodePlaceholder' | translate"
                   [ngModel]="paymentTransactionCode()"
                   (ngModelChange)="paymentTransactionCode.set($event)"
                 />
@@ -748,8 +748,8 @@
 
               <div>
                 <app-input
-                  label="Ghi chú đơn vé"
-                  placeholder="Ghi chú nội bộ CRM..."
+                  [label]="'bookings.payment.noteLabel' | translate"
+                  [placeholder]="'bookings.payment.notePlaceholder' | translate"
                   [ngModel]="bookingFinalNote()"
                   (ngModelChange)="bookingFinalNote.set($event)"
                 />
@@ -761,7 +761,7 @@
                 variant="success"
                 [fullWidth]="true"
                 icon="pi pi-check"
-                label="Xác nhận & Xuất vé điện tử"
+                [label]="'bookings.buttons.confirmAndIssueTicket' | translate"
                 [loading]="isConfirmingBooking()"
                 [disabled]="isConfirmingBooking() || isHoldExpired()"
                 (clicked)="confirmBooking()"
@@ -770,7 +770,7 @@
               <app-button
                 variant="secondary"
                 [fullWidth]="true"
-                label="Quay lại sửa thông tin"
+                [label]="'bookings.buttons.backToEdit' | translate"
                 [disabled]="isConfirmingBooking()"
                 (clicked)="currentStep.set(3)"
               />
@@ -785,16 +785,16 @@
           <div class="success-icon">
             <i class="pi pi-check-circle text-6xl text-emerald-500"></i>
           </div>
-          <h3 class="text-2xl font-bold text-slate-800 mt-3">Đặt vé thành công!</h3>
+          <h3 class="text-2xl font-bold text-slate-800 mt-3">{{ 'bookings.success.title' | translate }}</h3>
           <p class="text-slate-500 text-sm mt-1">
-            Mã đơn vé: <strong class="text-sky-700 text-lg">{{ confirmedBooking()?.bookingCode }}</strong>
+            {{ 'bookings.success.bookingCode' | translate }} <strong class="text-sky-700 text-lg">{{ confirmedBooking()?.bookingCode }}</strong>
           </p>
 
           <!-- Thẻ tóm tắt vé đã xuất -->
           <div class="tickets-summary-card mt-6 text-left">
             <div class="ticket-header flex justify-between items-center border-b pb-3">
               <div>
-                <span class="text-xs text-slate-500 uppercase tracking-wider">Chuyến xe</span>
+                <span class="text-xs text-slate-500 uppercase tracking-wider">{{ 'bookings.success.trip' | translate }}</span>
                 <h5 class="font-bold text-slate-800 text-base">{{ confirmedBooking()?.routeName }}</h5>
                 <span class="text-xs text-slate-500">{{ confirmedBooking()?.departureTime | dateVi : true }}</span>
               </div>
@@ -814,14 +814,14 @@
                   <div>
                     <strong class="text-slate-800 text-sm block">{{ item.passengerName }}</strong>
                     <span class="text-xs text-slate-500">
-                      {{ item.pickupStopName ? 'Đón: ' + item.pickupStopName : '' }}
-                      {{ item.dropoffStopName ? ' - Trả: ' + item.dropoffStopName : '' }}
+                      {{ item.pickupStopName ? ('bookings.detail.pickup' | translate) + ' ' + item.pickupStopName : '' }}
+                      {{ item.dropoffStopName ? ' - ' + ('bookings.detail.dropoff' | translate) + ' ' + item.dropoffStopName : '' }}
                     </span>
                   </div>
                 </div>
                 <div class="text-right">
                   <span class="text-sm font-semibold text-slate-700">{{ item.finalPrice | currencyVnd }}</span>
-                  <span class="block text-xs text-emerald-600 font-medium">Đã phát hành</span>
+                  <span class="block text-xs text-emerald-600 font-medium">{{ 'bookings.success.issued' | translate }}</span>
                 </div>
               </div>
             </div>
@@ -831,7 +831,7 @@
             <app-button
               variant="primary"
               icon="pi pi-arrow-left"
-              label="Hoàn tất & Tiếp tục đặt vé"
+              [label]="'bookings.buttons.finishAndContinue' | translate"
               (clicked)="closeWizard()"
             />
           </div>
@@ -857,30 +857,29 @@
     [modal]="true"
     [draggable]="false"
     [resizable]="false"
-    header="Xác nhận hủy đơn đặt vé"
+    [header]="'bookings.cancelModal.title' | translate"
     [style]="{ width: '480px' }"
   >
     <div class="p-4 flex flex-col gap-4">
       <div class="flex items-start gap-3 bg-amber-50 border border-amber-200 p-3 rounded-lg text-amber-800 text-sm">
         <i class="pi pi-exclamation-triangle text-xl text-amber-600 mt-0.5"></i>
         <div>
-          <p class="font-semibold">Hủy đơn vé {{ bookingToCancel()?.bookingCode }}?</p>
+          <p class="font-semibold">{{ 'bookings.cancelModal.confirmMsg' | translate : { code: bookingToCancel()?.bookingCode } }}</p>
           <p class="mt-1 text-xs text-amber-700">
-            Hành động này sẽ giải phóng toàn bộ ghế trên chuyến và chuyển trạng thái đơn sang ĐÃ HỦY. 
-            Lưu ý: Hệ thống ghi nhận hủy đơn và không tự động thực hiện hoàn tiền.
+            {{ 'bookings.cancelModal.warning' | translate }}
           </p>
         </div>
       </div>
 
       <div class="flex flex-col gap-1.5">
         <label for="cancel-reason-input" class="text-xs font-semibold text-slate-700">
-          Lý do hủy đơn vé <span class="text-rose-500">*</span>
+          {{ 'bookings.cancelModal.reasonLabel' | translate }} <span class="text-rose-500">*</span>
         </label>
         <textarea
           id="cancel-reason-input"
           rows="3"
           class="w-full p-2.5 border border-slate-300 rounded-md text-sm outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-          placeholder="Nhập lý do hủy đơn (vd: Khách báo hủy trước giờ xe chạy...)"
+          [placeholder]="'bookings.cancelModal.reasonPlaceholder' | translate"
           [value]="cancelReasonInput()"
           (input)="cancelReasonInput.set($any($event.target).value)"
         ></textarea>
@@ -891,14 +890,14 @@
       <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
         <app-button
           variant="secondary"
-          label="Đóng"
+          [label]="'common.actions.close' | translate"
           [disabled]="cancelLoading()"
           (clicked)="cancelModalVisible.set(false)"
         />
         <app-button
           variant="danger"
           icon="pi pi-times"
-          label="Xác nhận hủy vé"
+          [label]="'bookings.buttons.confirmCancel' | translate"
           [loading]="cancelLoading()"
           (clicked)="submitCancelBooking()"
         />

@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
   output,
   signal,
@@ -10,6 +11,8 @@ import { CommonModule } from '@angular/common';
 import { Tooltip } from 'primeng/tooltip';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { CurrencyVndPipe } from '../../../../shared/pipes/currency-vnd.pipe';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
+import { TranslationService } from '../../../../core/i18n/translation.service';
 import {
   CrmRouteStopItem,
   CrmSeatMapItem,
@@ -20,12 +23,13 @@ import {
 @Component({
   selector: 'app-crm-seat-map',
   standalone: true,
-  imports: [CommonModule, Tooltip, ButtonComponent, CurrencyVndPipe],
+  imports: [CommonModule, Tooltip, ButtonComponent, CurrencyVndPipe, TranslatePipe],
   templateUrl: './crm-seat-map.component.html',
   styleUrl: './crm-seat-map.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CrmSeatMapComponent {
+  private readonly i18n = inject(TranslationService);
   /** Dữ liệu sơ đồ ghế từ API backend */
   readonly seatMap = input.required<CrmTripSeatMap>();
 
@@ -141,26 +145,27 @@ export class CrmSeatMapComponent {
 
   getSeatTooltip(seat: CrmSeatMapItem): string {
     const statusText = this.getSeatStatusLabel(seat.occupancyStatus);
-    const priceText = new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-    }).format(seat.calculatedPrice);
+    const priceText = this.i18n.formatCurrency(seat.calculatedPrice);
 
-    return `Ghế ${seat.seatCode} | ${priceText} | ${statusText}`;
+    return this.i18n.translate('bookings.seatMap.seatTooltip', {
+      seatCode: seat.seatCode,
+      price: priceText,
+      status: statusText,
+    });
   }
 
   getSeatStatusLabel(status: SeatOccupancyStatus): string {
     switch (status) {
       case 'AVAILABLE':
-        return 'Ghế trống';
+        return this.i18n.translate('bookings.seatMap.status.available');
       case 'HELD':
-        return 'Đang được giữ chỗ';
+        return this.i18n.translate('bookings.seatMap.status.held');
       case 'BOOKED':
-        return 'Đã bán';
+        return this.i18n.translate('bookings.seatMap.status.booked');
       case 'LOCKED':
-        return 'Bảo trì / Khóa';
+        return this.i18n.translate('bookings.seatMap.status.locked');
       default:
-        return 'Không khả dụng';
+        return this.i18n.translate('bookings.seatMap.status.unavailable');
     }
   }
 }
