@@ -66,19 +66,18 @@
 
     <div class="form-grid">
       <!-- Ngày bắt đầu áp dụng -->
-      <app-input
-        type="date"
+      <app-date-input
         formControlName="startDate"
         [label]="'trips.tripRunForm.startDateLabel' | translate"
         [required]="true"
       />
 
       <!-- Ngày kết thúc áp dụng -->
-      <app-input
-        type="date"
+      <app-date-input
         formControlName="endDate"
         [label]="'trips.tripRunForm.endDateLabel' | translate"
         [hint]="'trips.tripRunForm.endDateHint' | translate"
+        [clearable]="true"
       />
 
       <!-- Phương tiện mặc định -->

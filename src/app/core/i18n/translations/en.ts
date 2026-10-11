@@ -18,6 +18,8 @@ export const EN_TRANSLATIONS: Record<string, any> = {
       resetFilters: 'Reset filters',
       reloadList: 'Reload list',
       clearSearch: 'Clear search content',
+      clear: 'Clear',
+      clearDate: 'Clear date',
       select: 'Select...',
       all: 'All',
     },

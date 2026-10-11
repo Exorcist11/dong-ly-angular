@@ -18,6 +18,7 @@ import {
 } from '@angular/forms';
 import { AppDialogComponent } from '../../../../shared/components/dialog/dialog.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
+import { DateInputComponent } from '../../../../shared/components/date-input/date-input.component';
 import { SelectComponent } from '../../../../shared/components/select/select.component';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { TranslationService } from '../../../../core/i18n/translation.service';
@@ -38,6 +39,7 @@ import {
     TranslatePipe,
     AppDialogComponent,
     InputComponent,
+    DateInputComponent,
     SelectComponent,
   ],
   templateUrl: './trip-run-form-dialog.component.html',

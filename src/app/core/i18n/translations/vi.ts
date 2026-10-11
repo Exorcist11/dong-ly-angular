@@ -18,6 +18,8 @@ export const VI_TRANSLATIONS: Record<string, any> = {
       resetFilters: 'Đặt lại bộ lọc',
       reloadList: 'Tải lại danh sách',
       clearSearch: 'Xóa nội dung tìm kiếm',
+      clear: 'Xóa',
+      clearDate: 'Xóa ngày',
       select: 'Chọn...',
       all: 'Tất cả',
     },

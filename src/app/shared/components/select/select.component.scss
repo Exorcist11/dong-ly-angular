@@ -30,6 +30,8 @@
   }
 }
 
+:host-context(.filter-grid) .dl-form-field,
+:host-context(.filter-item) .dl-form-field,
 :host-context(.table-filter-item) .dl-form-field,
 :host-context(.add-stop-toolbar) .dl-form-field,
 :host-context(.table-toolbar) .dl-form-field {

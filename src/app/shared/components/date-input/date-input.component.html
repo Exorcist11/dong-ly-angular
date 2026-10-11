@@ -1,0 +1,67 @@
+<div
+  class="dl-form-field"
+  [class]="styleClass()"
+  [class.has-label]="!!label()"
+  [class.has-error]="hasError()"
+  [class.is-standalone]="isStandalone()"
+  [class.no-margin]="marginBottom() === false"
+>
+  @if (label()) {
+    <div class="field-header">
+      <label [attr.for]="effectiveId()" class="field-label dl-date-label">
+        {{ label() }}
+        @if (required()) {
+          <span class="required-mark dl-date-required" aria-hidden="true">*</span>
+        }
+      </label>
+      <ng-content select="[labelSuffix]" />
+    </div>
+  }
+
+  <div class="control-wrapper">
+    <input
+      pInputText
+      type="date"
+      [id]="effectiveId()"
+      [name]="name() ?? effectiveId()"
+      [value]="internalValue()"
+      (input)="onNativeInput($event)"
+      (blur)="onNativeBlur($event)"
+      (focus)="onNativeFocus($event)"
+      [disabled]="effectiveDisabled()"
+      [readOnly]="readonly()"
+      [attr.placeholder]="placeholder() ?? null"
+      [attr.min]="effectiveMin()"
+      [attr.max]="effectiveMax()"
+      [attr.aria-required]="required()"
+      [attr.aria-invalid]="hasError()"
+      [attr.aria-describedby]="ariaDescribedBy()"
+      class="dl-date-input"
+      [class.ng-invalid]="hasError()"
+      [class.has-clear]="clearable() && !!internalValue() && !effectiveDisabled() && !readonly()"
+      [ngClass]="inputStyleClass()"
+    />
+
+    @if (clearable() && !!internalValue() && !effectiveDisabled() && !readonly()) {
+      <button
+        type="button"
+        class="date-clear-btn"
+        (click)="onClear($event)"
+        [attr.aria-label]="clearAriaLabel()"
+        tabindex="-1"
+      >
+        <i class="pi pi-times" aria-hidden="true"></i>
+      </button>
+    }
+  </div>
+
+  @if (hint() && !hasError()) {
+    <small [id]="hintId()" class="field-hint">{{ hint() }}</small>
+  }
+
+  @if (hasError()) {
+    <small [id]="errorId()" class="error-message" role="alert">
+      {{ activeErrorMessage() }}
+    </small>
+  }
+</div>

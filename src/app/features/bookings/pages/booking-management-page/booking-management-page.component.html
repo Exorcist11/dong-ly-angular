@@ -36,15 +36,12 @@
     <div class="filter-grid">
       <!-- Ngày khởi hành -->
       <div class="filter-item">
-        <label for="crm-filter-date" class="filter-label">
-          {{ 'bookings.filters.departureDate' | translate }} <span class="text-rose-500">*</span>
-        </label>
-        <input
+        <app-date-input
           id="crm-filter-date"
-          type="date"
-          class="crm-date-input"
+          [label]="'bookings.filters.departureDate' | translate"
+          [required]="true"
           [value]="selectedDate()"
-          (input)="selectedDate.set($any($event.target).value)"
+          (valueChange)="selectedDate.set($event)"
         />
       </div>
 
@@ -245,25 +242,23 @@
 
         <!-- Từ ngày -->
         <div class="filter-item">
-          <label for="filter-booking-from" class="filter-label">{{ 'bookings.manage.fromDate' | translate }}</label>
-          <input
+          <app-date-input
             id="filter-booking-from"
-            type="date"
-            class="crm-date-input"
+            [label]="'bookings.manage.fromDate' | translate"
             [value]="filterBookingFromDate()"
-            (input)="filterBookingFromDate.set($any($event.target).value); bookingsPage.set(0); loadBookingsList()"
+            [clearable]="true"
+            (valueChange)="filterBookingFromDate.set($event); bookingsPage.set(0); loadBookingsList()"
           />
         </div>
 
         <!-- Đến ngày -->
         <div class="filter-item">
-          <label for="filter-booking-to" class="filter-label">{{ 'bookings.manage.toDate' | translate }}</label>
-          <input
+          <app-date-input
             id="filter-booking-to"
-            type="date"
-            class="crm-date-input"
+            [label]="'bookings.manage.toDate' | translate"
             [value]="filterBookingToDate()"
-            (input)="filterBookingToDate.set($any($event.target).value); bookingsPage.set(0); loadBookingsList()"
+            [clearable]="true"
+            (valueChange)="filterBookingToDate.set($event); bookingsPage.set(0); loadBookingsList()"
           />
         </div>
       </div>
@@ -864,7 +859,7 @@
       <div class="flex items-start gap-3 bg-amber-50 border border-amber-200 p-3 rounded-lg text-amber-800 text-sm">
         <i class="pi pi-exclamation-triangle text-xl text-amber-600 mt-0.5"></i>
         <div>
-          <p class="font-semibold">{{ 'bookings.cancelModal.confirmMsg' | translate : { code: bookingToCancel()?.bookingCode } }}</p>
+          <p class="font-semibold">{{ 'bookings.cancelModal.confirmMsg' | translate : { code: bookingToCancel()?.bookingCode ?? '' } }}</p>
           <p class="mt-1 text-xs text-amber-700">
             {{ 'bookings.cancelModal.warning' | translate }}
           </p>

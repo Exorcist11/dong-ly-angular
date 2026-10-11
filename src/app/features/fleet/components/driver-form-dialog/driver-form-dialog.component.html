@@ -58,18 +58,18 @@
         width="100%"
       />
 
-      <app-input
-        type="date"
+      <app-date-input
         formControlName="licenseExpiryDate"
         [label]="'fleet.drivers.form.licenseExpiryDateLabel' | translate"
+        [clearable]="true"
       />
     </div>
 
     <div class="form-row two-cols">
-      <app-input
-        type="date"
+      <app-date-input
         formControlName="dateOfBirth"
         [label]="'fleet.drivers.form.dateOfBirthLabel' | translate"
+        [clearable]="true"
       />
     </div>
 

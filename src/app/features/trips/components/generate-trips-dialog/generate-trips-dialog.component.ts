@@ -23,6 +23,7 @@ import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { TranslationService } from '../../../../core/i18n/translation.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { DateInputComponent } from '../../../../shared/components/date-input/date-input.component';
 import {
   GenerateTripsPreviewItem,
   GenerateTripsPreviewResponse,
@@ -40,8 +41,7 @@ import { TripRunService } from '../../services/trip-run.service';
     TranslatePipe,
     AppDialogComponent,
     ButtonComponent,
-    FormFieldComponent,
-    InputComponent,
+    DateInputComponent,
   ],
   templateUrl: './generate-trips-dialog.component.html',
   styleUrls: ['./generate-trips-dialog.component.scss'],

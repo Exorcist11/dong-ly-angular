@@ -24,21 +24,17 @@
 
     <form [formGroup]="form" class="date-range-form" (ngSubmit)="onPreview()">
       <div class="form-row">
-        <app-form-field
+        <app-date-input
           [label]="'trips.generate.fromDate' | translate"
           [required]="true"
-          [control]="form.get('fromDate')"
-        >
-          <app-input type="date" formControlName="fromDate" />
-        </app-form-field>
+          formControlName="fromDate"
+        />
 
-        <app-form-field
+        <app-date-input
           [label]="'trips.generate.toDate' | translate"
           [required]="true"
-          [control]="form.get('toDate')"
-        >
-          <app-input type="date" formControlName="toDate" />
-        </app-form-field>
+          formControlName="toDate"
+        />
 
         <div class="action-col">
           <app-button

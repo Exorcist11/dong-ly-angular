@@ -9,6 +9,19 @@
   gap: 0.375rem;
   margin-bottom: 1rem;
   width: 100%;
+
+  &.is-standalone,
+  &.no-margin {
+    margin-bottom: 0;
+  }
+}
+
+:host-context(.filter-grid) .dl-form-field,
+:host-context(.filter-item) .dl-form-field,
+:host-context(.table-filter-item) .dl-form-field,
+:host-context(.add-stop-toolbar) .dl-form-field,
+:host-context(.table-toolbar) .dl-form-field {
+  margin-bottom: 0;
 }
 
 .field-header {

@@ -18,6 +18,7 @@ import { Dialog } from 'primeng/dialog';
 import { PageHeaderComponent, BreadcrumbItem } from '../../../../shared/components/page-header/page-header.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { SelectComponent } from '../../../../shared/components/select/select.component';
+import { DateInputComponent } from '../../../../shared/components/date-input/date-input.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
@@ -74,6 +75,7 @@ export interface PassengerFormData {
     PageHeaderComponent,
     ButtonComponent,
     SelectComponent,
+    DateInputComponent,
     InputComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
