@@ -1,0 +1,71 @@
+.booking-detail-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-top-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem 1.25rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.section-box {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+
+  .section-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 0.5rem;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8125rem;
+
+      .lbl {
+        color: #64748b;
+      }
+      .val {
+        color: #1e293b;
+      }
+    }
+  }
+
+  .ticket-items-list {
+    .ticket-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.625rem 0.875rem;
+      background: #f8fafc;
+      border-radius: 0.375rem;
+      border: 1px solid #f1f5f9;
+
+      .seat-badge-pill {
+        background: #0284c7;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+      }
+    }
+  }
+}

@@ -103,8 +103,9 @@ export const MENU_CONFIG: NavGroup[] = [
       },
       {
         labelKey: 'navigation.items.bookings',
+        route: '/bookings',
         icon: 'pi pi-ticket',
-        isUpcoming: true,
+        permission: 'BOOKING_READ',
       },
     ],
   },

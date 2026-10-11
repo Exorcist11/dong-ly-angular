@@ -1,0 +1,118 @@
+<div class="seat-map-wrapper">
+  <!-- Header: Điều hướng tầng & Nút làm mới -->
+  <div class="seat-map-header">
+    <div class="floor-selector" *ngIf="floors().length > 1">
+      <button
+        *ngFor="let f of floors()"
+        type="button"
+        class="floor-tab-btn"
+        [class.active]="activeFloor() === f"
+        (click)="selectFloor(f)"
+      >
+        <i class="pi pi-layers mr-1.5"></i>
+        Tầng {{ f }}
+      </button>
+    </div>
+
+    <div class="actions">
+      <app-button
+        variant="secondary"
+        size="small"
+        icon="pi pi-refresh"
+        label="Làm mới sơ đồ"
+        [loading]="loading()"
+        (clicked)="refreshRequested.emit()"
+      />
+    </div>
+  </div>
+
+  <!-- Legend: Chú thích trạng thái ghế -->
+  <div class="seat-legend">
+    <div class="legend-item">
+      <span class="legend-box available"></span>
+      <span class="legend-label">Ghế trống</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-box selected"></span>
+      <span class="legend-label">Đang chọn</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-box held"></span>
+      <span class="legend-label">Đang giữ chỗ</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-box booked"></span>
+      <span class="legend-label">Đã bán</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-box locked"></span>
+      <span class="legend-label">Khóa</span>
+    </div>
+  </div>
+
+  <!-- Cabin Body -->
+  <div class="bus-cabin">
+    <!-- Đầu xe (Bác tài) -->
+    <div class="cabin-front">
+      <div class="steering-wheel" pTooltip="Khu vực tài xế" tooltipPosition="top">
+        <i class="pi pi-compass"></i>
+        <span>Đầu xe</span>
+      </div>
+      <div class="cabin-entry">
+        <span>Cửa lên xuống</span>
+      </div>
+    </div>
+
+    <!-- Lưới ghế -->
+    <div class="cabin-grid">
+      <div *ngFor="let row of seatGrid(); let rIdx = index" class="seat-row">
+        <ng-container *ngFor="let seat of row; let cIdx = index">
+          <!-- Có ghế -->
+          <button
+            *ngIf="seat; else aisleSlot"
+            type="button"
+            class="seat-item"
+            [ngClass]="getSeatStatusClass(seat)"
+            [disabled]="!seat.isBookable || seat.occupancyStatus !== 'AVAILABLE' || loading()"
+            [pTooltip]="getSeatTooltip(seat)"
+            tooltipPosition="top"
+            (click)="toggleSeat(seat)"
+          >
+            <div class="seat-headrest"></div>
+            <div class="seat-inner">
+              <span class="seat-code">{{ seat.seatCode }}</span>
+              <span class="seat-price">{{ seat.calculatedPrice | currencyVnd }}</span>
+            </div>
+          </button>
+
+          <!-- Khoảng trống / Lối đi giữa hai ghế -->
+          <ng-template #aisleSlot>
+            <div class="aisle-slot"></div>
+          </ng-template>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Đuôi xe -->
+    <div class="cabin-rear">
+      <span>Đuôi xe</span>
+    </div>
+  </div>
+
+  <!-- Thanh tóm tắt ghế đã chọn -->
+  <div class="selected-summary" *ngIf="selectedSeats().length > 0">
+    <div class="summary-left">
+      <span class="text-sm font-medium text-slate-500">Đã chọn:</span>
+      <div class="seat-tags">
+        <span *ngFor="let s of selectedSeats()" class="selected-tag">
+          {{ s.seatCode }} ({{ s.calculatedPrice | currencyVnd }})
+        </span>
+      </div>
+    </div>
+
+    <div class="summary-right">
+      <span class="total-label">Tổng tiền tạm tính:</span>
+      <span class="total-value">{{ totalPrice() | currencyVnd }}</span>
+    </div>
+  </div>
+</div>

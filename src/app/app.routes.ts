@@ -110,6 +110,15 @@ export const routes: Routes = [
         redirectTo: 'trip-runs',
         pathMatch: 'full',
       },
+      {
+        path: 'bookings',
+        canActivate: [permissionGuard],
+        data: { permission: 'BOOKING_READ' },
+        loadComponent: () =>
+          import(
+            './features/bookings/pages/booking-management-page/booking-management-page.component'
+          ).then((m) => m.BookingManagementPageComponent),
+      },
     ],
   },
   {

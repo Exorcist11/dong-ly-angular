@@ -19,6 +19,10 @@ describe('ThemeSwitcherComponent', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    TestBed.resetTestingModule();
+  });
+
   it('should create and render theme buttons', () => {
     expect(component).toBeTruthy();
     const compiled = fixture.nativeElement as HTMLElement;
