@@ -159,6 +159,18 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'tickets/lookup',
+    loadComponent: () =>
+      import(
+        './features/bookings/pages/ticket-lookup-page/ticket-lookup-page.component'
+      ).then((m) => m.TicketLookupPageComponent),
+  },
+  {
+    path: 'tra-cuu-ve',
+    redirectTo: 'tickets/lookup',
+    pathMatch: 'full',
+  },
+  {
     path: 'login',
     redirectTo: 'auth/login',
     pathMatch: 'full',

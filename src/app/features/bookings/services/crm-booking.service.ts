@@ -105,4 +105,69 @@ export class CrmBookingService {
     }
     return this.http.post<ApiResponse<import('../models/booking.model').BookingResponse>>(`${this.BASE_URL}/${id}/cancel`, {}, { params });
   }
+
+  /**
+   * Lấy danh sách vé điện tử kèm mã QR của đơn đặt vé.
+   */
+  getBookingTickets(bookingId: string): Observable<ApiResponse<import('../models/ticket.model').TicketItem[]>> {
+    return this.http.get<ApiResponse<import('../models/ticket.model').TicketItem[]>>(`${this.BASE_URL}/${bookingId}/tickets`);
+  }
+
+  /**
+   * Lấy thông tin thanh toán của đơn đặt vé.
+   */
+  getBookingPayment(bookingId: string): Observable<ApiResponse<import('../models/ticket.model').BookingPaymentInfo>> {
+    return this.http.get<ApiResponse<import('../models/ticket.model').BookingPaymentInfo>>(`${this.BASE_URL}/${bookingId}/payment`);
+  }
+
+  /**
+   * Tra cứu chi tiết vé theo mã vé (Ticket Code).
+   */
+  getTicketByCode(ticketCode: string): Observable<ApiResponse<import('../models/ticket.model').TicketItem>> {
+    return this.http.get<ApiResponse<import('../models/ticket.model').TicketItem>>(`${environment.apiBaseUrl}/crm/tickets/${ticketCode}`);
+  }
+
+  /**
+   * Làm mới mã JWT QR cho vé điện tử khi hết hạn.
+   */
+  refreshTicketQr(ticketCode: string): Observable<ApiResponse<import('../models/ticket.model').TicketItem>> {
+    return this.http.post<ApiResponse<import('../models/ticket.model').TicketItem>>(`${environment.apiBaseUrl}/crm/tickets/${ticketCode}/refresh-qr`, {});
+  }
+
+  /**
+   * Tra cứu vé điện tử công khai cho khách hàng theo mã đơn và số điện thoại.
+   */
+  lookupCustomerTickets(bookingCode: string, phone: string): Observable<ApiResponse<import('../models/ticket.model').TicketItem[]>> {
+    const params = new HttpParams().set('bookingCode', bookingCode).set('phone', phone);
+    return this.http.get<ApiResponse<import('../models/ticket.model').TicketItem[]>>(`${environment.apiBaseUrl}/public/tickets/lookup`, { params });
+  }
+
+  /**
+   * Thu tiền mặt tại quầy cho đơn giữ chỗ.
+   */
+  processCounterPayment(payload: import('../models/ticket.model').CounterPaymentRequest): Observable<ApiResponse<import('../models/booking.model').BookingResponse>> {
+    return this.http.post<ApiResponse<import('../models/booking.model').BookingResponse>>(`${environment.apiBaseUrl}/payments/counter/pay`, payload);
+  }
+
+  /**
+   * Xác nhận thanh toán VietQR tĩnh sau khi đối soát sao kê ngân hàng.
+   */
+  confirmVietQrPayment(payload: import('../models/ticket.model').VietQrConfirmRequest): Observable<ApiResponse<import('../models/booking.model').BookingResponse>> {
+    return this.http.post<ApiResponse<import('../models/booking.model').BookingResponse>>(`${environment.apiBaseUrl}/payments/counter/vietqr/confirm`, payload);
+  }
+
+  /**
+   * Ghi nhận hoàn tiền thủ công cho đơn đã hủy có kiểm soát.
+   */
+  recordManualRefund(payload: import('../models/ticket.model').ManualRefundRequest): Observable<ApiResponse<import('../models/ticket.model').PaymentAuditLog>> {
+    return this.http.post<ApiResponse<import('../models/ticket.model').PaymentAuditLog>>(`${environment.apiBaseUrl}/payments/counter/refund`, payload);
+  }
+
+  /**
+   * Lấy lịch sử nhật ký kiểm toán thanh toán & hoàn tiền của đơn vé.
+   */
+  getPaymentAuditLogs(bookingId: string): Observable<ApiResponse<import('../models/ticket.model').PaymentAuditLog[]>> {
+    return this.http.get<ApiResponse<import('../models/ticket.model').PaymentAuditLog[]>>(`${environment.apiBaseUrl}/payments/counter/booking/${bookingId}/audits`);
+  }
 }
+

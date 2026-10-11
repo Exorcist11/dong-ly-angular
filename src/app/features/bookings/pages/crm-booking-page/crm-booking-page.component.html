@@ -710,7 +710,14 @@
             </div>
           </div>
 
-          <div class="success-actions">
+          <div class="success-actions flex gap-3">
+            <app-button
+              variant="secondary"
+              size="large"
+              icon="pi pi-ticket"
+              [label]="'bookings.buttons.viewTickets' | translate"
+              (clicked)="openConfirmedBookingDetail()"
+            />
             <app-button
               variant="success"
               size="large"
@@ -724,4 +731,13 @@
       </div>
     </div>
   </p-dialog>
+
+  <!-- DIALOG CHI TIẾT VÉ VÀ IN VÉ CHO ĐƠN VỪA XÁC NHẬN -->
+  <app-booking-detail-dialog
+    [visible]="confirmedDetailDialogVisible()"
+    (visibleChange)="confirmedDetailDialogVisible.set($event)"
+    [booking]="confirmedBooking()"
+    initialTab="TICKETS"
+    [canCancel]="false"
+  />
 </div>

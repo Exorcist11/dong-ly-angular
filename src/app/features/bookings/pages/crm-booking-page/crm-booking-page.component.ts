@@ -47,6 +47,7 @@ import {
   PaymentMethod,
 } from '../../models/booking.model';
 import { CrmSeatMapComponent } from '../../components/crm-seat-map/crm-seat-map.component';
+import { BookingDetailDialogComponent } from '../../components/booking-detail-dialog/booking-detail-dialog.component';
 
 export type BookingWizardStep = 1 | 2 | 3 | 4 | 5;
 
@@ -79,6 +80,7 @@ export interface PassengerFormData {
     DateViPipe,
     TranslatePipe,
     CrmSeatMapComponent,
+    BookingDetailDialogComponent,
   ],
   templateUrl: './crm-booking-page.component.html',
   styleUrl: './crm-booking-page.component.scss',
@@ -91,6 +93,8 @@ export class CrmBookingPageComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly i18n = inject(TranslationService);
   private readonly router = inject(Router);
+
+  readonly confirmedDetailDialogVisible = signal<boolean>(false);
 
   // QUYỀN HẠN
   readonly canManage = computed(() => this.authService.hasPermission('BOOKING_MANAGE'));
@@ -708,6 +712,12 @@ export class CrmBookingPageComponent implements OnInit, OnDestroy {
     if (list[index]) {
       list[index].dropoffStopId = stopId;
       this.passengerForms.set(list);
+    }
+  }
+
+  openConfirmedBookingDetail(): void {
+    if (this.confirmedBooking()) {
+      this.confirmedDetailDialogVisible.set(true);
     }
   }
 }

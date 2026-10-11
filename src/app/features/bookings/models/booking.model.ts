@@ -163,6 +163,9 @@ export interface BookingItemResponse {
   dropoffExtraPrice: number;
   finalPrice: number;
   status: string;
+  ticketCode?: string;
+  qrCodeData?: string;
+  ticketStatus?: 'ISSUED' | 'CHECKED_IN' | 'CANCELLED';
 }
 
 export interface BookingResponse {

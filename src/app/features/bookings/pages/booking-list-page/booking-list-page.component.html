@@ -88,7 +88,7 @@
       [loading]="bookingsLoading()"
       [lazy]="true"
       [pageSize]="bookingsSize()"
-      [first]="(bookingsPage() - 1) * bookingsSize()"
+      [first]="bookingsPage() * bookingsSize()"
       [emptyMessage]="'bookings.manage.emptyMessage' | translate"
       (lazyLoad)="onBookingsTableLazyLoad($event)"
     >
@@ -96,8 +96,9 @@
       <ng-template appTableCell="bookingCode" let-row>
         <button
           type="button"
-          class="font-mono font-bold text-sky-700 hover:text-sky-900 hover:underline cursor-pointer bg-transparent border-none p-0 text-left"
+          class="booking-code-btn"
           (click)="openBookingDetail(row)"
+          [title]="'common.actions.viewDetails' | translate"
         >
           {{ row.bookingCode }}
         </button>
@@ -105,32 +106,35 @@
 
       <!-- Template cột customerName -->
       <ng-template appTableCell="customerName" let-row>
-        <div class="flex flex-col">
-          <span class="font-medium text-slate-800">{{ row.customerName }}</span>
-          <span class="text-xs text-slate-500 font-mono">{{ row.customerPhone }}</span>
+        <div class="customer-cell">
+          <span class="customer-name">{{ row.customerName }}</span>
+          <span class="customer-phone">{{ row.customerPhone }}</span>
         </div>
       </ng-template>
 
       <!-- Template cột routeName -->
       <ng-template appTableCell="routeName" let-row>
-        <div class="flex flex-col">
-          <span class="font-medium text-slate-800">{{ row.routeName }}</span>
+        <div class="route-cell">
+          <span class="route-name">{{ row.routeName }}</span>
           @if (row.licensePlate) {
-            <span class="text-xs text-slate-500">{{ 'bookings.columns.licensePlate' | translate }} {{ row.licensePlate }}</span>
+            <span class="vehicle-plate">
+              <i class="pi pi-car"></i>
+              {{ 'bookings.columns.licensePlate' | translate }} {{ row.licensePlate }}
+            </span>
           }
         </div>
       </ng-template>
 
       <!-- Template cột departureTime -->
       <ng-template appTableCell="departureTime" let-row>
-        <span class="text-sm text-slate-700">
+        <span class="departure-time-text">
           {{ row.departureTime | dateVi : true }}
         </span>
       </ng-template>
 
       <!-- Template cột totalAmount -->
       <ng-template appTableCell="totalAmount" let-row>
-        <span class="text-sm font-bold text-emerald-700">
+        <span class="total-amount-text">
           {{ row.totalAmount | currencyVnd }}
         </span>
       </ng-template>
@@ -142,7 +146,7 @@
 
       <!-- Template cột actions -->
       <ng-template appTableCell="actions" let-row>
-        <div class="flex items-center justify-center gap-1.5">
+        <div class="table-actions-cell">
           <app-button
             variant="secondary"
             size="small"
@@ -150,6 +154,33 @@
             [tooltip]="'common.actions.viewDetails' | translate"
             (clicked)="openBookingDetail(row)"
           />
+          @if (row.status === 'CONFIRMED') {
+            <app-button
+              variant="secondary"
+              size="small"
+              icon="pi pi-ticket"
+              [tooltip]="'bookings.buttons.viewTickets' | translate"
+              (clicked)="openBookingTickets(row)"
+            />
+          }
+          @if (row.status === 'HELD' && canManage()) {
+            <app-button
+              variant="primary"
+              size="small"
+              icon="pi pi-credit-card"
+              tooltip="Thu tiền tại quầy / VietQR"
+              (clicked)="openCounterPayModal(row)"
+            />
+          }
+          @if (row.status === 'CANCELLED' && canManage()) {
+            <app-button
+              variant="warn"
+              size="small"
+              icon="pi pi-replay"
+              tooltip="Ghi nhận hoàn tiền"
+              (clicked)="openRefundModal(row)"
+            />
+          }
           @if (canCancelBooking(row)) {
             <app-button
               variant="danger"
@@ -169,63 +200,200 @@
     [visible]="detailDialogVisible()"
     (visibleChange)="detailDialogVisible.set($event)"
     [booking]="selectedBookingDetail()"
+    [initialTab]="detailDialogInitialTab()"
     [loading]="detailLoading()"
     [canCancel]="canManage()"
     (cancelRequested)="openCancelBookingModal($event)"
+    (counterPayRequested)="openCounterPayModal($event)"
+    (refundRequested)="openRefundModal($event)"
   />
 
-  <!-- MODAL XÁC NHẬN HỦY ĐƠN ĐẶT VÉ -->
-  <p-dialog
+  <!-- MODAL XÁC NHẬN HỦY ĐƠN ĐẶT VÉ (SỬ DỤNG APP-DIALOG CHUẨN ĐÔNG LÝ) -->
+  <app-dialog
     [visible]="cancelModalVisible()"
     (visibleChange)="cancelModalVisible.set($event)"
-    [modal]="true"
-    [draggable]="false"
-    [resizable]="false"
     [header]="'bookings.cancelModal.title' | translate"
-    [style]="{ width: '480px' }"
+    size="sm"
+    [showFooter]="true"
+    submitVariant="danger"
+    submitIcon="pi pi-times"
+    [submitLabel]="'bookings.buttons.confirmCancel' | translate"
+    [cancelLabel]="'common.actions.close' | translate"
+    [submitLoading]="cancelLoading()"
+    (submitted)="submitCancelBooking()"
+    (cancelled)="cancelModalVisible.set(false)"
   >
-    <div class="p-4 flex flex-col gap-4">
-      <div class="flex items-start gap-3 bg-amber-50 border border-amber-200 p-3 rounded-lg text-amber-800 text-sm">
-        <i class="pi pi-exclamation-triangle text-xl text-amber-600 mt-0.5"></i>
-        <div>
-          <p class="font-semibold">{{ 'bookings.cancelModal.confirmMsg' | translate : { code: bookingToCancel()?.bookingCode ?? '' } }}</p>
-          <p class="mt-1 text-xs text-amber-700">
+    <div class="cancel-modal-content">
+      <div class="cancel-alert-box">
+        <i class="pi pi-exclamation-triangle cancel-alert-icon"></i>
+        <div class="cancel-alert-text">
+          <p class="cancel-alert-heading">
+            {{ 'bookings.cancelModal.confirmMsg' | translate : { code: bookingToCancel()?.bookingCode ?? '' } }}
+          </p>
+          <p class="cancel-alert-sub">
             {{ 'bookings.cancelModal.warning' | translate }}
           </p>
         </div>
       </div>
 
-      <div class="flex flex-col gap-1.5">
-        <label for="cancel-reason-input" class="text-xs font-semibold text-slate-700">
-          {{ 'bookings.cancelModal.reasonLabel' | translate }} <span class="text-rose-500">*</span>
-        </label>
-        <textarea
-          id="cancel-reason-input"
-          rows="3"
-          class="w-full p-2.5 border border-slate-300 rounded-md text-sm outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-          [placeholder]="'bookings.cancelModal.reasonPlaceholder' | translate"
-          [value]="cancelReasonInput()"
-          (input)="cancelReasonInput.set($any($event.target).value)"
-        ></textarea>
-      </div>
+      <app-textarea
+        id="cancel-reason-input"
+        [label]="'bookings.cancelModal.reasonLabel' | translate"
+        [required]="true"
+        [placeholder]="'bookings.cancelModal.reasonPlaceholder' | translate"
+        [rows]="3"
+        [autoResize]="true"
+        [ngModel]="cancelReasonInput()"
+        (ngModelChange)="cancelReasonInput.set($event)"
+      />
     </div>
+  </app-dialog>
 
-    <ng-template pTemplate="footer">
-      <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-        <app-button
-          variant="secondary"
-          [label]="'common.actions.close' | translate"
-          [disabled]="cancelLoading()"
-          (clicked)="cancelModalVisible.set(false)"
-        />
-        <app-button
-          variant="danger"
-          icon="pi pi-times"
-          [label]="'bookings.buttons.confirmCancel' | translate"
-          [loading]="cancelLoading()"
-          (clicked)="submitCancelBooking()"
-        />
+  <!-- MODAL THU TIỀN TẠI QUẦY & DUYỆT VIETQR TĨNH -->
+  <app-dialog
+    [visible]="counterPayModalVisible()"
+    (visibleChange)="counterPayModalVisible.set($event)"
+    header="Thu tiền tại quầy / Xác nhận VietQR"
+    size="md"
+    [showFooter]="true"
+    submitVariant="primary"
+    submitIcon="pi pi-check"
+    submitLabel="Xác nhận thanh toán"
+    [cancelLabel]="'common.actions.close' | translate"
+    [submitLoading]="counterPayLoading()"
+    (submitted)="submitCounterPay()"
+    (cancelled)="counterPayModalVisible.set(false)"
+  >
+    <div class="flex flex-col gap-3">
+      <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center justify-between">
+        <div>
+          <span class="text-xs text-emerald-700 uppercase font-semibold block">Đơn đặt vé: {{ bookingToPay()?.bookingCode }}</span>
+          <span class="text-xs text-slate-600">Khách: {{ bookingToPay()?.customerName }} ({{ bookingToPay()?.customerPhone }})</span>
+        </div>
+        <div class="text-right">
+          <span class="text-xs text-slate-500 block">Số tiền phải thu:</span>
+          <span class="text-lg font-bold text-emerald-700">{{ bookingToPay()?.totalAmount | currencyVnd }}</span>
+        </div>
       </div>
-    </ng-template>
-  </p-dialog>
+
+      <!-- Chọn hình thức thu -->
+      <div class="flex gap-2 p-1 bg-slate-100 rounded-lg">
+        <button
+          type="button"
+          class="flex-1 py-1.5 px-3 rounded text-sm font-medium transition-all"
+          [ngClass]="counterPayMethod() === 'CASH' ? 'bg-white shadow text-slate-800' : 'text-slate-600'"
+          (click)="counterPayMethod.set('CASH')"
+        >
+          <i class="pi pi-money-bill mr-1"></i> Tiền mặt tại quầy
+        </button>
+        <button
+          type="button"
+          class="flex-1 py-1.5 px-3 rounded text-sm font-medium transition-all"
+          [ngClass]="counterPayMethod() === 'VIETQR' ? 'bg-white shadow text-slate-800' : 'text-slate-600'"
+          (click)="counterPayMethod.set('VIETQR')"
+        >
+          <i class="pi pi-qrcode mr-1"></i> Xác nhận VietQR
+        </button>
+      </div>
+
+      @if (counterPayMethod() === 'CASH') {
+        <app-input
+          id="counter-receipt-input"
+          label="Mã biên nhận / Phiếu thu (tùy chọn)"
+          placeholder="VD: PT-20261011-001"
+          [ngModel]="counterReceiptInput()"
+          (ngModelChange)="counterReceiptInput.set($event)"
+        />
+      } @else {
+        <div class="p-2.5 bg-blue-50 border border-blue-200 rounded text-xs text-blue-800 leading-relaxed">
+          <div class="font-semibold mb-1"><i class="pi pi-info-circle mr-1"></i>Tài khoản nhận tiền VietQR:</div>
+          <div>Ngân hàng: <strong>VietinBank (ICB)</strong> | STK: <strong>10287349999</strong> | Chủ TK: <strong>NHA XE DONG LY</strong></div>
+          <div>Cú pháp chuyển khoản chuẩn: <strong>DL {{ bookingToPay()?.bookingCode }}</strong></div>
+        </div>
+
+        <app-input
+          id="counter-bank-ref-input"
+          label="Mã tham chiếu ngân hàng (FT / Ref Code)"
+          [required]="true"
+          placeholder="VD: FT261011998822"
+          [ngModel]="counterBankRefInput()"
+          (ngModelChange)="counterBankRefInput.set($event)"
+        />
+      }
+
+      <app-textarea
+        id="counter-note-input"
+        label="Ghi chú giao dịch"
+        placeholder="Ghi chú thêm (nếu có)..."
+        [rows]="2"
+        [ngModel]="counterNoteInput()"
+        (ngModelChange)="counterNoteInput.set($event)"
+      />
+    </div>
+  </app-dialog>
+
+  <!-- MODAL GHI NHẬN HOÀN TIỀN THỦ CÔNG -->
+  <app-dialog
+    [visible]="refundModalVisible()"
+    (visibleChange)="refundModalVisible.set($event)"
+    header="Ghi nhận hoàn tiền thủ công"
+    size="md"
+    [showFooter]="true"
+    submitVariant="warn"
+    submitIcon="pi pi-check"
+    submitLabel="Xác nhận hoàn tiền"
+    [cancelLabel]="'common.actions.close' | translate"
+    [submitLoading]="refundLoading()"
+    (submitted)="submitRefund()"
+    (cancelled)="refundModalVisible.set(false)"
+  >
+    <div class="flex flex-col gap-3">
+      <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-center justify-between">
+        <div>
+          <span class="text-xs text-amber-800 uppercase font-semibold block">Đơn đã hủy: {{ bookingToRefund()?.bookingCode }}</span>
+          <span class="text-xs text-slate-600">Khách: {{ bookingToRefund()?.customerName }}</span>
+        </div>
+        <div class="text-right">
+          <span class="text-xs text-slate-500 block">Số tiền gốc đã trả:</span>
+          <span class="text-lg font-bold text-amber-800">{{ bookingToRefund()?.totalAmount | currencyVnd }}</span>
+        </div>
+      </div>
+
+      <app-input
+        id="refund-amount-input"
+        label="Số tiền thực tế hoàn lại (VNĐ)"
+        type="number"
+        [required]="true"
+        [ngModel]="refundAmountInput()"
+        (ngModelChange)="refundAmountInput.set($event)"
+      />
+
+      <app-input
+        id="refund-ref-input"
+        label="Mã tham chiếu hoàn tiền / Số phiếu chi"
+        placeholder="VD: REF-20261011-001 hoặc mã giao dịch ngân hàng chuyển trả"
+        [ngModel]="refundRefInput()"
+        (ngModelChange)="refundRefInput.set($event)"
+      />
+
+      <app-textarea
+        id="refund-reason-input"
+        label="Lý do hoàn tiền"
+        [required]="true"
+        placeholder="VD: Khách hủy trước 24h, theo chính sách hoàn trả..."
+        [rows]="2"
+        [ngModel]="refundReasonInput()"
+        (ngModelChange)="refundReasonInput.set($event)"
+      />
+
+      <app-textarea
+        id="refund-note-input"
+        label="Ghi chú thêm"
+        placeholder="Ghi chú đối soát..."
+        [rows]="2"
+        [ngModel]="refundNoteInput()"
+        (ngModelChange)="refundNoteInput.set($event)"
+      />
+    </div>
+  </app-dialog>
 </div>

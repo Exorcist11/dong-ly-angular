@@ -10,12 +10,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-// PrimeNG
-import { Dialog } from 'primeng/dialog';
-
 // Shared Components & Pipes
 import { PageHeaderComponent, BreadcrumbItem } from '../../../../shared/components/page-header/page-header.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { AppDialogComponent } from '../../../../shared/components/dialog/dialog.component';
 import { SelectComponent } from '../../../../shared/components/select/select.component';
 import { DateInputComponent } from '../../../../shared/components/date-input/date-input.component';
 import { InputComponent } from '../../../../shared/components/input/input.component';
@@ -47,7 +45,7 @@ import { BookingDetailDialogComponent } from '../../components/booking-detail-di
     CommonModule,
     FormsModule,
     RouterLink,
-    Dialog,
+    AppDialogComponent,
     PageHeaderComponent,
     ButtonComponent,
     SelectComponent,
@@ -108,6 +106,24 @@ export class BookingListPageComponent implements OnInit {
   readonly bookingToCancel = signal<BookingResponse | null>(null);
   readonly cancelReasonInput = signal<string>('');
   readonly cancelLoading = signal<boolean>(false);
+
+  // MODAL THU TIỀN TẠI QUẦY & DUYỆT VIETQR
+  readonly counterPayModalVisible = signal<boolean>(false);
+  readonly bookingToPay = signal<BookingResponse | null>(null);
+  readonly counterPayMethod = signal<'CASH' | 'VIETQR'>('CASH');
+  readonly counterReceiptInput = signal<string>('');
+  readonly counterBankRefInput = signal<string>('');
+  readonly counterNoteInput = signal<string>('');
+  readonly counterPayLoading = signal<boolean>(false);
+
+  // MODAL HOÀN TIỀN THỦ CÔNG
+  readonly refundModalVisible = signal<boolean>(false);
+  readonly bookingToRefund = signal<BookingResponse | null>(null);
+  readonly refundAmountInput = signal<number>(0);
+  readonly refundReasonInput = signal<string>('');
+  readonly refundRefInput = signal<string>('');
+  readonly refundNoteInput = signal<string>('');
+  readonly refundLoading = signal<boolean>(false);
 
   // CẤU HÌNH CỘT DỮ LIỆU
   readonly bookingColumns = computed<TableColumn<BookingResponse>[]>(() => {
@@ -194,7 +210,27 @@ export class BookingListPageComponent implements OnInit {
     this.loadBookingsList();
   }
 
+  readonly detailDialogInitialTab = signal<'OVERVIEW' | 'TICKETS'>('OVERVIEW');
+
   openBookingDetail(booking: BookingResponse): void {
+    this.detailDialogInitialTab.set('OVERVIEW');
+    this.selectedBookingDetail.set(booking);
+    this.detailDialogVisible.set(true);
+
+    this.detailLoading.set(true);
+    this.bookingService.getBookingDetail(booking.id).subscribe({
+      next: (res) => {
+        this.selectedBookingDetail.set(res.data);
+        this.detailLoading.set(false);
+      },
+      error: () => {
+        this.detailLoading.set(false);
+      },
+    });
+  }
+
+  openBookingTickets(booking: BookingResponse): void {
+    this.detailDialogInitialTab.set('TICKETS');
     this.selectedBookingDetail.set(booking);
     this.detailDialogVisible.set(true);
 
@@ -257,4 +293,123 @@ export class BookingListPageComponent implements OnInit {
       booking.status !== 'COMPLETED'
     );
   }
+
+  openCounterPayModal(booking: BookingResponse): void {
+    this.bookingToPay.set(booking);
+    this.counterPayMethod.set('CASH');
+    this.counterReceiptInput.set('');
+    this.counterBankRefInput.set('');
+    this.counterNoteInput.set('');
+    this.counterPayModalVisible.set(true);
+  }
+
+  submitCounterPay(): void {
+    const b = this.bookingToPay();
+    if (!b) return;
+
+    this.counterPayLoading.set(true);
+    if (this.counterPayMethod() === 'CASH') {
+      this.bookingService
+        .processCounterPayment({
+          bookingId: b.id,
+          receiptNumber: this.counterReceiptInput().trim() || undefined,
+          note: this.counterNoteInput().trim() || undefined,
+        })
+        .subscribe({
+          next: () => {
+            this.counterPayLoading.set(false);
+            this.counterPayModalVisible.set(false);
+            this.notification.success('Thu tiền mặt tại quầy thành công! Vé đã được phát hành.');
+            this.loadBookingsList();
+            if (this.selectedBookingDetail()?.id === b.id) {
+              this.detailDialogVisible.set(false);
+            }
+          },
+          error: (err) => {
+            this.counterPayLoading.set(false);
+            this.notification.error(err.error?.message || 'Không thể ghi nhận thu tiền tại quầy');
+          },
+        });
+    } else {
+      const bankRef = this.counterBankRefInput().trim();
+      if (!bankRef) {
+        this.counterPayLoading.set(false);
+        this.notification.warning('Vui lòng nhập mã tham chiếu giao dịch chuyển khoản VietQR');
+        return;
+      }
+      this.bookingService
+        .confirmVietQrPayment({
+          bookingId: b.id,
+          transferredAmount: b.totalAmount,
+          bankTransactionReference: bankRef,
+          note: this.counterNoteInput().trim() || undefined,
+        })
+        .subscribe({
+          next: () => {
+            this.counterPayLoading.set(false);
+            this.counterPayModalVisible.set(false);
+            this.notification.success('Xác nhận chuyển khoản VietQR thành công! Vé đã được phát hành.');
+            this.loadBookingsList();
+            if (this.selectedBookingDetail()?.id === b.id) {
+              this.detailDialogVisible.set(false);
+            }
+          },
+          error: (err) => {
+            this.counterPayLoading.set(false);
+            this.notification.error(err.error?.message || 'Không thể xác nhận giao dịch VietQR');
+          },
+        });
+    }
+  }
+
+  openRefundModal(booking: BookingResponse): void {
+    this.bookingToRefund.set(booking);
+    this.refundAmountInput.set(booking.totalAmount || 0);
+    this.refundReasonInput.set('');
+    this.refundRefInput.set('');
+    this.refundNoteInput.set('');
+    this.refundModalVisible.set(true);
+  }
+
+  submitRefund(): void {
+    const b = this.bookingToRefund();
+    const reason = this.refundReasonInput().trim();
+    const amount = Number(this.refundAmountInput());
+
+    if (!b) return;
+    if (!reason) {
+      this.notification.warning('Vui lòng nhập lý do hoàn tiền');
+      return;
+    }
+    if (!amount || amount <= 0) {
+      this.notification.warning('Số tiền hoàn phải lớn hơn 0');
+      return;
+    }
+
+    this.refundLoading.set(true);
+    this.bookingService
+      .recordManualRefund({
+        bookingId: b.id,
+        refundAmount: amount,
+        reason,
+        refundReference: this.refundRefInput().trim() || undefined,
+        note: this.refundNoteInput().trim() || undefined,
+      })
+      .subscribe({
+        next: () => {
+          this.refundLoading.set(false);
+          this.refundModalVisible.set(false);
+          this.notification.success('Ghi nhận hoàn tiền thành công! Trạng thái thanh toán đã được cập nhật.');
+          this.loadBookingsList();
+          if (this.selectedBookingDetail()?.id === b.id) {
+            this.detailDialogVisible.set(false);
+          }
+        },
+        error: (err) => {
+          this.refundLoading.set(false);
+          this.notification.error(err.error?.message || 'Không thể ghi nhận hoàn tiền');
+        },
+      });
+  }
 }
+

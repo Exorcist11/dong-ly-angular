@@ -1,0 +1,132 @@
+<div class="portal-container">
+  <!-- Brand Top Header (Ẩn khi in vé) -->
+  <header class="portal-header no-print">
+    <div class="header-inner">
+      <div class="brand-left">
+        <div class="brand-logo-mark" aria-hidden="true">
+          <i class="pi pi-ticket text-xl text-white"></i>
+        </div>
+        <div>
+          <h1 class="brand-title">XE KHÁCH ĐÔNG LÝ</h1>
+          <p class="brand-sub">{{ 'portal.header.subtitle' | translate }}</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <a routerLink="/auth/login" class="login-link">
+          <i class="pi pi-user mr-1.5"></i>{{ 'portal.header.staffLogin' | translate }}
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="portal-main">
+    <!-- Lookup Form Card (Ẩn khi in vé) -->
+    <div class="lookup-card no-print">
+      <div class="lookup-card-header">
+        <h2 class="title">{{ 'portal.form.title' | translate }}</h2>
+        <p class="subtitle">{{ 'portal.form.desc' | translate }}</p>
+      </div>
+
+      <div class="lookup-form-grid">
+        <div>
+          <app-input
+            id="lookup-booking-code"
+            [label]="'portal.form.bookingCodeLabel' | translate"
+            [placeholder]="'portal.form.bookingCodePlaceholder' | translate"
+            [ngModel]="bookingCode()"
+            (ngModelChange)="bookingCode.set($event)"
+            [required]="true"
+          />
+        </div>
+
+        <div>
+          <app-input
+            id="lookup-phone"
+            [label]="'portal.form.phoneLabel' | translate"
+            [placeholder]="'portal.form.phonePlaceholder' | translate"
+            [ngModel]="phone()"
+            (ngModelChange)="phone.set($event)"
+            [required]="true"
+          />
+        </div>
+      </div>
+
+      <div class="lookup-actions">
+        <app-button
+          variant="primary"
+          size="large"
+          icon="pi pi-search"
+          [label]="'portal.form.submitBtn' | translate"
+          [loading]="loading()"
+          (clicked)="lookupTickets()"
+        />
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-section">
+      <!-- Loading State -->
+      @if (loading()) {
+        <div class="p-12 flex justify-center no-print">
+          <app-loading-spinner [message]="'portal.messages.searching' | translate" />
+        </div>
+      }
+
+      <!-- Error State -->
+      @if (!loading() && errorMessage()) {
+        <div class="error-banner no-print">
+          <i class="pi pi-exclamation-triangle text-rose-500 text-2xl mr-3"></i>
+          <div>
+            <h4 class="font-semibold text-rose-900">{{ 'portal.messages.notFoundTitle' | translate }}</h4>
+            <p class="text-rose-700 text-sm mt-0.5">{{ errorMessage() }}</p>
+          </div>
+        </div>
+      }
+
+      <!-- Empty State -->
+      @if (!loading() && hasSearched() && !errorMessage() && tickets().length === 0) {
+        <div class="state-box no-print">
+          <app-empty-state
+            icon="pi pi-ticket"
+            [title]="'portal.messages.noTicketsFoundTitle' | translate"
+            [description]="'portal.messages.noTicketsFoundDesc' | translate"
+          />
+        </div>
+      }
+
+      <!-- Danh sách vé tìm thấy -->
+      @if (!loading() && tickets().length > 0) {
+        <div class="tickets-container">
+          <!-- Thanh công cụ in toàn bộ vé -->
+          <div class="tickets-toolbar no-print">
+            <div class="toolbar-left">
+              <span class="count-badge">
+                <i class="pi pi-check-circle mr-1 text-emerald-600"></i>
+                {{ 'portal.results.foundCount' | translate : { count: tickets().length } }}
+              </span>
+            </div>
+            <div class="toolbar-right">
+              <app-button
+                variant="secondary"
+                icon="pi pi-print"
+                [label]="'portal.results.printAll' | translate"
+                (clicked)="printAllTickets()"
+              />
+            </div>
+          </div>
+
+          <!-- Lưới các thẻ vé điện tử -->
+          <div class="tickets-grid">
+            @for (t of tickets(); track t.id) {
+              <app-ticket-detail
+                [ticket]="t"
+                [canRefresh]="false"
+                (ticketUpdated)="onTicketUpdated($event)"
+              />
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </main>
+</div>
