@@ -1140,6 +1140,7 @@ export const EN_TRANSLATIONS: Record<string, any> = {
     },
     tripCard: {
       vehicle: 'Vehicle:',
+      unassignedVehicle: 'Unassigned',
       availableSeats: 'Available seats:',
       basePrice: 'Base price:',
     },

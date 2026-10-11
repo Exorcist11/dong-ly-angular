@@ -1141,6 +1141,7 @@ export const VI_TRANSLATIONS: Record<string, any> = {
     },
     tripCard: {
       vehicle: 'Xe:',
+      unassignedVehicle: 'Chưa xếp xe',
       availableSeats: 'Ghế trống:',
       basePrice: 'Giá vé gốc:',
     },

@@ -208,20 +208,63 @@ export class CrmBookingPageComponent implements OnInit, OnDestroy {
     return stop.name || stop.stopName || '';
   }
 
+  getVehicleTypeLabel(type: string | undefined | null): string {
+    if (!type) return '';
+    switch (type.toUpperCase()) {
+      case 'LIMOUSINE':
+        return this.i18n.translate('fleet.vehicles.types.limousine');
+      case 'SLEEPER':
+        return this.i18n.translate('fleet.vehicles.types.sleeper');
+      case 'SEATER':
+        return this.i18n.translate('fleet.vehicles.types.seater');
+      default:
+        return type;
+    }
+  }
+
   readonly selectedSeatIds = computed<string[]>(() => {
     return this.selectedSeats().map((s) => s.seatId);
   });
 
   readonly formattedCountdown = computed<string>(() => {
     const sec = this.remainingSeconds();
-    if (sec <= 0) return '00:00';
+    if (isNaN(sec) || sec <= 0) return '00:00';
     const m = Math.floor(sec / 60);
     const s = sec % 60;
     return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   });
 
   readonly totalConfirmedPrice = computed<number>(() => {
-    return this.holdResult()?.estimatedTotalPrice ?? 0;
+    const hold = this.holdResult();
+    const holdAmount =
+      hold?.totalEstimatedAmount ??
+      hold?.totalAmount ??
+      hold?.estimatedTotalPrice ??
+      hold?.totalPrice ??
+      0;
+
+    if (holdAmount > 0) return holdAmount;
+
+    // Fallback: Tự động tính từ các ghế đã chọn + giá vé chuyến + phụ phí đón/trả
+    const trip = this.selectedTrip();
+    const basePrice = Number(trip?.basePrice) || 0;
+    const seats = this.selectedSeats();
+    if (seats.length === 0) return 0;
+
+    let total = 0;
+    for (const seat of seats) {
+      const seatPrice = Number(seat.calculatedPrice) || (basePrice + (Number(seat.extraPrice) || 0));
+      total += seatPrice;
+    }
+
+    const stops = this.seatMapData()?.stops || [];
+    for (const p of this.passengerForms()) {
+      const pStop = stops.find((s) => s.routeStopId === (p.pickupStopId || this.defaultPickupStopId()));
+      const dStop = stops.find((s) => s.routeStopId === (p.dropoffStopId || this.defaultDropoffStopId()));
+      total += (Number(pStop?.extraPrice) || 0) + (Number(dStop?.extraPrice) || 0);
+    }
+
+    return total;
   });
 
   ngOnInit(): void {
@@ -359,9 +402,30 @@ export class CrmBookingPageComponent implements OnInit, OnDestroy {
     this.currentStep.set(2);
   }
 
-  private startCountdownTimer(expiresAtIso: string): void {
+  private parseExpiryTime(expStr?: string | null): number {
+    if (!expStr) return NaN;
+    let time = new Date(expStr).getTime();
+    if (!isNaN(time)) return time;
+
+    const normalized = expStr.trim().replace(' ', 'T').replace(/(\.\d{3})\d+/, '$1');
+    time = new Date(normalized).getTime();
+    return time;
+  }
+
+  private startCountdownTimer(expiresAtIso?: string | null): void {
     this.stopCountdownTimer();
-    const expiryTime = new Date(expiresAtIso).getTime();
+
+    const expStr =
+      expiresAtIso ||
+      this.holdResult()?.holdExpiresAt ||
+      this.holdResult()?.expiresAt;
+
+    let expiryTime = this.parseExpiryTime(expStr);
+
+    if (isNaN(expiryTime)) {
+      const fallbackSec = this.holdResult()?.remainingSeconds ?? 600;
+      expiryTime = Date.now() + fallbackSec * 1000;
+    }
 
     const updateRemaining = () => {
       const now = Date.now();
@@ -447,11 +511,11 @@ export class CrmBookingPageComponent implements OnInit, OnDestroy {
         this.holdResult.set(res.data);
         this.notification.success(res.message || this.i18n.translate('bookings.messages.holdSuccess'));
 
-        this.startCountdownTimer(res.data.expiresAt);
+        this.startCountdownTimer(res.data.holdExpiresAt || res.data.expiresAt);
 
-        const passengers: PassengerFormData[] = (res.data.heldSeats || []).map((hs, idx) => ({
-          seatId: hs.seatId,
-          seatCode: hs.seatNumber,
+        const passengers: PassengerFormData[] = seats.map((seat, idx) => ({
+          seatId: seat.seatId,
+          seatCode: seat.seatCode,
           passengerName: idx === 0 ? name : '',
           passengerPhone: idx === 0 ? phone : '',
           pickupStopId: this.defaultPickupStopId(),
@@ -543,7 +607,7 @@ export class CrmBookingPageComponent implements OnInit, OnDestroy {
       passengers: passengerRequests,
       payment: {
         method: this.paymentMethod(),
-        amount: hold.estimatedTotalPrice,
+        amount: this.totalConfirmedPrice(),
         transactionCode: this.paymentTransactionCode().trim() || undefined,
         note: this.paymentNote().trim() || undefined,
       },
@@ -595,7 +659,8 @@ export class CrmBookingPageComponent implements OnInit, OnDestroy {
   }
 
   private checkHoldExpiration(): boolean {
-    if (this.isHoldExpired() || this.remainingSeconds() <= 0) {
+    const sec = this.remainingSeconds();
+    if (this.isHoldExpired() || isNaN(sec) || sec <= 0) {
       this.notification.error(this.i18n.translate('bookings.messages.holdExpiredReselect'));
       this.currentStep.set(1);
       if (this.selectedTrip()) {

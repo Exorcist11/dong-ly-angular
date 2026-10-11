@@ -35,9 +35,10 @@ export interface CrmTripSearchResult {
   routeName: string;
   originLocationName: string;
   destinationLocationName: string;
-  vehicleId: string;
-  vehiclePlateNumber: string;
-  vehicleTypeName: string;
+  vehicleId?: string;
+  vehiclePlateNumber?: string;
+  vehicleType?: string;
+  vehicleTypeName?: string;
   totalSeats: number;
   availableSeats: number;
   basePrice: number;
@@ -74,8 +75,9 @@ export interface CrmTripSeatMap {
   tripCode: string;
   departureTime: string;
   routeName: string;
-  vehiclePlateNumber: string;
-  vehicleTypeName: string;
+  vehiclePlateNumber?: string;
+  vehicleType?: string;
+  vehicleTypeName?: string;
   totalFloors: number;
   totalRows: number;
   totalColumns: number;
@@ -107,12 +109,18 @@ export interface HoldSeatsResponse {
   bookingId: string;
   bookingCode: string;
   tripId: string;
-  tripCode: string;
+  tripCode?: string;
   status: string;
-  expiresAt: string;
-  remainingSeconds: number;
-  heldSeats: HeldSeatItem[];
-  estimatedTotalPrice: number;
+  holdExpiresAt?: string;
+  expiresAt?: string;
+  remainingSeconds?: number;
+  heldSeats?: Array<HeldSeatItem | string>;
+  totalEstimatedAmount?: number;
+  totalAmount?: number;
+  estimatedTotalPrice?: number;
+  totalPrice?: number;
+  customerName?: string;
+  customerPhone?: string;
 }
 
 export type PaymentMethod = 'CASH' | 'BANK_TRANSFER' | 'VIETQR';

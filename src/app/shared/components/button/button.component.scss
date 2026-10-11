@@ -3,10 +3,21 @@
   vertical-align: middle;
   flex-shrink: 0;
 
+  p-button {
+    display: inline-flex;
+    vertical-align: middle;
+  }
+
   &.dl-button-full-width {
     display: flex;
     width: 100%;
     flex-shrink: 1;
+
+    p-button {
+      display: flex;
+      width: 100%;
+      flex: 1 1 100%;
+    }
   }
 }
 
@@ -17,7 +28,7 @@
     font-weight: 600;
 
     &.w-full {
-      width: 100%;
+      width: 100% !important;
       justify-content: center;
     }
 

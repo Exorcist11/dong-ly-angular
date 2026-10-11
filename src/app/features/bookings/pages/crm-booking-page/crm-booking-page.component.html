@@ -166,7 +166,15 @@
           <div class="details-list">
             <div class="detail-item">
               <i class="pi pi-truck text-slate-400"></i>
-              <span>{{ 'bookings.tripCard.vehicle' | translate }} <strong>{{ trip.vehiclePlateNumber }}</strong> ({{ trip.vehicleTypeName }})</span>
+              <span>
+                {{ 'bookings.tripCard.vehicle' | translate }}
+                <strong>{{ trip.vehiclePlateNumber || ('bookings.tripCard.unassignedVehicle' | translate) }}</strong>
+                @if (trip.vehicleType || trip.vehicleTypeName) {
+                  <span class="text-slate-500 font-normal">
+                    ({{ getVehicleTypeLabel(trip.vehicleType || trip.vehicleTypeName) }})
+                  </span>
+                }
+              </span>
             </div>
             <div class="detail-item">
               <i class="pi pi-ticket text-slate-400"></i>
@@ -298,7 +306,14 @@
               </div>
               <div class="info-group">
                 <span class="label">{{ 'bookings.wizard.licensePlate' | translate }}</span>
-                <span class="val text-sky-700 font-semibold">{{ selectedTrip()?.vehiclePlateNumber }}</span>
+                <span class="val text-sky-700 font-semibold">
+                  {{ selectedTrip()?.vehiclePlateNumber || ('bookings.tripCard.unassignedVehicle' | translate) }}
+                  @if (selectedTrip()?.vehicleType || selectedTrip()?.vehicleTypeName) {
+                    <span class="text-xs text-slate-500 font-normal ml-1">
+                      ({{ getVehicleTypeLabel(selectedTrip()?.vehicleType || selectedTrip()?.vehicleTypeName) }})
+                    </span>
+                  }
+                </span>
               </div>
 
               <hr class="my-3 border-slate-200" />
@@ -515,7 +530,14 @@
               </div>
               <div class="info-row">
                 <span>{{ 'bookings.review.plateLabel' | translate }}</span>
-                <strong>{{ selectedTrip()?.vehiclePlateNumber }} ({{ selectedTrip()?.vehicleTypeName }})</strong>
+                <strong>
+                  {{ selectedTrip()?.vehiclePlateNumber || ('bookings.tripCard.unassignedVehicle' | translate) }}
+                  @if (selectedTrip()?.vehicleType || selectedTrip()?.vehicleTypeName) {
+                    <span class="text-xs text-slate-500 font-normal ml-1">
+                      ({{ getVehicleTypeLabel(selectedTrip()?.vehicleType || selectedTrip()?.vehicleTypeName) }})
+                    </span>
+                  }
+                </strong>
               </div>
             </div>
 
@@ -599,9 +621,10 @@
               </div>
             </div>
 
-            <div class="mt-6 flex flex-col gap-2">
+            <div class="payment-actions">
               <app-button
                 variant="success"
+                size="large"
                 [fullWidth]="true"
                 icon="pi pi-check"
                 [label]="'bookings.buttons.confirmAndIssueTicket' | translate"
@@ -612,6 +635,7 @@
 
               <app-button
                 variant="secondary"
+                size="medium"
                 [fullWidth]="true"
                 [label]="'bookings.buttons.backToEdit' | translate"
                 [disabled]="isConfirmingBooking()"
@@ -624,56 +648,74 @@
 
       <!-- ==================== NỘI DUNG BƯỚC 5: KẾT QUẢ ĐẶT VÉ THÀNH CÔNG ==================== -->
       <div *ngIf="currentStep() === 5 && confirmedBooking()" class="wizard-step-content">
-        <div class="success-ticket-container text-center max-w-2xl mx-auto py-6">
-          <div class="success-icon">
-            <i class="pi pi-check-circle text-6xl text-emerald-500"></i>
+        <div class="success-ticket-container">
+          <div class="success-icon-wrapper">
+            <i class="pi pi-check-circle"></i>
           </div>
-          <h3 class="text-2xl font-bold text-slate-800 mt-3">{{ 'bookings.success.title' | translate }}</h3>
-          <p class="text-slate-500 text-sm mt-1">
-            {{ 'bookings.success.bookingCode' | translate }} <strong class="text-sky-700 text-lg">{{ confirmedBooking()?.bookingCode }}</strong>
-          </p>
+
+          <h3 class="success-title">{{ 'bookings.success.title' | translate }}</h3>
+
+          <div class="success-code-banner">
+            <span class="code-label">{{ 'bookings.success.bookingCode' | translate }}</span>
+            <strong class="code-value">{{ confirmedBooking()?.bookingCode }}</strong>
+          </div>
 
           <!-- Thẻ tóm tắt vé đã xuất -->
-          <div class="tickets-summary-card mt-6 text-left">
-            <div class="ticket-header flex justify-between items-center border-b pb-3">
-              <div>
-                <span class="text-xs text-slate-500 uppercase tracking-wider">{{ 'bookings.success.trip' | translate }}</span>
-                <h5 class="font-bold text-slate-800 text-base">{{ confirmedBooking()?.routeName }}</h5>
-                <span class="text-xs text-slate-500">{{ confirmedBooking()?.departureTime | dateVi : true }}</span>
+          <div class="tickets-summary-card">
+            <div class="ticket-header">
+              <div class="trip-info">
+                <span class="sub-label">{{ 'bookings.success.trip' | translate }}</span>
+                <h5 class="trip-name">{{ confirmedBooking()?.routeName }}</h5>
+                <span class="trip-time">
+                  <i class="pi pi-calendar mr-1"></i>
+                  {{ confirmedBooking()?.departureTime | dateVi : true }}
+                </span>
+                <span *ngIf="confirmedBooking()?.vehiclePlateNumber" class="trip-vehicle">
+                  <i class="pi pi-truck mr-1"></i>
+                  {{ confirmedBooking()?.vehiclePlateNumber }}
+                </span>
               </div>
-              <div class="text-right">
+              <div class="status-price-info">
                 <app-status-badge [status]="confirmedBooking()?.status" />
-                <div class="text-emerald-700 font-bold text-lg mt-1">
+                <div class="total-price">
                   {{ confirmedBooking()?.totalAmount | currencyVnd }}
                 </div>
               </div>
             </div>
 
             <!-- Danh sách từng vé đã phát hành -->
-            <div class="ticket-items mt-4 space-y-2">
+            <div class="ticket-items">
               <div *ngFor="let item of confirmedBooking()?.items" class="ticket-item-row">
-                <div class="flex items-center gap-3">
+                <div class="passenger-info">
                   <span class="seat-badge-lg">{{ item.seatCode }}</span>
-                  <div>
-                    <strong class="text-slate-800 text-sm block">{{ item.passengerName }}</strong>
-                    <span class="text-xs text-slate-500">
-                      {{ item.pickupStopName ? ('bookings.detail.pickup' | translate) + ' ' + item.pickupStopName : '' }}
-                      {{ item.dropoffStopName ? ' - ' + ('bookings.detail.dropoff' | translate) + ' ' + item.dropoffStopName : '' }}
-                    </span>
+                  <div class="passenger-meta">
+                    <strong class="passenger-name">{{ item.passengerName }}</strong>
+                    <div class="passenger-stops" *ngIf="item.pickupStopName || item.dropoffStopName">
+                      <span *ngIf="item.pickupStopName">
+                        <i class="pi pi-map-marker text-sky-600 mr-1"></i>{{ item.pickupStopName }}
+                      </span>
+                      <span *ngIf="item.pickupStopName && item.dropoffStopName" class="mx-1.5">•</span>
+                      <span *ngIf="item.dropoffStopName">
+                        <i class="pi pi-flag text-emerald-600 mr-1"></i>{{ item.dropoffStopName }}
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <div class="text-right">
-                  <span class="text-sm font-semibold text-slate-700">{{ item.finalPrice | currencyVnd }}</span>
-                  <span class="block text-xs text-emerald-600 font-medium">{{ 'bookings.success.issued' | translate }}</span>
+
+                <div class="price-status">
+                  <span class="ticket-price">{{ item.finalPrice | currencyVnd }}</span>
+                  <span class="ticket-status-tag">{{ 'bookings.success.issued' | translate }}</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="mt-8 flex justify-center gap-4">
+          <div class="success-actions">
             <app-button
-              variant="primary"
-              icon="pi pi-arrow-left"
+              variant="success"
+              size="large"
+              [fullWidth]="true"
+              icon="pi pi-check"
               [label]="'bookings.buttons.finishAndContinue' | translate"
               (clicked)="closeWizard()"
             />
