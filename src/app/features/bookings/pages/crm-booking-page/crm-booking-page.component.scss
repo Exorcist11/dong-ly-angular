@@ -198,7 +198,6 @@
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 0.75rem;
-    overflow-x: auto;
 
     .step-item {
       display: flex;
@@ -253,8 +252,8 @@
       flex: 1;
       height: 2px;
       background: #e2e8f0;
-      margin: 0 0.75rem;
-      min-width: 1.5rem;
+      margin: 0 0.5rem;
+      transition: all 0.2s ease;
 
       &.done {
         background: #10b981;
@@ -262,362 +261,267 @@
     }
   }
 
+  /* COUNTDOWN BANNER */
   .hold-countdown-banner {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem 1.25rem;
-    background: #fffbeb;
-    border: 1px solid #fef3c7;
-    border-left: 4px solid #f59e0b;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
     border-radius: 0.5rem;
-    color: #92400e;
+    color: #1e40af;
+    font-size: 0.875rem;
+
+    &.expired {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #991b1b;
+    }
 
     .countdown-info {
       display: flex;
       align-items: center;
     }
-
-    &.expired {
-      background: #fef2f2;
-      border-color: #fecdd3;
-      border-left-color: #ef4444;
-      color: #991b1b;
-    }
   }
 
-  .wizard-step-content {
-    min-height: 380px;
+  /* STEP 1: SEAT MAP LAYOUT */
+  .seat-map-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
 
-    .form-section-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 0.75rem;
-      padding: 1.5rem;
-
-      .section-title {
-        font-size: 1.125rem;
-        font-weight: 700;
-        color: #1e293b;
-        display: flex;
-        align-items: center;
-      }
-
-      .section-desc {
-        font-size: 0.8125rem;
-        color: #64748b;
-        margin-top: 0.25rem;
-      }
-    }
-
-    .wizard-nav-buttons {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      padding-top: 1.25rem;
-      border-top: 1px solid #f1f5f9;
-    }
-  }
-}
-
-/* SƠ ĐỒ GHẾ STEP 1 */
-.seat-map-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-
-  @media (min-width: 768px) {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-
-  .layout-left {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .layout-right {
-    width: 100%;
-
-    @media (min-width: 768px) {
-      width: 320px;
-      flex-shrink: 0;
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
     }
 
     .reservation-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
       border-radius: 0.75rem;
       padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
       .box-title {
-        font-size: 0.9375rem;
+        font-size: 1rem;
         font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 0.75rem;
+        color: #0f172a;
+        margin-bottom: 0.25rem;
       }
 
       .info-group {
         display: flex;
         justify-content: space-between;
-        font-size: 0.8125rem;
-        margin-bottom: 0.375rem;
+        font-size: 0.875rem;
 
         .label {
           color: #64748b;
-        }
-
-        .val {
-          color: #1e293b;
         }
       }
 
       .hold-notice {
         display: flex;
         align-items: flex-start;
+        padding: 0.625rem;
+        background: #fffbeb;
+        border: 1px solid #fef3c7;
+        border-radius: 0.375rem;
         font-size: 0.75rem;
         color: #92400e;
-        background: #fef3c7;
-        padding: 0.5rem 0.75rem;
-        border-radius: 0.375rem;
-        margin-top: 0.75rem;
         line-height: 1.4;
       }
     }
   }
-}
 
-/* HÀNH KHÁCH STEP 3 */
-.passenger-card {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.5rem;
-  padding: 1rem;
-
-  .passenger-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .seat-badge {
-      background: #0284c7;
-      color: #ffffff;
-      padding: 0.25rem 0.625rem;
-      border-radius: 0.375rem;
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-  }
-
-  .passenger-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.75rem;
-  }
-}
-
-/* XEM LẠI & THANH TOÁN STEP 4 */
-.review-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.25rem;
-
-  @media (min-width: 768px) {
-    grid-template-columns: 1.2fr 1fr;
-  }
-
-  .review-summary-card,
-  .payment-card {
+  /* STEP 2 & 3: FORM CARDS */
+  .form-section-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 0.75rem;
-    padding: 1.25rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 
     .section-title {
-      font-size: 1rem;
+      font-size: 1.125rem;
       font-weight: 700;
-      color: #1e293b;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+    }
+
+    .section-desc {
+      font-size: 0.8125rem;
+      color: #64748b;
+      margin-top: 0.25rem;
+    }
+
+    .passenger-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 1rem;
+
+      .passenger-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .seat-badge {
+          display: inline-flex;
+          align-items: center;
+          padding: 0.25rem 0.625rem;
+          background: #0284c7;
+          color: #ffffff;
+          font-weight: 700;
+          font-size: 0.75rem;
+          border-radius: 0.25rem;
+        }
+      }
+
+      .passenger-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 0.75rem;
+      }
+    }
+
+    .wizard-nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
     }
   }
 
-  .summary-section {
-    padding: 0.75rem;
-    background: #f8fafc;
-    border-radius: 0.5rem;
-    border: 1px solid #f1f5f9;
+  /* STEP 4: REVIEW & PAYMENT */
+  .review-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 1.5rem;
 
-    .sub-title {
-      font-size: 0.8125rem;
-      font-weight: 700;
-      color: #475569;
-      margin-bottom: 0.5rem;
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
     }
 
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8125rem;
-      margin-bottom: 0.25rem;
+    .review-summary-card,
+    .payment-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 
-      span {
-        color: #64748b;
-      }
-      strong {
-        color: #1e293b;
-      }
-    }
-
-    .passenger-review-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.375rem;
-      font-size: 0.8125rem;
-
-      .seat-pill {
-        background: #0284c7;
-        color: #ffffff;
+      .section-title {
+        font-size: 1.125rem;
         font-weight: 700;
-        font-size: 0.6875rem;
-        padding: 0.125rem 0.375rem;
-        border-radius: 0.25rem;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
       }
     }
-  }
 
-  .payment-amount-box {
-    padding: 1rem;
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    border-radius: 0.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    .label {
-      font-size: 0.8125rem;
-      color: #166534;
-      font-weight: 500;
-    }
-
-    .amount {
-      font-size: 1.75rem;
-      font-weight: 800;
-      color: #15803d;
-    }
-  }
-}
-
-/* HOÀN TẤT VÉ STEP 5 */
-.success-ticket-container {
-  .tickets-summary-card {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 0.75rem;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-
-    .seat-badge-lg {
-      width: 2.25rem;
-      height: 2.25rem;
-      border-radius: 0.375rem;
-      background: #0284c7;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.875rem;
-    }
-
-    .ticket-item-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .summary-section {
       padding: 0.75rem;
       background: #f8fafc;
       border-radius: 0.5rem;
       border: 1px solid #f1f5f9;
+
+      .sub-title {
+        font-size: 0.8125rem;
+        font-weight: 700;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+        margin-bottom: 0.5rem;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8125rem;
+        margin-bottom: 0.375rem;
+
+        span {
+          color: #64748b;
+        }
+        strong {
+          color: #1e293b;
+        }
+      }
+
+      .passenger-review-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8125rem;
+        margin-bottom: 0.375rem;
+
+        .seat-pill {
+          padding: 0.125rem 0.5rem;
+          background: #e0f2fe;
+          color: #0369a1;
+          font-weight: 700;
+          border-radius: 0.25rem;
+        }
+      }
     }
-  }
-}
 
-/* ==================== TABS HEADER NAVIGATION (MỐC 6) ==================== */
-.tabs-header-nav {
-  display: flex;
-  gap: 0.5rem;
-  border-bottom: 2px solid var(--surface-border, #e2e8f0);
-  padding-bottom: 0.125rem;
-
-  .tab-nav-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-    padding: 0.75rem 1.25rem;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    color: var(--text-color-secondary, #64748b);
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border-radius: 0.375rem 0.375rem 0 0;
-
-    i {
-      font-size: 1rem;
-    }
-
-    &:hover {
-      color: #0284c7;
-      background: #f0f9ff;
-    }
-
-    &.active {
-      color: #0284c7;
-      border-bottom-color: #0284c7;
-      background: #f8fafc;
-    }
-
-    .tab-badge {
-      display: inline-flex;
+    .payment-amount-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 0.125rem 0.5rem;
-      font-size: 0.75rem;
-      font-weight: 700;
-      line-height: 1;
-      border-radius: 9999px;
-      background: #e0f2fe;
-      color: #0369a1;
+
+      .label {
+        font-size: 0.8125rem;
+        color: #166534;
+        font-weight: 500;
+      }
+
+      .amount {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #15803d;
+      }
     }
   }
-}
 
-.tab-content-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  animation: fadeIn 0.2s ease-in-out;
-}
+  /* STEP 5: SUCCESS */
+  .success-ticket-container {
+    .tickets-summary-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
+      .seat-badge-lg {
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 0.375rem;
+        background: #0284c7;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.875rem;
+      }
+
+      .ticket-item-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        background: #f8fafc;
+        border-radius: 0.5rem;
+        border: 1px solid #f1f5f9;
+      }
+    }
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.bookings-table-container {
-  background: var(--surface-card, #ffffff);
-  border-radius: 0.75rem;
-  border: 1px solid var(--surface-border, #e2e8f0);
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }

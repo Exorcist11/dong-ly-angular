@@ -9,12 +9,12 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 // PrimeNG
 import { Dialog } from 'primeng/dialog';
 
-// Shared Components & Directives & Pipes
+// Shared Components & Pipes
 import { PageHeaderComponent, BreadcrumbItem } from '../../../../shared/components/page-header/page-header.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { SelectComponent } from '../../../../shared/components/select/select.component';
@@ -23,13 +23,10 @@ import { InputComponent } from '../../../../shared/components/input/input.compon
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
-import { DataTableComponent } from '../../../../shared/components/data-table/data-table.component';
-import { TableCellDirective } from '../../../../shared/components/data-table/table-cell.directive';
 import { CurrencyVndPipe } from '../../../../shared/pipes/currency-vnd.pipe';
 import { DateViPipe } from '../../../../shared/pipes/date-vi.pipe';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { TranslationService } from '../../../../core/i18n/translation.service';
-import { TableColumn, TableLazyLoadEvent } from '../../../../shared/models/table.model';
 import { SelectOption } from '../../../../shared/models/select-option.model';
 
 // Services & Models
@@ -39,9 +36,7 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { AuthService } from '../../../../core/auth/auth.service';
 import {
   BookingResponse,
-  BookingStatus,
   ConfirmBookingRequest,
-  CrmBookingListCriteria,
   CrmSeatMapItem,
   CrmTripSearchCriteria,
   CrmTripSearchResult,
@@ -51,10 +46,8 @@ import {
   PaymentMethod,
 } from '../../models/booking.model';
 import { CrmSeatMapComponent } from '../../components/crm-seat-map/crm-seat-map.component';
-import { BookingDetailDialogComponent } from '../../components/booking-detail-dialog/booking-detail-dialog.component';
 
 export type BookingWizardStep = 1 | 2 | 3 | 4 | 5;
-export type ActiveTabType = 'CREATE_BOOKING' | 'MANAGE_BOOKINGS';
 
 export interface PassengerFormData {
   seatId: string;
@@ -66,11 +59,12 @@ export interface PassengerFormData {
 }
 
 @Component({
-  selector: 'app-booking-management-page',
+  selector: 'app-crm-booking-page',
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
     Dialog,
     PageHeaderComponent,
     ButtonComponent,
@@ -80,19 +74,16 @@ export interface PassengerFormData {
     LoadingSpinnerComponent,
     EmptyStateComponent,
     StatusBadgeComponent,
-    DataTableComponent,
-    TableCellDirective,
     CurrencyVndPipe,
     DateViPipe,
     TranslatePipe,
     CrmSeatMapComponent,
-    BookingDetailDialogComponent,
   ],
-  templateUrl: './booking-management-page.component.html',
-  styleUrl: './booking-management-page.component.scss',
+  templateUrl: './crm-booking-page.component.html',
+  styleUrl: './crm-booking-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BookingManagementPageComponent implements OnInit, OnDestroy {
+export class CrmBookingPageComponent implements OnInit, OnDestroy {
   private readonly bookingService = inject(CrmBookingService);
   private readonly routeService = inject(RouteService);
   private readonly notification = inject(NotificationService);
@@ -109,14 +100,11 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
     return [
       { label: this.i18n.translate('navigation.home'), url: '/dashboard' },
       { label: this.i18n.translate('navigation.groups.operations') },
-      { label: this.i18n.translate('bookings.title') },
+      { label: this.i18n.translate('navigation.items.crmBooking') },
     ];
   });
 
-  // TAB HIỆN TẠI (ĐẶT VÉ MỚI HOẶC DANH SÁCH BOOKINGS)
-  readonly activeTab = signal<ActiveTabType>('CREATE_BOOKING');
-
-  // ==================== TAB 1: TÌM CHUYẾN & WIZARD ĐẶT VÉ ====================
+  // TÌM CHUYẾN & BỘ LỌC
   readonly selectedDate = signal<string>(this.getTodayDateString());
   readonly selectedRouteId = signal<string | null>(null);
   readonly selectedOriginId = signal<string | null>(null);
@@ -171,56 +159,6 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
   // Kết quả đặt vé
   readonly confirmedBooking = signal<BookingResponse | null>(null);
 
-  // ==================== TAB 2: QUẢN LÝ DANH SÁCH BOOKINGS ====================
-  readonly bookingsList = signal<BookingResponse[]>([]);
-  readonly bookingsTotal = signal<number>(0);
-  readonly bookingsLoading = signal<boolean>(false);
-  readonly bookingsPage = signal<number>(0);
-  readonly bookingsSize = signal<number>(10);
-  private bookingsSort = 'createdAt,desc';
-
-  // Bộ lọc danh sách Bookings
-  readonly filterBookingKeyword = signal<string>('');
-  readonly filterBookingStatus = signal<BookingStatus | null>(null);
-  readonly filterBookingFromDate = signal<string>('');
-  readonly filterBookingToDate = signal<string>('');
-
-  // Dialog chi tiết & Hủy đơn
-  readonly detailDialogVisible = signal<boolean>(false);
-  readonly selectedBookingDetail = signal<BookingResponse | null>(null);
-  readonly detailLoading = signal<boolean>(false);
-
-  readonly cancelModalVisible = signal<boolean>(false);
-  readonly bookingToCancel = signal<BookingResponse | null>(null);
-  readonly cancelReasonInput = signal<string>('');
-  readonly cancelLoading = signal<boolean>(false);
-
-  // Cấu hình bảng dữ liệu Bookings
-  readonly bookingColumns = computed<TableColumn<BookingResponse>[]>(() => {
-    this.i18n.currentLang();
-    return [
-      { field: 'bookingCode', header: this.i18n.translate('bookings.columns.bookingCode'), width: '150px' },
-      { field: 'customerName', header: this.i18n.translate('bookings.columns.customer'), width: '200px' },
-      { field: 'routeName', header: this.i18n.translate('bookings.columns.routeAndTrip'), width: '220px' },
-      { field: 'departureTime', header: this.i18n.translate('bookings.columns.departureTime'), width: '160px' },
-      { field: 'totalAmount', header: this.i18n.translate('bookings.columns.totalAmount'), width: '140px', align: 'right' },
-      { field: 'status', header: this.i18n.translate('bookings.columns.status'), width: '130px', align: 'center' },
-      { field: 'actions', header: this.i18n.translate('bookings.columns.actions'), width: '120px', align: 'center' },
-    ];
-  });
-
-  readonly statusFilterOptions = computed<SelectOption<BookingStatus>[]>(() => {
-    this.i18n.currentLang();
-    return [
-      { label: this.i18n.translate('common.status.all'), value: undefined as any },
-      { label: this.i18n.translate('bookings.status.confirmed'), value: 'CONFIRMED' },
-      { label: this.i18n.translate('bookings.status.held'), value: 'HELD' },
-      { label: this.i18n.translate('bookings.status.cancelled'), value: 'CANCELLED' },
-      { label: this.i18n.translate('bookings.status.expired'), value: 'EXPIRED' },
-      { label: this.i18n.translate('bookings.status.completed'), value: 'COMPLETED' },
-    ];
-  });
-
   readonly paymentMethodOptions = computed<SelectOption<PaymentMethod>[]>(() => {
     this.i18n.currentLang();
     return [
@@ -266,26 +204,9 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
     return this.holdResult()?.estimatedTotalPrice ?? 0;
   });
 
-  switchTab(tab: ActiveTabType): void {
-    this.activeTab.set(tab);
-    if (tab === 'MANAGE_BOOKINGS') {
-      this.loadBookingsList();
-    }
-  }
-
-  canCancelBooking(booking: BookingResponse): boolean {
-    return (
-      this.canManage() &&
-      booking.status !== 'CANCELLED' &&
-      booking.status !== 'EXPIRED' &&
-      booking.status !== 'COMPLETED'
-    );
-  }
-
   ngOnInit(): void {
     this.loadFilterOptions();
     this.searchTrips();
-    this.loadBookingsList();
   }
 
   ngOnDestroy(): void {
@@ -323,129 +244,13 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ==================== QUẢN LÝ DANH SÁCH BOOKINGS (TAB 2) ====================
-  loadBookingsList(): void {
-    this.bookingsLoading.set(true);
-
-    const criteria: CrmBookingListCriteria = {
-      keyword: this.filterBookingKeyword().trim() || undefined,
-      status: this.filterBookingStatus() || undefined,
-      fromDate: this.filterBookingFromDate() || undefined,
-      toDate: this.filterBookingToDate() || undefined,
-      page: this.bookingsPage(),
-      size: this.bookingsSize(),
-      sort: this.bookingsSort,
-    };
-
-    this.bookingService.searchBookings(criteria).subscribe({
-      next: (res) => {
-        this.bookingsList.set(res.data?.items || []);
-        this.bookingsTotal.set(res.data?.pagination?.totalElements || 0);
-        this.bookingsLoading.set(false);
-      },
-      error: (err) => {
-        this.bookingsLoading.set(false);
-        const msg = err.error?.message || this.i18n.translate('bookings.messages.loadBookingsError');
-        this.notification.error(msg);
-      },
-    });
-  }
-
-  onBookingsTableLazyLoad(event: TableLazyLoadEvent): void {
-    const pageIndex = Math.floor(event.first / event.rows);
-    this.bookingsPage.set(pageIndex);
-    this.bookingsSize.set(event.rows);
-
-    if (event.sortField) {
-      const order = event.sortOrder === 1 ? 'asc' : 'desc';
-      this.bookingsSort = `${event.sortField},${order}`;
-    }
-
-    this.loadBookingsList();
-  }
-
-  onSearchBookingKeywordChange(val: string): void {
-    this.filterBookingKeyword.set(val);
-    this.bookingsPage.set(0);
-    this.loadBookingsList();
-  }
-
-  resetBookingFilters(): void {
-    this.filterBookingKeyword.set('');
-    this.filterBookingStatus.set(null);
-    this.filterBookingFromDate.set('');
-    this.filterBookingToDate.set('');
-    this.bookingsPage.set(0);
-    this.loadBookingsList();
-  }
-
-  openBookingDetail(booking: BookingResponse): void {
-    this.selectedBookingDetail.set(booking);
-    this.detailDialogVisible.set(true);
-
-    // Tải chi tiết đầy đủ với items từ BE
-    this.detailLoading.set(true);
-    this.bookingService.getBookingDetail(booking.id).subscribe({
-      next: (res) => {
-        this.selectedBookingDetail.set(res.data);
-        this.detailLoading.set(false);
-      },
-      error: () => {
-        this.detailLoading.set(false);
-      },
-    });
-  }
-
-  openCancelBookingModal(booking: BookingResponse): void {
-    this.bookingToCancel.set(booking);
-    this.cancelReasonInput.set('');
-    this.cancelModalVisible.set(true);
-  }
-
-  submitCancelBooking(): void {
-    const booking = this.bookingToCancel();
-    if (!booking) return;
-
-    this.cancelLoading.set(true);
-    const reason = this.cancelReasonInput().trim() || this.i18n.translate('bookings.cancelModal.reasonPlaceholder');
-
-    this.bookingService.cancelBooking(booking.id, reason).subscribe({
-      next: (res) => {
-        this.cancelLoading.set(false);
-        this.cancelModalVisible.set(false);
-        this.notification.success(
-          this.i18n.translate('bookings.messages.cancelSuccess', { code: booking.bookingCode })
-        );
-
-        // Đóng dialog chi tiết nếu đang mở
-        this.detailDialogVisible.set(false);
-
-        // Tải lại danh sách booking và tìm chuyến
-        this.loadBookingsList();
-        this.searchTrips();
-      },
-      error: (err) => {
-        this.cancelLoading.set(false);
-        const msg = err.error?.message || this.i18n.translate('bookings.messages.cancelError');
-        this.notification.error(msg);
-      },
-    });
-  }
-
-  // ==================== TÌM CHUYẾN & WIZARD (TAB 1) ====================
   searchTrips(): void {
-    const date = this.selectedDate();
-    if (!date) {
-      this.notification.warning(this.i18n.translate('bookings.messages.selectDateWarning'));
-      return;
-    }
-
     this.tripsLoading.set(true);
     this.tripsError.set(null);
     this.hasSearched.set(true);
 
     const criteria: CrmTripSearchCriteria = {
-      departureDate: date,
+      departureDate: this.selectedDate(),
       routeId: this.selectedRouteId() || undefined,
       originLocationId: this.selectedOriginId() || undefined,
       destinationLocationId: this.selectedDestinationId() || undefined,
@@ -706,9 +511,8 @@ export class BookingManagementPageComponent implements OnInit, OnDestroy {
         this.notification.success(this.i18n.translate('bookings.messages.bookingSuccess'));
         this.currentStep.set(5);
 
-        // Cập nhật lại danh sách chuyến xe và danh sách booking
+        // Cập nhật lại danh sách chuyến xe
         this.searchTrips();
-        this.loadBookingsList();
       },
       error: (err) => {
         this.isConfirmingBooking.set(false);

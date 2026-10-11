@@ -116,8 +116,27 @@ export const routes: Routes = [
         data: { permission: 'BOOKING_READ' },
         loadComponent: () =>
           import(
-            './features/bookings/pages/booking-management-page/booking-management-page.component'
-          ).then((m) => m.BookingManagementPageComponent),
+            './features/bookings/pages/crm-booking-page/crm-booking-page.component'
+          ).then((m) => m.CrmBookingPageComponent),
+      },
+      {
+        path: 'booking-list',
+        canActivate: [permissionGuard],
+        data: { permission: 'BOOKING_READ' },
+        loadComponent: () =>
+          import(
+            './features/bookings/pages/booking-list-page/booking-list-page.component'
+          ).then((m) => m.BookingListPageComponent),
+      },
+      {
+        path: 'bookings/create',
+        redirectTo: 'bookings',
+        pathMatch: 'full',
+      },
+      {
+        path: 'bookings/list',
+        redirectTo: 'booking-list',
+        pathMatch: 'full',
       },
     ],
   },

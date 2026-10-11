@@ -129,6 +129,9 @@ export const VI_TRANSLATIONS: Record<string, any> = {
       vehicleList: 'Phương tiện & Ghế',
       driverList: 'Đội ngũ tài xế',
       bookings: 'Vé & Giữ chỗ',
+      bookingsGroup: 'Vé & Giữ chỗ',
+      crmBooking: 'Đặt vé & Giữ chỗ',
+      bookingList: 'Danh sách đặt vé',
       rolesAndPermissions: 'Vai trò & Phân quyền',
       settings: 'Cài đặt hệ thống',
       upcoming: 'Sắp ra mắt',
@@ -1142,6 +1145,8 @@ export const VI_TRANSLATIONS: Record<string, any> = {
       basePrice: 'Giá vé gốc:',
     },
     manage: {
+      title: 'Danh sách đặt vé',
+      subtitle: 'Tra cứu, theo dõi và quản lý các giao dịch đặt vé trên toàn hệ thống',
       searchLabel: 'Tìm kiếm đơn vé',
       searchPlaceholder: 'Mã vé, tên hoặc SĐT khách...',
       fromDate: 'Từ ngày',

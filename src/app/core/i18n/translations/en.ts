@@ -129,6 +129,9 @@ export const EN_TRANSLATIONS: Record<string, any> = {
       vehicleList: 'Vehicles & Seats',
       driverList: 'Driver Crew',
       bookings: 'Tickets & Bookings',
+      bookingsGroup: 'Tickets & Bookings',
+      crmBooking: 'Create & Hold Booking',
+      bookingList: 'Booking List',
       rolesAndPermissions: 'Roles & Permissions',
       settings: 'System Settings',
       upcoming: 'Coming Soon',
@@ -1141,6 +1144,8 @@ export const EN_TRANSLATIONS: Record<string, any> = {
       basePrice: 'Base price:',
     },
     manage: {
+      title: 'Booking List',
+      subtitle: 'Lookup, monitor and manage ticket booking transactions system-wide',
       searchLabel: 'Search bookings',
       searchPlaceholder: 'Booking code, customer name or phone...',
       fromDate: 'From Date',

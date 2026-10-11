@@ -1,0 +1,48 @@
+.booking-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.filter-card {
+  background: var(--surface-card, #ffffff);
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--surface-border, #e2e8f0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    align-items: start;
+
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+
+      ::ng-deep .dl-form-field {
+        margin-bottom: 0 !important;
+      }
+    }
+  }
+
+  .filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--surface-border, #f1f5f9);
+  }
+}
+
+.bookings-table-container {
+  background: var(--surface-card, #ffffff);
+  border-radius: 0.75rem;
+  border: 1px solid var(--surface-border, #e2e8f0);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
